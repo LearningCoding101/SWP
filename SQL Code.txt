@@ -4,7 +4,9 @@
 - payment method chưa hiểu, từ chối làm(có mỗi PK)
 - Court Owner, Staff, Customer xem lại cần userID ko
 - Staff cần clubID ko
-*/--NGU LOZ
+*/
+--NGU LOZ
+--XAM LOZ
 CREATE TABLE BookingMonth
 (
   BookingTypeID INT NOT NULL,
