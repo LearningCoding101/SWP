@@ -90,7 +90,7 @@ CREATE TABLE Booking
 );
 CREATE TABLE Feedback
 (
-  Feedback VARCHAR NOT NULL,
+  FeedbackID VARCHAR NOT NULL,
   FeedbackText VARCHAR NOT NULL,
   Rating VARCHAR NOT NULL,
   BookingID VARCHAR(10) NOT NULL,
