@@ -53,16 +53,6 @@ CREATE TABLE Customer
 	CONSTRAINT con_customerID UNIQUE (CustomerID)
 );
 
-CREATE TABLE Feedback
-(
-  Feedback VARCHAR NOT NULL,
-  FeedbackText VARCHAR NOT NULL,
-  Rating VARCHAR NOT NULL,
-  BookingID VARCHAR(10) NOT NULL,
-  CustomerID VARCHAR(10) NOT NULL,
-  FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
-  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
-);
 CREATE TABLE Court
 (
   CourtID VARCHAR(10) NOT NULL,
@@ -96,6 +86,16 @@ CREATE TABLE Booking
 
   FOREIGN KEY (CourtID) REFERENCES Court(CourtID),
   FOREIGN KEY (StaffID) REFERENCES Staff(StaffID),
+  FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+CREATE TABLE Feedback
+(
+  Feedback VARCHAR NOT NULL,
+  FeedbackText VARCHAR NOT NULL,
+  Rating VARCHAR NOT NULL,
+  BookingID VARCHAR(10) NOT NULL,
+  CustomerID VARCHAR(10) NOT NULL,
+  FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
 CREATE TABLE PaymentMethod
