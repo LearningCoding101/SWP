@@ -135,7 +135,7 @@ CREATE TABLE Courts_TS
 
 CREATE TABLE Booking_Detail
 (
-  Booking_Detail_ID INT NOT NULL,
+  Booking_Detail_ID INT NOT NULL Primary key,
   court_TS_ID VARCHAR(10) Not null,
   BookingID VARCHAR(10) NOT NULL,
   TimeSlotID VARCHAR(10) NOT NULL,
