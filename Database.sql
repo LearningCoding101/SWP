@@ -1,4 +1,5 @@
-drop database   testing
+drop database testing
+
 create database testing
 use  testing
 
@@ -17,9 +18,6 @@ CREATE TABLE CourtOwner
   CONSTRAINT con_courtOwnerID UNIQUE (CourtOwnerID),
 
 );
-
-
-
 CREATE TABLE Club
 (
   ClubID VARCHAR(10) NOT NULL Primary key,
@@ -34,6 +32,7 @@ CREATE TABLE Club
   FOREIGN KEY (CourtOwnerID) REFERENCES CourtOwner(CourtOwnerID),
   
 );
+
 CREATE TABLE Staff
 (
   StaffID VARCHAR(10) NOT NULL PRIMARY KEY,
@@ -43,6 +42,7 @@ CREATE TABLE Staff
 	CONSTRAINT con_staffID UNIQUE (StaffID),
 	FOREIGN KEY (ClubID) REFERENCES [Club](ClubID),
 );
+
 CREATE TABLE Customer
 (
 	
@@ -52,7 +52,6 @@ CREATE TABLE Customer
 	FOREIGN KEY (CustomerID) REFERENCES [User](UserID),
 	CONSTRAINT con_customerID UNIQUE (CustomerID)
 );
-
 CREATE TABLE Court
 (
   CourtID VARCHAR(10) NOT NULL,
@@ -62,17 +61,6 @@ CREATE TABLE Court
   PRIMARY KEY (CourtID),
   FOREIGN KEY (ClubID) REFERENCES Club(ClubID)
 );
-CREATE TABLE TimeSlot
-(
-  TimeSlotID VARCHAR(10) NOT NULL,
-  StartTime INT NOT NULL,
-  EndTime INT NOT NULL,
-  Status NVARCHAR(10) NOT NULL,
-  CourtID varchar(10) NOT NULL,
-  PRIMARY KEY (TimeSlotID),
-  FOREIGN KEY (CourtID) REFERENCES Court(CourtID)
-);
-
 CREATE TABLE Booking
 (
   BookingID VARCHAR(10) NOT NULL,
@@ -88,6 +76,11 @@ CREATE TABLE Booking
   FOREIGN KEY (StaffID) REFERENCES Staff(StaffID),
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
+CREATE TABLE PaymentMethod
+(
+  PaymentMethodID VARCHAR(10) not null PRIMARY KEY,
+  PaymentInfo varchar (50),
+);
 CREATE TABLE Feedback
 (
   FeedbackID VARCHAR NOT NULL,
@@ -98,11 +91,19 @@ CREATE TABLE Feedback
   FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
   FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
 );
-CREATE TABLE PaymentMethod
+
+CREATE TABLE TimeSlot
 (
-  PaymentMethodID VARCHAR(10) not null PRIMARY KEY,
-  PaymentInfo varchar (50),
+  TimeSlotID VARCHAR(10) NOT NULL,
+  StartTime INT NOT NULL,
+  EndTime INT NOT NULL,
+  Status NVARCHAR(10) NOT NULL,
+  
+  PRIMARY KEY (TimeSlotID),
+  
 );
+
+
 
 CREATE TABLE [Transaction]
 (
@@ -118,37 +119,30 @@ CREATE TABLE [Transaction]
   FOREIGN KEY (PaymentMethodID) REFERENCES PaymentMethod(PaymentMethodID)
 );
 
-CREATE TABLE BookingMonth
+
+
+CREATE TABLE Courts_TS
 (
   
-  TimeBegin Time NOT NULL,
-  TimeEnd Time NOT NULL,
-  Weekday_Time  Int NOT NULL,
-  TotalTime Time NOT NULL,
-  BookingID VARCHAR(10) NOT NULL,
-  TimeSlotID VARCHAR(10) NOT NULL,
-  FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
   
+  
+  court_TS_ID VARCHAR(10) NOT NULL primary key,
+  TimeSlotID VARCHAR(10) NOT NULL,
+  CourtID VARCHAR(10) NOT NULL,
+  FOREIGN KEY (TimeSlotID) REFERENCES TimeSlot(TimeSlotID),
+  FOREIGN KEY (CourtID) REFERENCES Court(CourtID),
 );
 
-CREATE TABLE Booking_1Time
+CREATE TABLE Booking_Detail
 (
-  
-  
-  Date DATE NOT NULL,
+  Booking_Detail_ID INT NOT NULL,
+  court_TS_ID VARCHAR(10) Not null,
   BookingID VARCHAR(10) NOT NULL,
   TimeSlotID VARCHAR(10) NOT NULL,
+  date date not null,
+  Booking_Month Int not null, 
   FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
-  
-);
-
-CREATE TABLE Booking_ByHours
-(
-  BookingTypeByHoursID INT NOT NULL,
-  TotalTime TIME NOT NULL,
-  BookingID VARCHAR(10) NOT NULL,
-  TimeSlotID VARCHAR(10) NOT NULL,
-  FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
+  FOREIGN KEY (court_TS_ID) REFERENCES Courts_TS(court_TS_ID),
   
 );
 
