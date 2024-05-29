@@ -39,9 +39,7 @@ const ForgotPassword = () => {
           <div className="bottom-content">
             <p><Link to='/login'><img src="./src/assets/back.svg" />Back to login</Link></p>
           </div>
-
         </form>
-
       </div>
     </div>
   )

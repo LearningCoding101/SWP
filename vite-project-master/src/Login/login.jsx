@@ -1,45 +1,16 @@
-// import React, { useState } from 'react'
-// export default function Login() {
-
-//     return (
-//         <div className='container'>
-//             <div className='row content'>
-//                 <h3 className='title'>Login</h3>
-//                 <div className='text-box'>
-//                     <input
-//                         type="email"
-//                         placeholder='Email'
-//                     />
-//                     <input
-//                         type="password"
-//                         placeholder='Password'
-//                     />
-//                 </div>
-
-//                 <div className='container-button'>
-//                     <button className='login'>Log in</button>
-//                 </div>
-//                 <div className='forgot-password'>
-//                     <p>Forgot password? Click here</p>
-//                 </div>
-//                 <div className='register'>
-//                     <p>Dont have an account? <span>Sign up now</span></p>
-//                 </div>
-//             </div>
-//         </div>
-
-
-//     )
-// }
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = (e) => {
         e.preventDefault();
+        if(username ==='admin' && password ==='admin'){
+            navigate('/');
+        }
         // Here, you would typically make an API call to authenticate the user
         // For this example, we'll just check if the username and password are not empty
         if (username.trim() === '' || password.trim() === '') {
@@ -80,22 +51,23 @@ const Login = () => {
                             className="form-input"
                         />
                     </div>
-                    <div className='form-group'>
+                    <div className='form-group'>  
+                    <div className='row'>
+                    <div className='col-md-8'>                     
                         <input
                             type="checkbox"
                         />
                         <label htmlFor="rememberme"> Remember me</label>
+                        </div> 
+                       <Link to='/forgotpassword' className='col-md-4'>Forgot password</Link>
+                    </div>   
                     </div>
-                    <button type="submit" className="login-button">
+                    <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
                 </form>
                 <div className='footer-content'>
-                    <div className='row'>
-                        <p><a href="/forgotpassword">Forgot password</a></p>
                         <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
-                    </div>
-
                 </div>
             </div>
         </div>
