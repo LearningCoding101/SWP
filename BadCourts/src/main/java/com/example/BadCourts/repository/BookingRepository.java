@@ -1,6 +1,6 @@
-package com.badminton.greetingdemo.respository;
+package com.example.BadCourts.repository;
 
-import com.badminton.greetingdemo.model.Booking;
+import com.example.BadCourts.model.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

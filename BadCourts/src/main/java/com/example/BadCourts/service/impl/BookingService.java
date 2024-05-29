@@ -13,7 +13,7 @@ import java.util.Optional;
 public class BookingService {
 
     @Autowired
-    private com.badminton.greetingdemo.respository.BookingRepository bookingRepository;
+    private BookingRepository bookingRepository;
 
     public Booking createBooking(Booking booking) {
         return bookingRepository.save(booking);

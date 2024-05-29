@@ -1,4 +1,4 @@
-package com.badminton.greetingdemo.exception;
+package com.example.BadCourts.exception;
 
 import lombok.Data;
 

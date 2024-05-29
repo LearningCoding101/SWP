@@ -1,4 +1,4 @@
-package com.badminton.greetingdemo.model;
+package com.example.BadCourts.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -26,4 +26,6 @@ public class Booking {
 
     public Booking() {
     }
+
+
 }
