@@ -1,7 +1,8 @@
-package com.badminton.greetingdemo.service;
+package com.example.BadCourts.service.impl;
 
-import com.badminton.greetingdemo.model.Booking;
-import com.badminton.greetingdemo.respository.BookingRepository;
+
+import com.example.BadCourts.repository.*;
+import com.example.BadCourts.model.Booking;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
 public class BookingService {
 
     @Autowired
-    private BookingRepository bookingRepository;
+    private com.badminton.greetingdemo.respository.BookingRepository bookingRepository;
 
     public Booking createBooking(Booking booking) {
         return bookingRepository.save(booking);
