@@ -1,4 +1,4 @@
-package com.badminton.greetingdemo.exception;
+package com.example.BadCourts.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

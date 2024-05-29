@@ -1,6 +1,7 @@
-package com.badminton.greetingdemo.controller;
-import com.badminton.greetingdemo.model.Booking;
-import com.badminton.greetingdemo.service.BookingService;
+package com.example.BadCourts.controller;
+
+import com.example.BadCourts.model.Booking;
+import com.example.BadCourts.service.impl.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
