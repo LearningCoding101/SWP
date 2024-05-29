@@ -55,7 +55,7 @@ const Login = () => {
 
         <div className="login-container">
             <div className="login-card">
-                <h2 className="login-title">Looooooginnnnnn45w3636536y</h2>
+                <h2 className="login-title">Sign in</h2>
                 {error && <div className="error">{error}</div>}
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="form-group">
