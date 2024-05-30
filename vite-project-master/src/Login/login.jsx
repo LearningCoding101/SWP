@@ -65,6 +65,10 @@ const Login = () => {
                     <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
+                    <button>
+                        Goolge
+                    </button>
+
                 </form>
                 <div className='footer-content'>
                         <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
