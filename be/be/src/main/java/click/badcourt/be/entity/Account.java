@@ -18,4 +18,5 @@ public class Account {
 
     String password;
     String phone;
+    boolean isDeleted;
 }
