@@ -1,6 +1,6 @@
 import './App.css'
 import Login from './Login/login'
-import Home from './Home/Home'
+import Home from './Components/Home/Home'
 import SignUp from './Login/SignUp'
 import ForgotPassword from './Login/ForgotPassword'
 import './css/Login.css'
