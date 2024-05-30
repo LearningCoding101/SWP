@@ -1,5 +1,4 @@
 package click.badcourt.be.service;
-
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.repository.AuthenticationRepository;
 import io.jsonwebtoken.Claims;
@@ -8,7 +7,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -32,7 +30,7 @@ public class TokenService {
                 // create object of JWT
                 Jwts.builder().
                         //subject of token
-                                subject(account.getPhone()).
+                                subject(account.getUsername()).
                         // time Create Token
                                 issuedAt(new Date(System.currentTimeMillis()))
                         // Time exprire of Token

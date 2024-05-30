@@ -1,11 +1,10 @@
 package click.badcourt.be.config;
-
 import click.badcourt.be.entity.Account;
-import click.badcourt.be.exception.AuthException;
 import click.badcourt.be.service.AuthenticationService;
 import click.badcourt.be.service.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import jakarta.security.auth.message.AuthException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
