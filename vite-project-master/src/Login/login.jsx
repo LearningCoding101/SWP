@@ -30,7 +30,7 @@ const Login = () => {
 
         <div className="login-container">
             <div className="login-card">
-                <h2 className="login-title">Login</h2>
+                <h2 className="login-title">Log in</h2>
                 {error && <div className="error">{error}</div>}
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="form-group">
@@ -69,6 +69,10 @@ const Login = () => {
                     <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
+                    <button>
+                        Goolge
+                    </button>
+
                 </form>
                 <div className='footer-content'>
                         <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
