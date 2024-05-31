@@ -18,6 +18,7 @@ public class Account implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto generate id
     long id;
     String password;
+    @Column(unique = true)
     String phone;
     @Column(unique = true)
     String email;
