@@ -14,7 +14,7 @@ const ForgotPassword = () => {
   return (
     <div className='login-container'>
       <div className='login-card'>
-        <img src="/assets/password.png" />
+        <link type='image' href="./src/assets/password.png" />
         <div className='forgotPass-text'>
           <h3>Forgot your password?</h3>
           <p>Enter your email so that we can send you password reset link</p>
@@ -37,7 +37,7 @@ const ForgotPassword = () => {
             Send email
           </button>
           <div className="bottom-content">
-            <p><Link to='/login'><img src="assets/back.svg" />Back to login</Link></p>
+            <p><Link to='/login'><link type='image/svg+xml' href="./src/assets/back.svg" />Back to login</Link></p>
           </div>
         </form>
       </div>

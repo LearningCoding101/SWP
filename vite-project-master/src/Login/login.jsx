@@ -1,25 +1,29 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { login } from './LoginService';
 const Login = () => {
-    const [username, setUsername] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        if(username ==='admin' && password ==='admin'){
-            navigate('/');
+        
+        //API call
+        if (phone.trim() === '' || password.trim() === '') {
+            setError('Please enter both phone number and password');
         }
-        // Here, you would typically make an API call to authenticate the user
-        // For this example, we'll just check if the username and password are not empty
-        if (username.trim() === '' || password.trim() === '') {
-            setError('Please enter both username and password');
-        } else {
-            // Successful login, you can redirect the user to the booking page
-            console.log('Login successful');
-            // Redirect logic here
-        }
+        try {
+            const data = await login(phone, password);
+            console.log('Login successful!', data);
+            navigate("/")
+            // Handle successful login (e.g., store token, redirect)
+          } catch (err) {
+            console.error(err);
+            setError(err.message);
+          } 
     };
 
     return (
@@ -30,13 +34,13 @@ const Login = () => {
                 {error && <div className="error">{error}</div>}
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="form-group">
-                        <label htmlFor="username">Username</label>
+                        <label htmlFor="phone">Phone number</label>
                         <input
                             type="text"
-                            placeholder='Enter your username'
+                            placeholder='Enter your phone number'
                             id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
                             className="form-input"
                         />
                     </div>

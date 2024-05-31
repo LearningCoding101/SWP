@@ -1,33 +1,36 @@
 import { useState } from 'react';
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { register } from './SignUpService';
 const SignUp = () => {
-  const [username, setUsername] = useState('');
+  const [fullname, setFullname] = useState('');
   const [password, setPassword] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [password2, setPassword2] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [phone, setPhone] = useState('');
+  // const [password2, setPassword2] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     // Here, you would typically make an API call to authenticate the user
     // For this example, we'll just check if the username and password are not empty
-    if (username.trim() === '' || password.trim() === '' || firstname.trim() === '' || lastname.trim() === '') {
+    if (fullname.trim() === '' || password.trim() === '' || phone.trim() === '' || email.trim() === '') {
       setError('Please enter all fields');
-    } else if (password2.trim() != password.trim()) {
-      setError('Password does not match');
-    }
-    
-    else {
-      // Successful login, you can redirect the user to the booking page
-      console.log('Login successful');
-      // Redirect logic here
-    }
+    } //else if (password2.trim() != password.trim()) {
+    //   setError('Password does not match');
+    // }
+      try {
+        const data = await register(phone, password, email, fullname);
+        console.log('Registration successful!', data);
+        navigate("/login")
+        // Handle successful registration (e.g., redirect to login)
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      }
+    };
 
-    
-
-  };
   return (
     <div className="login-container">
       <div className="login-card">
@@ -36,24 +39,24 @@ const SignUp = () => {
         <form onSubmit={handleLogin} className="login-form">
           <div className='row'>
             <div className='user-info'>
-              <label htmlFor="firstname">First Name</label>
+              <label htmlFor="fullname">Full Name</label>
               <input
                 type="text"
-                placeholder='Your first name'
-                id='firstname'
-                value={firstname}
-                onChange={(e) => setFirstname(e.target.value)}
+                placeholder='Your full name'
+                id='fullname'
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
                 className='form-input2'
               />
             </div>
             <div className='user-info'>
-              <label htmlFor="lastname">Last Name</label>
+              <label htmlFor="email">Email</label>
               <input
                 type="text"
-                placeholder='Your last name'
-                id='lastname'
-                value={lastname}
-                onChange={(e) => setLastname(e.target.value)}
+                placeholder='Enter your email'
+                id='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className='form-input2'
               />
             </div>
@@ -61,13 +64,13 @@ const SignUp = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="phone">Phone number</label>
             <input
               type="text"
-              placeholder='Enter your username'
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder='Enter your phone number'
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               className="form-input"
             />
           </div>
@@ -82,17 +85,17 @@ const SignUp = () => {
               className="form-input"
             />
           </div>
-          <div className="form-group">
+          {/* <div className="form-group">
             <label htmlFor="password2">Confirm password</label>
             <input
               type="password"
               placeholder='Re-enter your password'
-              id="password"
+              id="password2"
               value={password2}
               onChange={(e) => setPassword2(e.target.value)}
               className="form-input"
             />
-          </div>
+          </div> */}
           <div className='form-group'>
             <input
               type="checkbox"
