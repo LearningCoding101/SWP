@@ -1,7 +1,7 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Club;
-import click.badcourt.be.model.ClubRequest;
+import click.badcourt.be.model.request.ClubRequest;
 import click.badcourt.be.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.model.EmailDetail;
+import click.badcourt.be.entity.EmailDetail;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;

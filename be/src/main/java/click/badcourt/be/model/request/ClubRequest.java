@@ -1,8 +1,6 @@
-package click.badcourt.be.model;
+package click.badcourt.be.model.request;
 
 import lombok.Data;
-
-import java.sql.Time;
 
 @Data
 public class ClubRequest {

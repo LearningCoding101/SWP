@@ -2,14 +2,18 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.enums.RoleEnum;
-import click.badcourt.be.model.AccountResponse;
-import click.badcourt.be.model.EmailDetail;
-import click.badcourt.be.model.LoginRequest;
-import click.badcourt.be.model.RegisterRequest;
+import click.badcourt.be.model.request.LoginGoogleRequest;
+import click.badcourt.be.model.request.LoginRequest;
+import click.badcourt.be.model.request.RegisterRequest;
+import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -67,6 +71,30 @@ public class AuthenticationService implements UserDetailsService {
 
         return accountResponse;
     }
+
+    public AccountResponse loginGoogle(LoginGoogleRequest loginGoogleRequest) {
+        AccountResponse accountResponse = new AccountResponse();
+        try {
+            FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
+            String email = firebaseToken.getEmail();
+            Account account = authenticationRepository.findAccountByEmail(email);
+            if (account != null) {
+                account = new Account();
+                account.setFullName(firebaseToken.getName());
+                account.setEmail(firebaseToken.getEmail());
+                account = authenticationRepository.save(account);
+            }
+            accountResponse.setId(account.getId());
+            accountResponse.setFullName(account.getFullName());
+            accountResponse.setEmail(account.getEmail());
+            String token = tokenService.generateToken(account);
+            accountResponse.setToken(token);
+        }catch (FirebaseAuthException e){
+            e.printStackTrace();
+        }
+        return accountResponse;
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
