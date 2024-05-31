@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from './LoginService';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+<script src="https://accounts.google.com/gsi/client" async></script>
+
+const clientId = '9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com'
 const Login = () => {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-    
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        
+
         //API call
         if (phone.trim() === '' || password.trim() === '') {
             setError('Please enter both phone number and password');
@@ -20,10 +24,10 @@ const Login = () => {
             console.log('Login successful!', data);
             navigate("/")
             // Handle successful login (e.g., store token, redirect)
-          } catch (err) {
+        } catch (err) {
             console.error(err);
             setError(err.message);
-          } 
+        }
     };
 
     return (
@@ -55,27 +59,36 @@ const Login = () => {
                             className="form-input"
                         />
                     </div>
-                    <div className='form-group'>  
-                    <div className='row'>
-                    <div className='col-md-8'>                     
-                        <input
-                            type="checkbox"
-                        />
-                        <label htmlFor="rememberme"> Remember me</label>
-                        </div> 
-                       <Link to='/forgotpassword' className='col-md-4'>Forgot password</Link>
-                    </div>   
+                    <div className='form-group'>
+                        <div className='row'>
+                            <div className='col-md-8'>
+                                <input
+                                    type="checkbox"
+                                />
+                                <label htmlFor="rememberme"> Remember me</label>
+                            </div>
+                            <Link to='/forgotpassword' className='col-md-4'>Forgot password</Link>
+                        </div>
                     </div>
                     <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
-                    <button>
-                        Goolge
-                    </button>
-
+                    <div className='google-button'>
+                        <GoogleOAuthProvider clientId="9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com">
+                            <GoogleLogin c shape='pill' hosted_domain='http://badcourts.click/login'
+                                onSuccess={credentialResponse => {
+                                    console.log(credentialResponse);
+                                }}
+                                onError={() => {
+                                    console.log('Login Failed');
+                                }}
+                                useOneTap
+                            />
+                        </GoogleOAuthProvider>
+                    </div>
                 </form>
                 <div className='footer-content'>
-                        <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
+                    <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
                 </div>
             </div>
         </div>

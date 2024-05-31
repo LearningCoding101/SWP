@@ -10,7 +10,7 @@ import { FaClock, FaWifi, FaUtensils, FaTshirt } from 'react-icons/fa';
 const CourtServices = () => {
     return (
         <>
-            <Container classname='mb-2'>
+            <Container className='mb-2'>
                 <Header title={'Our services'} />
 
                 <Row>
