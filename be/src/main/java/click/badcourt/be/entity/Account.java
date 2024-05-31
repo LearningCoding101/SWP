@@ -19,6 +19,7 @@ public class Account implements UserDetails {
     long id;
     String password;
     String phone;
+    @Column(unique = true)
     String email;
     String fullName;
     boolean isDeleted;
