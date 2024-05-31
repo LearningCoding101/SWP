@@ -1,47 +1,60 @@
 import './App.css'
-import Login from './Login/login'
 import Home from './Components/Home/Home'
-import SignUp from './Login/SignUp'
-import ForgotPassword from './Login/ForgotPassword'
-import './css/Login.css'
-import './css/SignUp.css'
-import './css/ForgotPassword.css'
+import './Components/css/Login.css'
+import './Components/css/SignUp.css'
+import './Components/css/ForgotPassword.css'
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+import NavBar from './Components/layout/NavBar'
+import { AuthProvider } from './Components/Login/AuthProvider'
+import Footer from './Components/layout/Footer'
+import Login from './Components/Login/login'
+import SignUp from './Components/Login/SignUp'
+import ForgotPassword from './Components/Login/ForgotPassword';
+import Logout from './Components/Login/Logout';
 function App() {
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={<Home />}
-          />
+    <AuthProvider>
+      <main>
+        
+        <Router>
+          <NavBar />
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={<Home />}
+            />
 
-          <Route
-            path="/login"
-            element={<Login />}
-          />
-          <Route
-            path="/signup"
-            element={<SignUp />}
-          />
-          <Route
-          path='/forgotpassword'
-          element={<ForgotPassword/>}
-          />
-          <Route
-            path="*"
-            element={<Navigate to="/" />}
-          />
-        </Routes>
-      </Router>
-    </>
+            <Route
+              path="/login"
+              element={<Login />}
+            />
+            <Route
+              path="/logout"
+              element={<Logout />}
+            />
+            <Route
+              path="/signup"
+              element={<SignUp />}
+            />
+            <Route
+              path='/forgotpassword'
+              element={<ForgotPassword />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to="/" />}
+            />
+          </Routes>
+        </Router>
+        <Footer />
+      </main>
+     </AuthProvider>
   )
 }
 

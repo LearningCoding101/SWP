@@ -1,53 +1,34 @@
 import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom';
-import HeaderMain  from '../layout/HeaderMain.jsx'
-import CourtServices from '../../common/CourtServices';
-import Parallax  from '../../common/Parallax.jsx'
+import { Link, useLocation } from 'react-router-dom';
+import HeaderMain from '../layout/HeaderMain.jsx'
+import Parallax from '../common/Parallax.jsx'
+// import CourtCarousel from '../common/CourtCarousel.jsx';
+import CourtServices from '../common/CourtServices';
 const Home = () => {
-//   const [data, setData] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
+  const location = useLocation()
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch('http://badcourts.click/api/courts');
-  //       if (!response.ok) {
-  //         throw new Error('Network response was not ok');
-  //       }
-  //       const data = await response.json();
-  //       setData(data);
-  //     } catch (error) {
-  //       setError(error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>Error: {error}</div>;
-  // }
+  const message = location.state && location.state.message
+  const currentUser = localStorage.getItem("userId")
   return (
     <div>
       <section>
-        <HeaderMain/>
-        <section className='container'>
-          <Parallax/>
-          <CourtServices/>
-          <Parallax/>
-        </section>
+        {message && <p className="text-warning px-5">{message}</p>}
+        {currentUser && (
+          <h6 className="text-success text-center"> You are logged-In as {currentUser}</h6>
+        )}
+        <HeaderMain />
+        <div className='container'>
+          {/* <CourtCarousel /> */}
+          <Parallax />
+          {/* <CourtCarousel /> */}
+          <CourtServices />
+          <Parallax />
+          {/* <CourtCarousel />         */}
+        </div>
       </section>
-    <Link to ="/login">Login</Link>
-    {/* <h1>Data from Backend</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre> */}
-   </div>
+      {/* <Link to ="/login">Login</Link> */}
+
+    </div>
   )
 }
 
