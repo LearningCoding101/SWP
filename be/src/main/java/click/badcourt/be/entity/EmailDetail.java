@@ -1,4 +1,4 @@
-package click.badcourt.be.model;
+package click.badcourt.be.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
