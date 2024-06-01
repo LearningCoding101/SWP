@@ -3,9 +3,8 @@ package click.badcourt.be.service;
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.entity.EmailDetail;
 import click.badcourt.be.enums.RoleEnum;
-import click.badcourt.be.model.request.LoginGoogleRequest;
-import click.badcourt.be.model.request.LoginRequest;
-import click.badcourt.be.model.request.RegisterRequest;
+import click.badcourt.be.exception.BadRequestException;
+import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +13,7 @@ import com.google.firebase.auth.FirebaseToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -100,5 +100,40 @@ public class AuthenticationService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
         return authenticationRepository.findAccountByPhone(phone);
+    }
+
+    public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        Account account = authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
+        if (account != null) {
+            try {
+                throw new BadRequestException("Account not found!");
+            }catch (RuntimeException e){
+                throw new RuntimeException(e);
+            }
+        }
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(account.getEmail());
+        emailDetail.setSubject("Reset password for account" + forgotPasswordRequest.getEmail() + "!");
+        emailDetail.setMsgBody("");
+        emailDetail.setButtonValue("Reset password");
+        emailDetail.setLink("http://badcourts.click/resetpasswork?token=" + tokenService.generateToken(account));
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                emailService.sendMailTemplate(emailDetail);
+            }
+        };
+        new Thread(r).start();
+    }
+
+    public Account getCurrentAccount(){
+        return (Account) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
+
+    public void resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        Account account = getCurrentAccount();
+        account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
+        authenticationRepository.save(account);
+
     }
 }
