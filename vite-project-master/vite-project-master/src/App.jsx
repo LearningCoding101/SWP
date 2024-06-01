@@ -16,13 +16,17 @@ import Login from './Components/Login/login'
 import SignUp from './Components/Login/SignUp'
 import ForgotPassword from './Components/Login/ForgotPassword';
 import Logout from './Components/Login/Logout';
+import ShowFooter from './Components/layout/ShowFooter'
+import ShowNavBar from './Components/layout/ShowNavBar'
 function App() {
   return (
     <AuthProvider>
       <main>
-        
+
         <Router>
-          <NavBar />
+          <ShowNavBar>
+            <NavBar />
+          </ShowNavBar>
           <Routes>
             <Route
               exact
@@ -52,9 +56,11 @@ function App() {
             />
           </Routes>
         </Router>
-        <Footer />
+        {/* <ShowFooter> */}
+          <Footer />
+        {/* </ShowFooter> */}
       </main>
-     </AuthProvider>
+    </AuthProvider>
   )
 }
 

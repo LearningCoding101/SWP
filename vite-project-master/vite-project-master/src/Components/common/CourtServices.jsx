@@ -10,7 +10,7 @@ import { FaClock, FaWifi, FaUtensils, FaTshirt } from 'react-icons/fa';
 const CourtServices = () => {
     return (
         <>
-            <Container className='mb-2'>
+            <Container classname='mb-2'>
                 <Header title={'Our services'} />
 
                 <Row>
@@ -31,7 +31,7 @@ const CourtServices = () => {
                                     <FaWifi /> Wifi
                                 </Card.Title>
                                 <Card.Text>
-                                    Stay connected with high-speed internet access.
+                                    Stay connected with high-speed internet access
                                 </Card.Text>
                             </Card.Body>
                         </Card>
@@ -44,7 +44,7 @@ const CourtServices = () => {
                                     <FaUtensils /> Breakfast
                                 </Card.Title>
                                 <Card.Text>
-                                    Star
+                                Start your day in style
                                 </Card.Text>
                             </Card.Body>
                         </Card>
@@ -54,10 +54,10 @@ const CourtServices = () => {
                         <Card>
                             <Card.Body>
                                 <Card.Title className='court-color'>
-                                    <FaTshirt /> Laundry
+                                    <FaTshirt /> Outfit
                                 </Card.Title>
                                 <Card.Text>
-                                    Something is here
+                                Take your game to the next level
                                 </Card.Text>
                             </Card.Body>
                         </Card>

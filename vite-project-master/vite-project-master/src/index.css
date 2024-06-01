@@ -1,7 +1,7 @@
-/* body {
+body {
   min-height: 100vh;
   padding-bottom: 50px;
-} */
+}
 .card {
   opacity: 0.9;
 }
@@ -10,9 +10,9 @@
  .navbar{
   padding: 0;
  }
- /* .navbar .navbar-nav .nav-link{
+ .navbar .navbar-nav .nav-link{
   padding: 1em;
- } */
+ }
  .navbar .navbar-nav .nav-item{
   position: relative;
  }
@@ -23,7 +23,7 @@
   left: 0;
   right: 0;
   content: '';
-  background-color:rgb(169, 77, 123) ;
+  background-color:lightblue;
   width: 0;
   margin: 0 auto;
   height: 4px;
@@ -54,7 +54,7 @@
 
   /* Court custom color */
  .btn-court{
-  background-color: rgb(169, 77, 123);
+  background-color: lightblue;
   color: #fff;
   }
   .btn-court:hover{
@@ -67,7 +67,7 @@
   }
 
   .court-color{
-    color: rgb(169, 77, 123);
+    color: lightblue;
   }
   .court-price{
     color:darkgoldenrod;

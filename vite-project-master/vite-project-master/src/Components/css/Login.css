@@ -176,6 +176,15 @@
     }
   }
 
- .google-button {
+  .google-button {
     margin-top: 20px;
   }
+
+  .icon-container {
+    position: fixed;
+ right: 40%;
+max-width: 100%;
+    top: 47.1%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
