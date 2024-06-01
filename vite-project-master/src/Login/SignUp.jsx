@@ -47,6 +47,7 @@ const SignUp = () => {
                 value={fullname}
                 onChange={(e) => setFullname(e.target.value)}
                 className='form-input2'
+                required="true"
               />
             </div>
             <div className='user-info'>
@@ -58,6 +59,7 @@ const SignUp = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className='form-input2'
+                required="true"
               />
             </div>
 
@@ -72,6 +74,7 @@ const SignUp = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="form-input"
+              required="true"
             />
           </div>
           <div className="form-group">
@@ -83,6 +86,7 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
+              required="true"
             />
           </div>
           {/* <div className="form-group">

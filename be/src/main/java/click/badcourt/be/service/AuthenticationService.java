@@ -1,6 +1,7 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
+import click.badcourt.be.entity.EmailDetail;
 import click.badcourt.be.enums.RoleEnum;
 import click.badcourt.be.model.request.LoginGoogleRequest;
 import click.badcourt.be.model.request.LoginRequest;
@@ -79,11 +80,12 @@ public class AuthenticationService implements UserDetailsService {
             String email = firebaseToken.getEmail();
             Account account = authenticationRepository.findAccountByEmail(email);
             if (account != null) {
+                account = new Account();
                 account.setFullName(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
                 account = authenticationRepository.save(account);
             }
-            accountResponse.setId(account.getId());
+            accountResponse.setId(account.getAccountId());
             accountResponse.setFullName(account.getFullName());
             accountResponse.setEmail(account.getEmail());
             String token = tokenService.generateToken(account);

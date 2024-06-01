@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +17,9 @@ public class Account implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto generate id
-    long id;
+    @Column(name = "account_id")
+    long accountId;
+
     String password;
     @Column(unique = true)
     String phone;
@@ -24,6 +27,12 @@ public class Account implements UserDetails {
     String email;
     String fullName;
     boolean isDeleted;
+
+    @OneToMany(mappedBy = "account")
+    List<Booking> bookings;
+
+    @OneToOne(mappedBy = "account")
+    Club club;
 
     @Enumerated(EnumType.STRING)
     RoleEnum role;
