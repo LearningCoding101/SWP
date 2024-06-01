@@ -40,7 +40,6 @@ public class TokenService {
                         .compact();
         return token;
     }
-
     // form token to Claim Object
     public Claims extractAllClaims(String token) {
         return  Jwts.parser().
