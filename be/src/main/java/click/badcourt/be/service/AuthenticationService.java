@@ -83,10 +83,12 @@ public class AuthenticationService implements UserDetailsService {
                 account = new Account();
                 account.setFullName(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
+                account.setRole(RoleEnum.CUSTOMER);
                 account = authenticationRepository.save(account);
             }
             accountResponse.setId(account.getAccountId());
             accountResponse.setFullName(account.getFullName());
+            accountResponse.setRole(RoleEnum.CUSTOMER);
             accountResponse.setEmail(account.getEmail());
             String token = tokenService.generateToken(account);
             accountResponse.setToken(token);
