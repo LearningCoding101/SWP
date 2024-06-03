@@ -26,4 +26,6 @@ public class Court {
     @OneToMany(mappedBy = "court")
     private List<Booking> bookings;
 
+    @OneToMany(mappedBy="court")
+    private List<Court_timeslot> court_timeslots;
 }
