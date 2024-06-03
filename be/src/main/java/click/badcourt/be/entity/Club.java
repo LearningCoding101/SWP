@@ -22,8 +22,10 @@ public class Club {
     @OneToOne
     @JoinColumn(name = "Club_owner")
     Account account;
+
     @Column(nullable = false)
     boolean deleted;
+
     @OneToMany(mappedBy = "club")
     List<Court> courts;
 

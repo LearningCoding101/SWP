@@ -16,9 +16,11 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
     private Date bookingDate;
+
     @ManyToOne
     @JoinColumn(name = "court_id")
     private Court court;
+
     @Column(nullable = false)
     private boolean deleted ;
 

@@ -4,12 +4,14 @@ import click.badcourt.be.entity.Account;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@SecurityRequirement(name = "api")
 public class AuthenticationApi {
     @Autowired
     AuthenticationService authenticationService;
@@ -20,10 +22,9 @@ public class AuthenticationApi {
         return ResponseEntity.ok(account);
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
-        Account account =  authenticationService.login(loginRequest);
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(authenticationService.login(loginRequest));
     }
 
     @PostMapping("/login-google")

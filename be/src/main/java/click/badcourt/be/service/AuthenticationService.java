@@ -34,6 +34,7 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     TokenService tokenService;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -53,14 +54,14 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.save(account);
     }
 
-    public AccountResponse login(LoginRequest loginRequest) {
+    public AccountResponse  login(LoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getPhone(),
+                loginRequest.getEmail(),
                 loginRequest.getPassword()
         ));
         // => account chuẩn
 
-        Account account = authenticationRepository.findAccountByPhone(loginRequest.getPhone());
+        Account account = authenticationRepository.findAccountByEmail(loginRequest.getEmail());
         String token = tokenService.generateToken(account);
 
         AccountResponse accountResponse = new AccountResponse();
@@ -69,6 +70,7 @@ public class AuthenticationService implements UserDetailsService {
         accountResponse.setEmail(account.getEmail());
         accountResponse.setFullName(account.getFullName());
         accountResponse.setRole(account.getRole());
+        accountResponse.setAccountId(account.getAccountId());
 
         return accountResponse;
     }
@@ -86,7 +88,7 @@ public class AuthenticationService implements UserDetailsService {
                 account.setRole(RoleEnum.CUSTOMER);
                 account = authenticationRepository.save(account);
             }
-            accountResponse.setId(account.getAccountId());
+            accountResponse.setAccountId(account.getAccountId());
             accountResponse.setFullName(account.getFullName());
             accountResponse.setRole(RoleEnum.CUSTOMER);
             accountResponse.setEmail(account.getEmail());
@@ -100,13 +102,14 @@ public class AuthenticationService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-        return authenticationRepository.findAccountByPhone(phone);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return authenticationRepository.findAccountByEmail(email);
     }
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        System.out.println(forgotPasswordRequest.getEmail());
         Account account = authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
-        if (account != null) {
+        if (account == null) {
             try {
                 throw new BadRequestException("Account not found!");
             }catch (RuntimeException e){
@@ -115,9 +118,10 @@ public class AuthenticationService implements UserDetailsService {
         }
         EmailDetail emailDetail = new EmailDetail();
         emailDetail.setRecipient(account.getEmail());
-        emailDetail.setSubject("Reset password for account" + forgotPasswordRequest.getEmail() + "!");
+        emailDetail.setSubject("Reset password for account " + forgotPasswordRequest.getEmail() + "!");
         emailDetail.setMsgBody("");
         emailDetail.setButtonValue("Reset password");
+        emailDetail.setFullName(account.getFullName());
         emailDetail.setLink("http://badcourts.click/resetpasswork?token=" + tokenService.generateToken(account));
         Runnable r = new Runnable() {
             @Override

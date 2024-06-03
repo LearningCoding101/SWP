@@ -22,6 +22,8 @@ public class EmailService {
         try{
             Context context = new Context();
 
+            context.setVariable("link",emailDetail.getLink());
+            context.setVariable("button",emailDetail.getButtonValue());
             context.setVariable("name", emailDetail.getFullName());
 
             String text = templateEngine.process("emailtemplate", context);

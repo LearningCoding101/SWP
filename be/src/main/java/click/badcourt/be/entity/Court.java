@@ -16,9 +16,13 @@ public class Court {
     private int courtId;
     private double price;
     private CourtStatusEnum status;
+
+
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
+
+
     @OneToMany(mappedBy = "court")
     private List<Booking> bookings;
 

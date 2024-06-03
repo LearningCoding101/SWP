@@ -9,11 +9,4 @@ import lombok.Setter;
 @Setter
 public class AccountResponse extends Account {
     private String token;
-    long id;
-    String password;
-    String phone;
-    String email;
-    String fullName;
-    boolean isDeleted;
-    RoleEnum role;
 }
