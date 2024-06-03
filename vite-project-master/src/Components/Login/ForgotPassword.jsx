@@ -1,16 +1,29 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { emailConfirm } from '../API/ForgotPassService';
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     // Here, you would typically make an API call to authenticate the user
     // For this example, we'll just check if the username and password are not empty
     if (email.trim() === '') {
       setError('Please enter your email');
     }
-  };
+    else {
+      try {
+        const data = await emailConfirm(email);
+        console.log('Valid email', data);
+        navigate("/forgotPassConfirm")
+        // Handle valid email (e.g., redirect to confirm pass)
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      }
+    }
+    ;
+  }
   return (
     <div className='login-container'>
       <div className='login-card'>

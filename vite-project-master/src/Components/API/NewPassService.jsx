@@ -1,10 +1,8 @@
-// LoginService.js
 import axios from 'axios';
 
-export const login = async (phone, password) => {
-  const url = 'http://152.42.168.144:8080/api/login'; 
+export const newPass = async (password) => {
+  const url = 'http://152.42.168.144:8080/api/reset-password'; 
   const payload = {
-    phone: phone,
     password: password,
   };
 
@@ -18,6 +16,6 @@ export const login = async (phone, password) => {
 
     return response.data;
   } catch (error) {
-    throw new Error(`Login failed: ${error.response.status} - ${error.response.data}`);
+    throw new Error(`Reset failed: ${error.response.status} - ${error.response.data}`);
   }
 };

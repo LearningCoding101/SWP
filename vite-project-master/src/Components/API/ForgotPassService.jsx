@@ -1,11 +1,9 @@
-// LoginService.js
 import axios from 'axios';
 
-export const login = async (email, password) => {
-  const url = 'http://152.42.168.144:8080/api/login'; 
+export const emailConfirm = async (email) => {
+  const url = 'http://152.42.168.144:8080/api/forgot-password'; 
   const payload = {
     email: email,
-    password: password,
   };
 
   try {
@@ -18,6 +16,6 @@ export const login = async (email, password) => {
 
     return response.data;
   } catch (error) {
-    throw new Error(`Login failed: ${error.response.status} - ${error.response.data}`);
+    throw new Error(`Email unavailable: ${error.response.status} - ${error.response.data}`);
   }
 };

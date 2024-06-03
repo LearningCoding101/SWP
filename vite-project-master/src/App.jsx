@@ -16,6 +16,7 @@ import Login from './Components/Login/login'
 import SignUp from './Components/Login/SignUp'
 import ForgotPassword from './Components/Login/ForgotPassword';
 import Logout from './Components/Login/Logout';
+import ForgotPassConfirm from './Components/Login/ForgotPassConfirm'
 function App() {
   return (
     <AuthProvider>
@@ -45,6 +46,10 @@ function App() {
             <Route
               path='/forgotpassword'
               element={<ForgotPassword />}
+            />
+            <Route
+              path='/forgotPassConfirm'
+              element={<ForgotPassConfirm />}
             />
             <Route
               path="*"
