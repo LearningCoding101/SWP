@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -27,7 +28,8 @@ public class Booking {
     @ManyToOne
     @JoinColumn(name = "create_by")
     Account account;
-
+    @OneToMany(mappedBy = "booking")
+    List<Booking_Detail> bookingDetails;
     @Enumerated(EnumType.STRING)
     BookingStatusEnum status;
 }

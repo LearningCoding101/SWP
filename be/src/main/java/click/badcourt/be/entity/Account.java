@@ -32,8 +32,8 @@ public class Account implements UserDetails {
     @OneToMany(mappedBy = "account")
     List<Booking> bookings;
 
-    @OneToOne(mappedBy = "account")
-    Club club;
+    @OneToMany(mappedBy = "account")
+    List<Club> club;
 
     @Enumerated(EnumType.STRING)
     RoleEnum role;
