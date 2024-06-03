@@ -20,7 +20,7 @@ const Login = () => {
             setError('Please enter both email and password');
         }
         try {
-            const data = await login(phone, password);
+            const data = await login(email, password);
             console.log('Login successful!', data);
             navigate("/")
             // Handle successful login (e.g., store token, redirect)
