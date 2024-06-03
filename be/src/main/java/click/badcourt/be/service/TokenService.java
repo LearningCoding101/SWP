@@ -30,7 +30,7 @@ public class TokenService {
                 // create object of JWT
                 Jwts.builder().
                         //subject of token
-                                subject(account.getUsername()).
+                                subject(account.getEmail()).
                         // time Create Token
                                 issuedAt(new Date(System.currentTimeMillis()))
                         // Time exprire of Token
