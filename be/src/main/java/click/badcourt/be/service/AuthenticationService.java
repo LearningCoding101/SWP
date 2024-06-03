@@ -106,7 +106,7 @@ public class AuthenticationService implements UserDetailsService {
 
     public void forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
         Account account = authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
-        if (account != null) {
+        if (account == null) {
             try {
                 throw new BadRequestException("Account not found!");
             }catch (RuntimeException e){
