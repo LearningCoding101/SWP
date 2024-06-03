@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-export const emailConfirm = async (email) => {
-  const url = 'http://152.42.168.144:8080/api/forgot-password'; 
+export const newPass = async (password) => {
+  const url = 'http://152.42.168.144:8080/api/reset-password'; 
   const payload = {
-    email: email,
+    password: password,
   };
 
   try {
@@ -16,6 +16,6 @@ export const emailConfirm = async (email) => {
 
     return response.data;
   } catch (error) {
-    throw new Error(`Email unavailable: ${error.response.status} - ${error.response.data}`);
+    throw new Error(`Reset failed: ${error.response.status} - ${error.response.data}`);
   }
 };
