@@ -38,13 +38,13 @@ const Login = () => {
                 {error && <div className="error">{error}</div>}
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="form-group">
-                        <label htmlFor="phone">Phone number</label>
+                        <label htmlFor="email">Phone number</label>
                         <input
                             type="text"
                             placeholder='Enter your phone number'
                             id="username"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="form-input"
                         />
                     </div>
