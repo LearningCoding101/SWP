@@ -6,7 +6,7 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 const clientId = '9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com'
 const Login = () => {
-    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -16,8 +16,8 @@ const Login = () => {
         e.preventDefault();
 
         //API call
-        if (phone.trim() === '' || password.trim() === '') {
-            setError('Please enter both phone number and password');
+        if (email.trim() === '' || password.trim() === '') {
+            setError('Please enter both email and password');
         }
         try {
             const data = await login(phone, password);

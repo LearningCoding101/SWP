@@ -1,10 +1,10 @@
 // LoginService.js
 import axios from 'axios';
 
-export const login = async (phone, password) => {
+export const login = async (email, password) => {
   const url = 'http://152.42.168.144:8080/api/login'; 
   const payload = {
-    phone: phone,
+    email: email,
     password: password,
   };
 
