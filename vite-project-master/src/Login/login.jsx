@@ -78,7 +78,7 @@ const Login = () => {
                         Login
                     </button>
                     <div className='google-button' >
-login GG
+                        Đăng nhập bằng google.
                     </div>
                 </form>
                 <div className='footer-content'>
