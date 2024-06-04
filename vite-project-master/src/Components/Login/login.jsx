@@ -50,18 +50,13 @@ const Login = () => {
             const result = await signInWithPopup(auth, provider);
             const token = result.user.accessToken;
            
-            const res = await axios.post("http://localhost:8080/api/login-google",{token:token})
+            const res = await axios.post("http://badcourts.click:8080/api/login-google",{token:token})
             
             console.log(res.data);
 
         } catch (error) {
             console.log(error);
         }
-      
-    
-
-   
- 
     }
 
     return (
@@ -112,7 +107,9 @@ const Login = () => {
                         Login
                     </button>
                     <div className='google-button' onClick={handleLoginGG}>
-                       <button>login gg</button>
+                        <button>
+                            Đăng nhập bằng google.
+                        </button>
                     </div>
                 </form>
                 <div className='footer-content'>
