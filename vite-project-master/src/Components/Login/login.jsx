@@ -5,6 +5,9 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 <script src="https://accounts.google.com/gsi/client" async></script>
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../../Config/FirebaseConfig';
+import axios from 'axios';
 
 const clientId = '9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com'
 // import { useAuth } from "./AuthProvider"
@@ -41,6 +44,25 @@ const Login = () => {
             }
         }
     };
+
+    const handleLoginGG = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const token = result.user.accessToken;
+           
+            const res = await axios.post("http://localhost:8080/api/login-google",{token:token})
+            
+            console.log(res.data);
+
+        } catch (error) {
+            console.log(error);
+        }
+      
+    
+
+   
+ 
+    }
 
     return (
 
@@ -89,18 +111,8 @@ const Login = () => {
                     <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
-                    <div className='google-button'>
-                        <GoogleOAuthProvider clientId="9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com">
-                            <GoogleLogin shape='pill'
-                                onSuccess={credentialResponse => {
-                                    console.log(credentialResponse);
-                                }}
-                                onError={() => {
-                                    console.log('Login Failed');
-                                }}
-                                useOneTap
-                            />
-                        </GoogleOAuthProvider>
+                    <div className='google-button' onClick={handleLoginGG}>
+                       <button>login gg</button>
                     </div>
                 </form>
                 <div className='footer-content'>
