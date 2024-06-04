@@ -3,8 +3,10 @@ package click.badcourt.be.api;
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.AccountResponse;
+import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationApi {
     @Autowired
     AuthenticationService authenticationService;
+    @Autowired
+    private AuthenticationRepository authenticationRepository;
 
     @PostMapping("register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
@@ -41,6 +45,9 @@ public class AuthenticationApi {
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
-
-
+    @GetMapping("/account/{email}")
+    public ResponseEntity getAccount(@PathVariable String email) {
+        Account account= authenticationService.getAccountByEmail(email);
+        return ResponseEntity.ok(account);
+    }
 }

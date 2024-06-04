@@ -1,37 +1,58 @@
 package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Club;
-import click.badcourt.be.model.request.ClubRequest;
+import click.badcourt.be.model.request.ClubCreateRequest;
+import click.badcourt.be.model.request.ClubUpdateRequest;
+import click.badcourt.be.model.response.ClubResponse;
+import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/")
 public class ClubApi {
     @Autowired
     ClubService clubService;
+    @Autowired
+    private ClubRepository clubRepository;
+
     @GetMapping("club")
     public ResponseEntity getAll(){
-        List<Club> clubList= clubService.getAllClubs();
-        return ResponseEntity.ok(clubList);
+        return ResponseEntity.ok(clubService.getAllClubs());
     }
     @PostMapping("club")
-    public ResponseEntity addClub(@RequestBody ClubRequest clubRequest){
-        Club newClub= clubService.createClub(clubRequest);
-        return ResponseEntity.ok(newClub);
+    public ResponseEntity addClub(@RequestBody ClubCreateRequest clubCreateRequest){
+        try {
+            Club createdClub = clubService.createClub(clubCreateRequest);
+            return new ResponseEntity<>(createdClub, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
     @PutMapping("club/{id}")
-    public ResponseEntity updateClub(@RequestBody ClubRequest clubRequest, @PathVariable int id){
-        Club club = clubService.updateClub(clubRequest, id);
-        return ResponseEntity.ok(club);
+    public ResponseEntity updateClub(@RequestBody ClubUpdateRequest clubUpdateRequest, @PathVariable int id){
+        try {
+            Club updatedClub = clubService.updateClub(clubUpdateRequest, id);
+            ClubResponse club= new ClubResponse();
+            club.setId(updatedClub.getClub_id());
+            club.setName(updatedClub.getName());
+            club.setAddress(updatedClub.getAddress());
+            club.setClose_time(updatedClub.getClose_time());
+            club.setOpen_time(updatedClub.getOpen_time());
+            club.setPicture_location(updatedClub.getPicture_location());
+            club.setOnwerId(updatedClub.getAccount().getAccountId());
+            return  ResponseEntity.ok(club);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
     @DeleteMapping("club/{id}")
     public ResponseEntity deleteClub(@PathVariable int id){
         clubService.deleteClub(id);
-        return ResponseEntity.ok(id+"deleted");
+        return ResponseEntity.ok( "courtID :"+id +" is deleted");
     }
 }

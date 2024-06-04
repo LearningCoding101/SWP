@@ -19,8 +19,8 @@ public class Club {
     String open_time;
     String close_time;
     String picture_location;
-    @ManyToOne
-    @JoinColumn(name = "fromClubOwner")
+    @OneToOne
+    @JoinColumn(name = "Club_owner")
     Account account;
 
     @Column(nullable = false)

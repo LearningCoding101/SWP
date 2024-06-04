@@ -2,14 +2,16 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.entity.Club;
-import click.badcourt.be.model.request.ClubRequest;
+import click.badcourt.be.model.request.ClubCreateRequest;
+import click.badcourt.be.model.request.ClubUpdateRequest;
+import click.badcourt.be.model.response.ClubResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.ClubRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClubService {
@@ -18,33 +20,45 @@ public class ClubService {
     @Autowired
     AuthenticationRepository authenticationRepository;
 
-    public List<Club> getAllClubs() {
-        return clubRepository.findClubsByDeletedFalse();
+    public List<ClubResponse> getAllClubs() {
+        List<Club> clubs = clubRepository.findClubsByDeletedFalse();
+        List<ClubResponse> clubCreateRespons = new ArrayList<>();
+        for(Club club : clubs) {
+            ClubResponse clubResponse = new ClubResponse();
+            clubResponse.setId(club.getClub_id());
+            clubResponse.setName(club.getName());
+            clubResponse.setAddress(club.getAddress());
+            clubResponse.setOpen_time(club.getOpen_time());
+            clubResponse.setClose_time(club.getClose_time());
+            clubResponse.setOnwerId(club.getAccount().getAccountId());
+            clubResponse.setPicture_location(club.getPicture_location());
+            clubCreateRespons.add(clubResponse);
+        }
+        return clubCreateRespons;
     }
-    public Club createClub(ClubRequest clubRequest) {
+    public Club createClub(ClubCreateRequest clubCreateRequest) {
         Club club = new Club();
-        Optional<Account> accountOptional = Optional.ofNullable(authenticationRepository.findAccountByEmail(clubRequest.getEmail()));
-        if (accountOptional.isPresent()){
-            club.setAccount(accountOptional.get());
+        Account accountOptional = authenticationRepository.findAccountByEmail(clubCreateRequest.getEmail());
+        if (accountOptional !=null) {
+            club.setAccount(accountOptional);
+            club.setName(clubCreateRequest.getName());
+            club.setAddress(clubCreateRequest.getAddress());
+            club.setClose_time(clubCreateRequest.getClose_time());
+            club.setOpen_time(clubCreateRequest.getOpen_time());
+            club.setPicture_location(clubCreateRequest.getPicture_location());
+            club.setDeleted(false);
+            return clubRepository.save(club);
+        }else{
+            throw new IllegalArgumentException("CourtOwner does not exist");
         }
-        else{
-            return null;
-        }
-        club.setName(clubRequest.getName());
-        club.setAddress(clubRequest.getAddress());
-        club.setClose_time(clubRequest.getClose_time());
-        club.setOpen_time(clubRequest.getOpen_time());
-        club.setPicture_location(clubRequest.getPicture_location());
-        club.setDeleted(false);
-        return clubRepository.save(club);
     }
-    public Club updateClub(ClubRequest clubRequest, long id) {
+    public Club updateClub(ClubUpdateRequest clubUpdateRequest, long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
-        club.setName(clubRequest.getName());
-        club.setAddress(clubRequest.getAddress());
-        club.setClose_time(clubRequest.getClose_time());
-        club.setOpen_time(clubRequest.getOpen_time());
-        club.setPicture_location(clubRequest.getPicture_location());
+        club.setName(clubUpdateRequest.getName());
+        club.setAddress(clubUpdateRequest.getAddress());
+        club.setClose_time(clubUpdateRequest.getClose_time());
+        club.setOpen_time(clubUpdateRequest.getOpen_time());
+        club.setPicture_location(clubUpdateRequest.getPicture_location());
         return clubRepository.save(club);
     }
     public void deleteClub(long id) {

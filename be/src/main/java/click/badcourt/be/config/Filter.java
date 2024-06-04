@@ -45,7 +45,10 @@ public class Filter extends OncePerRequestFilter {
             "/api/login",
             "/api/register",
             "/api/account",
-            "/api/forgot-password"
+            "/api/forgot-password",
+            "/api/club",
+            "/api/account/{email}",
+            "/api/club/{id}"
     );
 
     private boolean isPermitted(String uri) {

@@ -142,4 +142,15 @@ public class AuthenticationService implements UserDetailsService {
         authenticationRepository.save(account);
 
     }
+    public Account getAccountByEmail(String email) {
+        Account account = authenticationRepository.findAccountByEmail(email);
+        if(account == null){
+            try {
+                throw new BadRequestException("Account not found!");
+            }catch (RuntimeException e){
+                throw new RuntimeException(e);
+            }
+        }
+        else {return account;}
+    }
 }

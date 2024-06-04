@@ -1,10 +1,9 @@
 package click.badcourt.be.model.request;
 
-import click.badcourt.be.entity.Account;
 import lombok.Data;
 
 @Data
-public class ClubRequest {
+public class ClubCreateRequest {
     String name;
     String address;
     String open_time;
