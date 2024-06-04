@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { newPass } from '../API/NewPassService';
 const ForgotPassConfirm = () => {
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
     const handleLogin = async(e) => {
         e.preventDefault();
         // Here, you would typically make an API call to authenticate the user
@@ -15,9 +16,7 @@ const ForgotPassConfirm = () => {
         else if (newPassword.trim() === '') {
           setError('Please confirm your password');
         }
-        else if (password.trim() === '' || newPassword.trim() === '') {
-          setError('Please enter all fields');
-        }
+        
         else {
           try {
             const data = await newPass(password);

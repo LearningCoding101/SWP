@@ -81,7 +81,7 @@ public class AuthenticationService implements UserDetailsService {
             FirebaseToken firebaseToken = FirebaseAuth.getInstance().verifyIdToken(loginGoogleRequest.getToken());
             String email = firebaseToken.getEmail();
             Account account = authenticationRepository.findAccountByEmail(email);
-            if (account != null) {
+            if (account == null) {
                 account = new Account();
                 account.setFullName(firebaseToken.getName());
                 account.setEmail(firebaseToken.getEmail());
@@ -122,7 +122,7 @@ public class AuthenticationService implements UserDetailsService {
         emailDetail.setMsgBody("");
         emailDetail.setButtonValue("Reset password");
         emailDetail.setFullName(account.getFullName());
-        emailDetail.setLink("http://badcourts.click/resetpasswork?token=" + tokenService.generateToken(account));
+        emailDetail.setLink("http://badcourts.click/reset-passwork?token=" + tokenService.generateToken(account));
         Runnable r = new Runnable() {
             @Override
             public void run() {

@@ -2,13 +2,19 @@ import { useState } from 'react';
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../API/SignUpService';
+import { AiFillEye } from "react-icons/ai";
+import { AiFillEyeInvisible } from "react-icons/ai";
 const SignUp = () => {
+  const [visible, setVisible] = useState('');
   const [fullname, setFullname] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   // const [password2, setPassword2] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const togglePasswordVisibility = () => {
+    setVisible(!visible);
+};
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -20,6 +26,7 @@ const SignUp = () => {
     } //else if (password2.trim() != password.trim()) {
     //   setError('Password does not match');
     // }
+    else{
       try {
         const data = await register(phone, password, email, fullname);
         console.log('Registration successful!', data);
@@ -29,6 +36,7 @@ const SignUp = () => {
         console.error(err);
         setError(err.message);
       }
+    }
     };
 
   return (
@@ -84,6 +92,9 @@ const SignUp = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
             />
+            {/* <div className='icon-container' onClick={togglePasswordVisibility}>
+                            {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                        </div> */}
           </div>
           {/* <div className="form-group">
             <label htmlFor="password2">Confirm password</label>

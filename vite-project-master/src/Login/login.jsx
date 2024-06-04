@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from './LoginService';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { auth, provider } from '../Config/FirebaseConfig';
+import { signInWithPopup } from 'firebase/auth';
 <script src="https://accounts.google.com/gsi/client" async></script>
 
 const clientId = '9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com'
@@ -29,6 +31,8 @@ const Login = () => {
             setError(err.message);
         }
     };
+
+  
 
     return (
 
@@ -73,18 +77,8 @@ const Login = () => {
                     <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
-                    <div className='google-button'>
-                        <GoogleOAuthProvider clientId="9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com">
-                            <GoogleLogin c shape='pill' hosted_domain='http://badcourts.click/login'
-                                onSuccess={credentialResponse => {
-                                    console.log(credentialResponse);
-                                }}
-                                onError={() => {
-                                    console.log('Login Failed');
-                                }}
-                                useOneTap
-                            />
-                        </GoogleOAuthProvider>
+                    <div className='google-button' >
+                        Đăng nhập bằng google.
                     </div>
                 </form>
                 <div className='footer-content'>

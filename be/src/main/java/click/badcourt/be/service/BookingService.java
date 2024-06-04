@@ -24,5 +24,4 @@ public class BookingService {
         bookings= bookingRepository.findByAccount_AccountId(customerId);
         return bookings;
     }
-
 }

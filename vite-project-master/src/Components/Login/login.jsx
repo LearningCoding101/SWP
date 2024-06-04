@@ -5,17 +5,20 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 <script src="https://accounts.google.com/gsi/client" async></script>
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from '../../Config/FirebaseConfig';
+import axios from 'axios';
 
 const clientId = '9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com'
 // import { useAuth } from "./AuthProvider"
 const Login = () => {
     const [visible, setVisible] = useState('');
-    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const togglePasswordVisibility = () => {
         setVisible(!visible);
-      };
+    };
     const navigate = useNavigate();
     // const auth = useAuth()
 
@@ -23,22 +26,38 @@ const Login = () => {
         e.preventDefault();
 
 
-        if (phone.trim() === '' || password.trim() === '') {
+        if (email.trim() === '' || password.trim() === '') {
             setError('Please enter both phone number and password');
         }
-        //API call
-        try {
-            const data = await login(phone, password);
+        else {
+            //API call
+            try {
+                const data = await login(email, password);
                 console.log('Login successful!', data);
                 navigate("/")
-            
 
-            // Handle successful login (e.g., store token, redirect)
-        } catch (err) {
-            console.error(err);
-            setError(err.message);
+
+                // Handle successful login (e.g., store token, redirect)
+            } catch (err) {
+                console.error(err);
+                setError(err.message);
+            }
         }
     };
+
+    const handleLoginGG = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const token = result.user.accessToken;
+           
+            const res = await axios.post("http://badcourts.click:8080/api/login-google",{token:token})
+            
+            console.log(res.data);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
 
@@ -48,29 +67,30 @@ const Login = () => {
                 {error && <div className="error">{error}</div>}
                 <form onSubmit={handleLogin} className="login-form">
                     <div className="form-group">
-                        <label htmlFor="phone">Phone number</label>
+                        <label htmlFor="email">Email</label>
                         <input
                             type="text"
-                            placeholder='Enter your phone number'
+                            placeholder='Enter your email'
                             id="username"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="form-input"
                         />
                     </div>
-                    <div className="form-group">
+                    <div className="form-group ">
                         <label htmlFor="password">Password</label>
                         <input
-                            type={visible ? "text" : "password"}
+                            // type={visible ? "text" : "password"}
+                            type="password"
                             placeholder='Enter your password'
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="form-input"
+                            className="form-input"                           
                         />
-                        <div className='icon-container' onClick={togglePasswordVisibility}>
-                            {visible ? <AiFillEye/> : <AiFillEyeInvisible/>}
-                        </div>
+                        {/* <div className='' onClick={togglePasswordVisibility}>
+                            {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                        </div> */}
                     </div>
                     <div className='form-group'>
                         <div className='row'>
@@ -86,18 +106,10 @@ const Login = () => {
                     <button onClick={handleLogin} type="submit" className="login-button">
                         Login
                     </button>
-                    <div className='google-button'>
-                        <GoogleOAuthProvider clientId="9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com">
-                            <GoogleLogin c shape='pill' hosted_domain='http://badcourts.click'
-                                onSuccess={credentialResponse => {
-                                    console.log(credentialResponse);
-                                }}
-                                onError={() => {
-                                    console.log('Login Failed');
-                                }}
-                                useOneTap
-                            />
-                        </GoogleOAuthProvider>
+                    <div className='google-button' onClick={handleLoginGG}>
+                        <button>
+                            Đăng nhập bằng google.
+                        </button>
                     </div>
                 </form>
                 <div className='footer-content'>
