@@ -16,11 +16,12 @@ public class Court {
     private int courtId;
     private double price;
     private CourtStatusEnum status;
-
+    @Column(nullable = false)
+    boolean deleted;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
-    private Club club;
+     Club club;
 
 
     @OneToMany(mappedBy = "court")

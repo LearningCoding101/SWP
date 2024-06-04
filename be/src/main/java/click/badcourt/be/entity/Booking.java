@@ -17,14 +17,15 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
     private Date bookingDate;
-
     @ManyToOne
     @JoinColumn(name = "court_id")
     private Court court;
-
     @Column(nullable = false)
     private boolean deleted ;
-
+    @OneToOne(mappedBy = "booking")
+    FeedBack feedback;
+    @OneToOne(mappedBy = "booking")
+    Transaction transaction;
     @ManyToOne
     @JoinColumn(name = "create_by")
     Account account;
