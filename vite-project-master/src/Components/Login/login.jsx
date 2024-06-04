@@ -50,7 +50,7 @@ const Login = () => {
             const result = await signInWithPopup(auth, provider);
             const token = result.user.accessToken;
            
-            const res = await axios.post("http://badcourts.click:8080/api/login-google",{token:token})
+            const res = await axios.post("http://152.42.168.144:8080/api/login-google",{token:token})
             
             console.log(res.data);
 
