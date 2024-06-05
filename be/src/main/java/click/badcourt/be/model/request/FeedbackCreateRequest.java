@@ -6,4 +6,6 @@ import lombok.Data;
 public class FeedbackRequest {
     String feedbackContent;
     int feedbackRating;
+    Long bookingId;
+    Long accountId;
 }
