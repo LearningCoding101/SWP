@@ -122,7 +122,7 @@ public class AuthenticationService implements UserDetailsService {
         emailDetail.setMsgBody("");
         emailDetail.setButtonValue("Reset password");
         emailDetail.setFullName(account.getFullName());
-        emailDetail.setLink("http://badcourts.click/reset-passwork?token=" + tokenService.generateToken(account));
+        emailDetail.setLink("http://badcourts.click/reset-password?token=" + tokenService.generateToken(account));
         Runnable r = new Runnable() {
             @Override
             public void run() {
