@@ -1,7 +1,4 @@
 package click.badcourt.be.entity;
-
-
-import click.badcourt.be.enums.TimeSlotStatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,12 +12,9 @@ import java.util.List;
 public class TimeSlot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private long timeslot_id;
-    private Time start_time;
-    private Time end_time;
-    @Enumerated(EnumType.STRING)
-    private TimeSlotStatusEnum status;
+    private String start_time;
+    private String end_time;
 
     @Column(nullable = false)
     boolean deleted;
