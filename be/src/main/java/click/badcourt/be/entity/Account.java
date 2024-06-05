@@ -31,6 +31,8 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "account")
     List<Booking> bookings;
+    @OneToMany(mappedBy = "account")
+    List<FeedBack> feedBacks;
 
     @OneToOne(mappedBy = "account")
     Club club;

@@ -19,4 +19,7 @@ public class FeedBack {
     @OneToOne
     @JoinColumn(name="booking_id")
     Booking booking;
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    Account account;
 }

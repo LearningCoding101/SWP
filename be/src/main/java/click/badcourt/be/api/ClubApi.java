@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class ClubApi {
     @Autowired
     ClubService clubService;
-    @Autowired
-    private ClubRepository clubRepository;
 
     @GetMapping("club")
     public ResponseEntity getAll(){
