@@ -12,6 +12,7 @@ public class FeedbackService {
     @Autowired
     private FeedbackRespository feedbackRespository;
 
-    public List<FeedbackRequest> getAllFeedback() {
+    public List<Feedback> getAllFeedback() {
+        return feedbackRespository.findFeedBacksByIsDeletedFalse();
     }
 }
