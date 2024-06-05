@@ -22,4 +22,5 @@ public class FeedBack {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     Account account;
+    boolean isDeleted;
 }
