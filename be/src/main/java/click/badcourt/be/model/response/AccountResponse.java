@@ -10,3 +10,4 @@ import lombok.Setter;
 public class AccountResponse extends Account {
     private String token;
 }
+

@@ -53,6 +53,8 @@ public class Filter extends OncePerRequestFilter {
             "/api/feedback/{id}",
             "/api/timeslots",
             "/api/timeslots/{id}",
+            "/api/court-timeslot",
+            "/api/timeslots/{id}",
             "/api/transactions",
             "/api/transactions/{id}"
     );

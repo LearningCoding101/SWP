@@ -25,18 +25,13 @@ public class Court {
     boolean deleted;
 
     @ManyToOne
-
     @JoinColumn(name = "club_id")
-
     Club club;
 
-
-
     @OneToMany(mappedBy = "court")
-
     List<Court_timeslot> court_timeslots;
-    @OneToMany(mappedBy = "court")
 
+    @OneToMany(mappedBy = "court")
     List<Booking> bookings;
 
 }
