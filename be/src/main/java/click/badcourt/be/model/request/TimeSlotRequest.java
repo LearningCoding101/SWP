@@ -7,7 +7,10 @@ import java.sql.Time;
 
 @Data
 public class TimeSlotRequest {
-    private String start_time;
-    private String end_time;
+    private int startHour;
+    private int startMinute;
+    private int endHour;
+    private int endMinute;
+
 
 }
