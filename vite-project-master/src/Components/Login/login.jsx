@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate, } from 'react-router-dom';
 import { login } from '../API/LoginService';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 <script src="https://accounts.google.com/gsi/client" async></script>
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
-import { signInWithPopup } from 'firebase/auth';
-import { auth, provider } from '../../Config/FirebaseConfig';
+import { AuthContext } from './AuthProvider';
+// import { signInWithPopup } from 'firebase/auth';
+// import { auth, provider } from './../Config/FirebaseConfig';
 import axios from 'axios';
-
-const clientId = '9214086109-fo5ftlj7fjg2rec7fultl2fu268sjhof.apps.googleusercontent.com'
-// import { useAuth } from "./AuthProvider"
+import { useAuth } from "./AuthProvider"
 const Login = () => {
     const [visible, setVisible] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const authen = useContext(AuthContext)
     const togglePasswordVisibility = () => {
         setVisible(!visible);
     };
     const navigate = useNavigate();
     // const auth = useAuth()
 
-    const handleLogin = async (e) => {
+    const handleLogin1 = async (e) => {
         e.preventDefault();
 
 
@@ -34,6 +34,9 @@ const Login = () => {
             try {
                 const data = await login(email, password);
                 console.log('Login successful!', data);
+                localStorage.setItem("userName", email)
+                const token = data.token
+                authen.handleLogin(token)
                 navigate("/")
 
 
@@ -43,21 +46,20 @@ const Login = () => {
                 setError(err.message);
             }
         }
-    };
+}
+// const handleLoginGG = async () => {
+//     try {
+//         const result = await signInWithPopup(auth, provider);
+//         const token = result.user.accessToken;
+       
+//         const res = await axios.post("http://152.42.168.144:8080/api/login-google",{token:token})
+        
+//         console.log(res.data);
 
-    const handleLoginGG = async () => {
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const token = result.user.accessToken;
-           
-            const res = await axios.post("http://152.42.168.144:8080/api/login-google",{token:token})
-            
-            console.log(res.data);
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// };
 
     return (
 
@@ -65,7 +67,7 @@ const Login = () => {
             <div className="login-card">
                 <h2 className="login-title">Login</h2>
                 {error && <div className="error">{error}</div>}
-                <form onSubmit={handleLogin} className="login-form">
+                <form onSubmit={handleLogin1} className="login-form">
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
                         <input
@@ -103,14 +105,16 @@ const Login = () => {
                             <Link to='/forgotpassword' className='col-md-4'>Forgot password</Link>
                         </div>
                     </div>
-                    <button onClick={handleLogin} type="submit" className="login-button">
+                    <button onClick={handleLogin1} type="submit" className="login-button">
                         Login
                     </button>
-                    <div className='google-button' onClick={handleLoginGG}>
-                        <button>
-                            Đăng nhập bằng google.
-                        </button>
-                    </div>
+                    {/* <div className='google-button'>
+                        
+                            <GoogleLogin shape='pill'
+                            //    onClick={handleLoginGG}
+                            />
+                      
+                    </div> */}
                 </form>
                 <div className='footer-content'>
                     <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
@@ -119,5 +123,4 @@ const Login = () => {
         </div>
     );
 };
-
 export default Login;

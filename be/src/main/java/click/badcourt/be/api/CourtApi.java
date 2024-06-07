@@ -16,35 +16,39 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/court")
 public class CourtApi {
     @Autowired
     private CourtService courtService;
-    @GetMapping
-    public ResponseEntity getAll(){
-        return ResponseEntity.ok(courtService.getAllCourts());
-    }
-    @PostMapping
-    public ResponseEntity addCourt(@RequestBody CourtCreateRequest courtCreateRequest){
+    @GetMapping("/{clubId}")
+    public ResponseEntity getCourtsByClubId(@PathVariable Long clubId){
         try {
-            Court createdCourt = courtService.createCourt(courtCreateRequest);
-            CourtResponse courtResponse=new CourtResponse();
-            courtResponse.setId(createdCourt.getCourtId());
-            courtResponse.setStatus(createdCourt.getStatus());
-            courtResponse.setPrice(createdCourt.getPrice());
-            courtResponse.setClubId(createdCourt.getClub().getClub_id());
-            return ResponseEntity.ok(courtResponse);
+            List<Court> courts = courtService.getCourtsByClubId(clubId);
+            return ResponseEntity.ok(courts);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-
     }
+    @PostMapping
+    public ResponseEntity<?> addCourt(@RequestBody CourtCreateRequest courtCreateRequest){
+        try {
+            Court createdCourt = courtService.createCourt(courtCreateRequest);
+            return ResponseEntity.ok(createdCourt);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteClub(@PathVariable long id){
+    public ResponseEntity<String> deleteClub(@PathVariable long id){
         courtService.deleteCourt(id);
         return ResponseEntity.ok( "courtID :"+id +" is deleted");
     }
+
     @PutMapping("/{id}")
     public ResponseEntity updateCourt(@RequestBody CourtUpdateRequest courtUpdateRequest, @PathVariable int id){
         try {

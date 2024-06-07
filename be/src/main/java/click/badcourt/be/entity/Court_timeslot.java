@@ -1,6 +1,5 @@
 package click.badcourt.be.entity;
 
-import click.badcourt.be.model.response.CourtTimeSlotResponse;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +12,7 @@ import java.util.List;
 public class Court_timeslot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long Court_TSlot_ID;
+    long CourtTSlotID;
     @ManyToOne
     @JoinColumn(name="from_timeSlot")
      TimeSlot timeslot;

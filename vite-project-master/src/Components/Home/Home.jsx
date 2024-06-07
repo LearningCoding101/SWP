@@ -8,7 +8,7 @@ const Home = () => {
   const location = useLocation()
 
   const message = location.state && location.state.message
-  const currentUser = localStorage.getItem("userId")
+  const currentUser = localStorage.getItem("userName")
   return (
     <div>
       <section>

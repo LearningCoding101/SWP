@@ -6,8 +6,10 @@ import lombok.Data;
 public class ClubCreateRequest {
     String name;
     String address;
-    String open_time;
-    String close_time;
+    int startHour;
+    int startMinute;
+    int endHour;
+    int endMinute;
     String picture_location;
     String email;
 

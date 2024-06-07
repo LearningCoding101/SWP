@@ -11,13 +11,11 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+@JsonIgnoreProperties({"court_timeslots", "bookings"})
 public class Court {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     int courtId;
+     long courtId;
      double price;
     @Enumerated(EnumType.STRING)
      CourtStatusEnum status;

@@ -2,8 +2,10 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.model.request.TransactionRequest;
+import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,9 +24,21 @@ import java.util.List;
         }
 
         @PostMapping
-        public ResponseEntity<Transaction> addTransaction(@RequestBody TransactionRequest request) {
-            Transaction createdTransaction = transactionService.addTransaction(request);
-            return ResponseEntity.ok(createdTransaction);
+        public ResponseEntity addTransaction(@RequestBody TransactionRequest request) {
+            try {
+                Transaction createdTransaction = transactionService.addTransaction(request);
+                TransactionResponse transactionResponse = new TransactionResponse();
+                transactionResponse.setId(createdTransaction.getTransactionId());
+                transactionResponse.setStatus(createdTransaction.getStatus());
+                transactionResponse.setDepositAmount(createdTransaction.getDepositAmount());
+                transactionResponse.setPaymentDate(createdTransaction.getPaymentDate());
+                transactionResponse.setTotalAmount(createdTransaction.getTotalAmount());
+                transactionResponse.setBookingId(createdTransaction.getBooking().getBookingId());
+                transactionResponse.setPaymentMethodId(createdTransaction.getPaymentMethod().getPaymentMethodId());
+                return ResponseEntity.ok(transactionResponse);
+            }catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
         }
 
         @PutMapping("/{id}")

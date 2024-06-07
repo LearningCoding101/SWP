@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface BookingDetailRepository extends JpaRepository<Booking_Detail,Long> {
-    List<Booking_Detail> findByDeletedFalseAndBooking_Id(Long id);
+
+    List<Booking_Detail> findBooking_DetailsByBooking_BookingId(Long bookingId);
 }

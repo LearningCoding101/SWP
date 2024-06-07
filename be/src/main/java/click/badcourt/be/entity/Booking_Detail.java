@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.util.Date;
 
 @Entity
@@ -14,7 +13,7 @@ import java.util.Date;
 public class Booking_Detail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long bookingDetails_Id;
+    long bookingDetailsId;
     @ManyToOne
     @JoinColumn(name = "fromBooking")
     Booking booking;
