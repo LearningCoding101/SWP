@@ -19,6 +19,7 @@ public class TimeSlot {
 
     @Column(nullable = false)
     boolean deleted;
+
     @OneToMany(mappedBy="timeslot")
     List<Court_timeslot> court_timeslots;
 
