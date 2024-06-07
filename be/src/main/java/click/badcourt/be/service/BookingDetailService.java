@@ -44,7 +44,8 @@ public class BookingDetailService {
     public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
         if(bookingOptional.isPresent()){
-            List<Booking_Detail> bookingDetails= bookingDetailRepository.findByDeletedFalseAndBooking_Id(bookingId);
+//            List<Booking_Detail> bookingDetails = bookingDetailRepository.findBooking_DetailsByBooking_BookingId(bookingId);
+            List<Booking_Detail> bookingDetails = bookingDetailRepository.findAll();
             List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
             for(Booking_Detail bookingDetail : bookingDetails){
                 BookingDetailResponse bookingDetailResponse= new BookingDetailResponse();
@@ -95,7 +96,7 @@ public class BookingDetailService {
         }
     }
     public void deleteBookingDetail(Long bookingDetailId) {
-        Booking_Detail bookingDetail= (Booking_Detail) bookingDetailRepository.findByDeletedFalseAndBooking_Id(bookingDetailId);
+        Booking_Detail bookingDetail= bookingDetailRepository.findById(bookingDetailId).orElseThrow(() -> new RuntimeException("BookingDetail not found!"));
         bookingDetail.setDeleted(true);
         bookingDetailRepository.save(bookingDetail);
     }

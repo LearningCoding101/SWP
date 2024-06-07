@@ -15,7 +15,7 @@ public class TimeSlotService {
     private TimeSlotRepository timeSlotRepository;
 
     public List<TimeSlot> getALlTimeSlot() {
-        return timeSlotRepository.findTimeSlotsByDeletedFalse();
+        return timeSlotRepository.findByDeletedFalse();
     }
 
     public TimeSlot addTimeSlot(TimeSlotRequest timeSlotRequest) {

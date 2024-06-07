@@ -63,7 +63,8 @@ public class Filter extends OncePerRequestFilter {
             "/api/court-timeslot/{id}",
             "/api/timeslots/{id}",
             "/api/transactions",
-            "/api/transactions/{id}"
+            "/api/transactions/{id}",
+            ""
     );
 
     private boolean isPermitted(String uri) {

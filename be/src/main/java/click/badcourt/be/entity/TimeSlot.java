@@ -22,5 +22,4 @@ public class TimeSlot {
 
     @OneToMany(mappedBy="timeslot")
     List<Court_timeslot> court_timeslots;
-
 }
