@@ -3,16 +3,17 @@ import { NavLink, Link } from "react-router-dom"
 import Logout from "../Login/Logout"
 const NavBar = () => {
 	const [showAccount, setShowAccount] = useState(false)
-
+	
 	const handleAccountClick = () => {
 		setShowAccount(!showAccount)
 	}
 
-	const isLoggedIn = localStorage.getItem("token")
+	const isLoggedIn = localStorage.getItem("loginToken")
 	const userRole = localStorage.getItem("userRole")
 
+
 	return (
-		<nav className="navbar navbar-expand-lg bg-body-tertiary px-5 shadow mt-5 sticky-top">
+		<nav className="navbar navbar-expand-lg bg-body-tertiary px-5 shadow sticky-top">
 			<div className="container-fluid">
 				<Link to={"/"} className="navbar-brand">
 					<span className="hotel-color">BadCourts</span>
@@ -32,7 +33,7 @@ const NavBar = () => {
 				<div className="collapse navbar-collapse" id="navbarScroll">
 					<ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
 						<li className="nav-item">
-							<NavLink className="nav-link" aria-current="page" to={"/dashboard"}>
+							<NavLink className="nav-link" aria-current="page" to={"/clubs"}>
 								Browse all courts
 							</NavLink>
 						</li>
@@ -48,7 +49,7 @@ const NavBar = () => {
 
 					<ul className="d-flex navbar-nav">
 						<li className="nav-item">
-							<NavLink className="nav-link" to={"/find-booking"}>
+							<NavLink className="nav-link" to={"/CRUD"}>
 								Find my booking
 							</NavLink>
 						</li>
@@ -69,7 +70,9 @@ const NavBar = () => {
 								className={`dropdown-menu ${showAccount ? "show" : ""}`}
 								aria-labelledby="navbarDropdown">
 								{isLoggedIn ? (
-									<Logout />
+									<Logout 
+									onClick={handleAccountClick}
+									/>
 								) : (
 									<li>
 										<Link className="dropdown-item" to={"/login"}>

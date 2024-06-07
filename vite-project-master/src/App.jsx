@@ -17,13 +17,20 @@ import SignUp from './Components/Login/SignUp'
 import ForgotPassword from './Components/Login/ForgotPassword';
 import Logout from './Components/Login/Logout';
 import ForgotPassConfirm from './Components/Login/ForgotPassConfirm'
+import EmailSent from './Components/Login/EmailSent'
+import ShowNavBar from './Components/layout/ShowNavBar'
+import ShowFooter from './Components/layout/ShowFooter'
+import CRUD from './Components/common/CRUD'
+import Club from './Components/Clubs/Club'
 function App() {
   return (
     <AuthProvider>
       <main>
         
         <Router>
+          <ShowNavBar>
           <NavBar />
+          </ShowNavBar>
           <Routes>
             <Route
               exact
@@ -48,8 +55,20 @@ function App() {
               element={<ForgotPassword />}
             />
             <Route
-              path='/forgotPassConfirm'
+              path='/emailsent'
+              element={<EmailSent />}
+            />
+            <Route
+              path='/reset-password'
               element={<ForgotPassConfirm />}
+            />
+            <Route
+              path='/clubs'
+              element={<Club />}
+            />
+            <Route
+              path='/CRUD'
+              element={<CRUD />}
             />
             <Route
               path="*"
@@ -57,7 +76,9 @@ function App() {
             />
           </Routes>
         </Router>
+        {/* <ShowFooter> */}
         <Footer />
+        {/* </ShowFooter> */}
       </main>
      </AuthProvider>
   )
