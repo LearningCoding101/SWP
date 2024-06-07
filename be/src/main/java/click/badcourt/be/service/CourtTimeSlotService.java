@@ -26,12 +26,11 @@ public class CourtTimeSlotService {
     CourtRepository courtRepository;
 
     public Object getCourtTimeSlots(CourtTimeSlotRequest courtTimeSlotRequest) {
-//        List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findCourt_timeslotByDeletedFalseAndCourt_CourtId(courtTimeSlotRequest.getCourtId());
-        List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findAll();
+        List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findCourt_timeslotsByDeletedFalseAndCourt_CourtId(courtTimeSlotRequest.getCourtId());
         List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
         for(Court_timeslot court_timeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
-            courtTimeSlotResponse.setCourtTimeSlotId(court_timeslot.getCourt_TSlot_ID());
+            courtTimeSlotResponse.setCourtTimeSlotId(court_timeslot.getCourtTSlotID());
             courtTimeSlotResponse.setTimeSlotId((courtTimeSlotRequest.getTimeSlotId()));
             CourtTimeSlotResponses.add(courtTimeSlotResponse);
         }
@@ -39,14 +38,11 @@ public class CourtTimeSlotService {
     }
 
     public CourtTimeSlotRequest createCourtTimeSlot(CourtTimeSlotRequest courtTimeSlotRequest) {
-//        TimeSlot timeSlotCheck = timeSlotRepository.findTimeSlotsByDeletedFalseAndTimeslot_id(courtTimeSlotRequest.getTimeSlotId());
-        Optional<TimeSlot> timeSlotCheck = timeSlotRepository.findById(courtTimeSlotRequest.getTimeSlotId());
-//        Court courtCheck = courtRepository.findCourtsByDeletedFalseAndCourtId(courtTimeSlotRequest.getCourtId());
-        Optional<Court> courtCheck = courtRepository.findById(courtTimeSlotRequest.getCourtId());
-//        if((timeSlotCheck !=null) && (courtCheck !=null)) {
-        if((timeSlotCheck.isEmpty()) && (courtCheck.isEmpty())) {
+        Optional<TimeSlot> timeSlotCheck = timeSlotRepository.findTimeSlotByDeletedFalseAndTimeslotId(courtTimeSlotRequest.getTimeSlotId());
+        Optional<Court> courtCheck = courtRepository.findCourtByDeletedFalseAndCourtId(courtTimeSlotRequest.getCourtId());
+
+        if((timeSlotCheck.isPresent()) && (courtCheck.isPresent())) {
             Court_timeslot court_timeslot = new Court_timeslot();
-//            court_timeslot.setTimeslot(timeSlotCheck);
             court_timeslot.setTimeslot(timeSlotCheck.get());
             court_timeslot.setCourt(courtCheck.get());
             court_timeslot.setDeleted(false);

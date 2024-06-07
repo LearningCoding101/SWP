@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface CourtTimeSlotRepository extends JpaRepository<Court_timeslot, Long> {
-//    List<Court_timeslot> findCourt_timeslotByDeletedFalseAndCourt_CourtId(Long courtId);
+    List<Court_timeslot> findCourt_timeslotsByDeletedFalseAndCourt_CourtId(Long courtId);
 
 }

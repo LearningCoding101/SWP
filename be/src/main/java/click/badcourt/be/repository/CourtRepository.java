@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface CourtRepository extends JpaRepository<Court,Long> {
     List<Court> findCourtsByDeletedFalse();
 
-//    Court findCourtsByDeletedFalseAndCourtId(Long courtId);
+    Optional<Court> findCourtByDeletedFalseAndCourtId(Long courtId);
+
 }

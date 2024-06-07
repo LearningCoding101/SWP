@@ -4,7 +4,6 @@ import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.Booking_Detail;
 import click.badcourt.be.entity.Court_timeslot;
 import click.badcourt.be.model.request.BookingDetailRequest;
-import click.badcourt.be.model.request.BookingRequest;
 import click.badcourt.be.model.response.BookingDetailDeleteResponse;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
@@ -20,13 +19,13 @@ import java.util.Optional;
 @Service
 public class BookingDetailService {
     @Autowired
-    private BookingDetailRepository bookingDetailRepository;
+    BookingDetailRepository bookingDetailRepository;
 
     @Autowired
-    private BookingRepository bookingRepository;
+    BookingRepository bookingRepository;
 
     @Autowired
-    private CourtTimeSlotRepository courtTimeSlotRepository;
+    CourtTimeSlotRepository courtTimeSlotRepository;
 
     public List<BookingDetailDeleteResponse> getAllBookingDetails() {
         List<Booking_Detail> bookingDeleteDetails= bookingDetailRepository.findAll();
@@ -35,7 +34,7 @@ public class BookingDetailService {
             BookingDetailDeleteResponse bookingDetailDeletedResponse= new BookingDetailDeleteResponse();
             bookingDetailDeletedResponse.setBookingDate(bookingDeleteDetail.getDate());
             bookingDetailDeletedResponse.setBookingId(bookingDeleteDetail.getBooking().getBookingId());
-            bookingDetailDeletedResponse.setCourtTSId(bookingDeleteDetail.getCourt_timeslot().getCourt_TSlot_ID());
+            bookingDetailDeletedResponse.setCourtTSId(bookingDeleteDetail.getCourt_timeslot().getCourtTSlotID());
             bookingDetailDeletedResponse.setDeleted(bookingDeleteDetail.isDeleted());
             bookingDetailDeleteResponses.add(bookingDetailDeletedResponse);
         }
@@ -44,14 +43,14 @@ public class BookingDetailService {
     public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
         if(bookingOptional.isPresent()){
-//            List<Booking_Detail> bookingDetails = bookingDetailRepository.findBooking_DetailsByBooking_BookingId(bookingId);
-            List<Booking_Detail> bookingDetails = bookingDetailRepository.findAll();
+            List<Booking_Detail> bookingDetails = bookingDetailRepository.findBooking_DetailsByBooking_BookingId(bookingId);
+//            List<Booking_Detail> bookingDetails = bookingDetailRepository.findAll();
             List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
             for(Booking_Detail bookingDetail : bookingDetails){
                 BookingDetailResponse bookingDetailResponse= new BookingDetailResponse();
                 bookingDetailResponse.setBookingDate(bookingDetail.getDate());
                 bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
-                bookingDetailResponse.setCourtTSId(bookingDetail.getCourt_timeslot().getCourt_TSlot_ID());
+                bookingDetailResponse.setCourtTSId(bookingDetail.getCourt_timeslot().getCourtTSlotID());
                 bookingDetailResponses.add(bookingDetailResponse);
             }
             return bookingDetailResponses;
