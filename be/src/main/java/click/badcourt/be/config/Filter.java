@@ -49,6 +49,12 @@ public class Filter extends OncePerRequestFilter {
             "/api/club",
             "/api/account/{email}",
             "/api/club/{id}",
+            "/api/court",
+
+            "/api/court/{id}",
+            "/api/booking",
+
+            "/api/booking/{id}",
             "/api/feedback",
             "/api/feedback/{id}",
             "/api/timeslots",
