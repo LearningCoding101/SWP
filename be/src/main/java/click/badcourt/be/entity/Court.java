@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-
+@JsonIgnoreProperties({"court_timeslots", "bookings"})
 public class Court {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
