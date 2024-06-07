@@ -53,7 +53,7 @@ const SignUp = () => {
             <div className='user-info'>
               <label htmlFor="email">Email</label>
               <input
-                type="text"
+                type="email"
                 placeholder='Enter your email'
                 id='email'
                 value={email}
@@ -68,7 +68,7 @@ const SignUp = () => {
           <div className="form-group">
             <label htmlFor="phone">Phone number</label>
             <input
-              type="text"
+              type="number"
               placeholder='Enter your phone number'
               id="phone"
               value={phone}

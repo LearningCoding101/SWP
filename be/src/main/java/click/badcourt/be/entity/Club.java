@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
@@ -16,8 +17,8 @@ public class Club {
     long club_id;
     String name;
     String address;
-    String open_time;
-    String close_time;
+    LocalTime open_time;
+    LocalTime close_time;
     String picture_location;
     @OneToOne
     @JoinColumn(name = "Club_owner")
