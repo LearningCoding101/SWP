@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CourtShowResponse {
-    int id;
+    long id;
     double price;
     CourtStatusEnum status;
     long  clubId;
