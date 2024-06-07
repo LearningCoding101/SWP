@@ -11,6 +11,4 @@ public class TimeSlotRequest {
     private int startMinute;
     private int endHour;
     private int endMinute;
-
-
 }

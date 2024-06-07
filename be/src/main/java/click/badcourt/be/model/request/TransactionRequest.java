@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Data
 public class TransactionRequest {
-    private float depositAmount;
     private Date paymentDate;
     private float totalAmount;
     Long bookingId;

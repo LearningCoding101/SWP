@@ -17,7 +17,7 @@ public class PaymentMethodService {
     }
     public PaymentMethod addPaymentMethod(PaymentMethodRequest paymentMethodRequest) {
         PaymentMethod paymentMethod = new PaymentMethod();
-        paymentMethod.setPaymentMethodName(paymentMethod.getPaymentMethodName());
+        paymentMethod.setPaymentMethodName(paymentMethodRequest.getPaymentMethodName());
         paymentMethod.setPaymentInfo(paymentMethodRequest.getPaymentInfo());
         return paymentMethodRepository.save(paymentMethod);
     }
