@@ -6,9 +6,6 @@ import lombok.Data;
 
 @Data
 public class CourtTimeSlotRequest {
-//    TimeSlot timeslot;
-//    Court court;
-
-    long TimeSlotId;
-    long CourtId;
+    TimeSlot timeslot;
+    Court court;
 }
