@@ -14,17 +14,19 @@ import java.util.List;
 @Entity
 @JsonIgnoreProperties({ "courts","account"})
 public class Club {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long club_id;
+
     String name;
     String address;
     LocalTime open_time;
     LocalTime close_time;
     String picture_location;
+
     @OneToOne
     @JoinColumn(name = "Club_owner")
-
     Account account;
 
     @Column(nullable = false)

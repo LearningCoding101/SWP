@@ -11,6 +11,7 @@ public class BookingUpdateRequest {
     private long court_id;
 
     private BookingStatusEnum bookingStatusEnum;
+
 }
 
 

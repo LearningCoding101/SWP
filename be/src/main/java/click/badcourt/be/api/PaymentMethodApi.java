@@ -1,4 +1,5 @@
 package click.badcourt.be.api;
+
 import click.badcourt.be.entity.PaymentMethod;
 import click.badcourt.be.model.request.PaymentMethodRequest;
 import click.badcourt.be.service.PaymentMethodService;

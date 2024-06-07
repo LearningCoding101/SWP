@@ -1,4 +1,5 @@
 package click.badcourt.be.service;
+
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.entity.Court_timeslot;
 import click.badcourt.be.entity.TimeSlot;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Service
 public class CourtTimeSlotService {
+
     @Autowired
     CourtTimeSlotRepository courtTimeSlotRepository;
 

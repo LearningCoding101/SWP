@@ -1,11 +1,8 @@
 package click.badcourt.be.api;
 
-import click.badcourt.be.entity.Booking_Detail;
 import click.badcourt.be.model.request.BookingDetailRequest;
-import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.service.BookingDetailService;
-import click.badcourt.be.service.CourtTimeSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,5 @@
 package click.badcourt.be.entity;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +12,11 @@ import java.util.List;
 @Setter
 @Entity
 public class TimeSlot {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long timeslotId;
+
     private LocalTime start_time;
     private LocalTime end_time;
 

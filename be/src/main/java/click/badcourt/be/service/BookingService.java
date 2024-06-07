@@ -22,10 +22,13 @@ import java.util.Optional;
 
 @Service
 public class BookingService {
+
     @Autowired
     private BookingRepository bookingRepository;
+
     @Autowired
     private CourtRepository courtRepository;
+
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
@@ -46,7 +49,6 @@ public class BookingService {
         bookingResponse.setAccount_email(booking.getAccount().getEmail()); // Assuming the Account entity has an email field
         bookingResponse.setAccount_number(booking.getAccount().getPhone()); // Assuming the Account entity has an accountNumber field
         bookingResponse.setStatus(booking.getStatus());
-
         return bookingResponse;
     }
 
@@ -74,6 +76,7 @@ public class BookingService {
             throw new IllegalArgumentException("Account not found");
         }
     }
+
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();
         Optional<Account> account= authenticationRepository.findById(bookingCreateRequest.getCreated_by());
@@ -91,6 +94,7 @@ public class BookingService {
             throw new IllegalArgumentException("Account or court not found");
         }
     }
+
     public void deleteBooking(long bookingId){
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setDeleted(true);

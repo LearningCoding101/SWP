@@ -24,15 +24,19 @@ public class Account implements UserDetails {
     long accountId;
 
     String password;
+
     @Column(unique = true)
     String phone;
+
     @Column(unique = true)
     String email;
+
     String fullName;
     boolean isDeleted;
 
     @OneToMany(mappedBy = "account")
     List<Booking> bookings;
+
     @OneToMany(mappedBy = "account")
     List<FeedBack> feedBacks;
 

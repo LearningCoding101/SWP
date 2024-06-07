@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @SecurityRequirement(name = "api")
 public class AuthenticationApi {
+
     @Autowired
     AuthenticationService authenticationService;
+
     @Autowired
     private AuthenticationRepository authenticationRepository;
 

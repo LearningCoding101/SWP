@@ -1,4 +1,5 @@
 package click.badcourt.be.api;
+
 import click.badcourt.be.entity.TimeSlot;
 import click.badcourt.be.model.request.TimeSlotRequest;
 import click.badcourt.be.service.TimeSlotService;

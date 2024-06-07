@@ -8,6 +8,7 @@ import java.util.Date;
 
 @Data
 public class BookingResponse {
+
     long id;
     Date BookingDate;
     String club_name;

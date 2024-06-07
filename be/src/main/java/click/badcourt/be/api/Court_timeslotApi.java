@@ -1,6 +1,5 @@
 package click.badcourt.be.api;
 
-import click.badcourt.be.entity.Court_timeslot;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.service.CourtTimeSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/")
 public class Court_timeslotApi {
+
     @Autowired
     CourtTimeSlotService courtTimeSlotService;
 

@@ -1,4 +1,5 @@
 package click.badcourt.be.config;
+
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.service.AuthenticationService;
 import click.badcourt.be.service.TokenService;
@@ -50,11 +51,9 @@ public class Filter extends OncePerRequestFilter {
             "/api/account/{email}",
             "/api/club/{id}",
             "/api/court",
-
             "/api/court/{id}",
             "/api/booking",
             "/api/booking/customer/{customerId}",
-
             "/api/booking/{id}",
             "/api/feedback",
             "/api/feedback/{id}",

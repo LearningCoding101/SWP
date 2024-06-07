@@ -9,6 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
+
     List<TimeSlot> findByDeletedFalse();
 
     Optional<TimeSlot> findTimeSlotByDeletedFalseAndTimeslotId(Long id);

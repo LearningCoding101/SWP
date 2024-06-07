@@ -19,6 +19,7 @@ import java.util.Optional;
 
 @Service
 public class BookingDetailService {
+
     @Autowired
     BookingDetailRepository bookingDetailRepository;
 
@@ -41,6 +42,7 @@ public class BookingDetailService {
         }
         return bookingDetailDeleteResponses;
     }
+
     public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
         if(bookingOptional.isPresent()){
@@ -60,6 +62,7 @@ public class BookingDetailService {
             throw new IllegalArgumentException("Booking not found");
         }
     }
+
     public BookingDetailRequest createBookingDetail(BookingDetailRequest bookingDetailRequest) {
         Booking_Detail bookingDetail= new Booking_Detail();
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingDetailRequest.getBookingId());
@@ -76,6 +79,7 @@ public class BookingDetailService {
             throw new IllegalArgumentException("Booking or Court_Timeslot not found");
         }
     }
+
     public BookingDetailRequest updateBookingDetail(BookingDetailRequest bookingDetailRequest,Long bookingDetailId) {
         Optional<Booking_Detail> bookingDetail= bookingDetailRepository.findById(bookingDetailId);
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingDetailRequest.getBookingId());
@@ -95,6 +99,7 @@ public class BookingDetailService {
             throw new IllegalArgumentException("Booking_Detail Id not found");
         }
     }
+
     public void deleteBookingDetail(Long bookingDetailId) {
         Booking_Detail bookingDetail= bookingDetailRepository.findById(bookingDetailId).orElseThrow(() -> new RuntimeException("BookingDetail not found!"));
         bookingDetail.setDeleted(true);

@@ -13,12 +13,16 @@ import java.util.List;
 @Entity
 @JsonIgnoreProperties({"court_timeslots", "bookings"})
 public class Court {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-     long courtId;
-     double price;
+    long courtId;
+
+    double price;
+
     @Enumerated(EnumType.STRING)
-     CourtStatusEnum status;
+    CourtStatusEnum status;
+
     @Column(nullable = false)
     boolean deleted;
 

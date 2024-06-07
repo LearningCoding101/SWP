@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/")
 public class ClubApi {
+
     @Autowired
     ClubService clubService;
 
@@ -21,6 +22,7 @@ public class ClubApi {
     public ResponseEntity getAll(){
         return ResponseEntity.ok(clubService.getAllClubs());
     }
+    
     @PostMapping("club")
     public ResponseEntity addClub(@RequestBody ClubCreateRequest clubCreateRequest){
         try {
@@ -31,6 +33,7 @@ public class ClubApi {
         }
 
     }
+
     @PutMapping("club/{id}")
     public ResponseEntity updateClub(@RequestBody ClubUpdateRequest clubUpdateRequest, @PathVariable int id){
         try {
@@ -48,6 +51,7 @@ public class ClubApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @DeleteMapping("club/{id}")
     public ResponseEntity deleteClub(@PathVariable int id){
         clubService.deleteClub(id);
