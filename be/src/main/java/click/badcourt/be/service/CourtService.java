@@ -74,17 +74,20 @@ public List<Court> getCourtsByClubId(Long clubId) {
             throw new IllegalArgumentException("Club not found");
         }
     }
-    public Court updateCourt (CourtUpdateRequest courtUpdateRequest,long id){
+    public Court updateCourt (CourtUpdateRequest courtUpdateRequest, long id){
+        Court court = courtRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Court not found"));
 
-        Court court = courtRepository.findById(id).orElseThrow(()->new RuntimeException("Court not found"));
+        if (court.isDeleted()) {
+            throw new RuntimeException("Court has been deleted");
+        }
 
-
-
-            court.setPrice(courtUpdateRequest.getPrice());
-            court.setStatus(courtUpdateRequest.getStatus());
-            return  courtRepository.save(court);
-
+        court.setPrice(courtUpdateRequest.getPrice());
+        court.setStatus(courtUpdateRequest.getStatus());
+        return courtRepository.save(court);
     }
+
+
     public void deleteCourt(Long courtId) {
         Court court = courtRepository.findById(courtId).orElseThrow(() -> new RuntimeException("Court not found"));
         court.setDeleted(true);
