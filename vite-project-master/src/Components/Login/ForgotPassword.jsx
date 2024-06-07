@@ -5,7 +5,7 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate()
-  const handleLogin = async(e) => {
+  const handleLogin = async(e, token) => {
     e.preventDefault();
     // Here, you would typically make an API call to authenticate the user
     // For this example, we'll just check if the username and password are not empty
@@ -16,7 +16,8 @@ const ForgotPassword = () => {
       try {
         const data = await emailConfirm(email);
         console.log('Valid email', data);
-        navigate("/forgotPassConfirm")
+        
+        navigate("/emailsent")
 
 
         // Handle successful login (e.g., store token, redirect)
