@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Time;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -20,5 +21,7 @@ public class Booking_Detail {
     @ManyToOne
     @JoinColumn(name = "from_court_timeslot")
     Court_timeslot court_timeslot;
-    private Time date;
+    private Date date;
+    @Column(nullable = false)
+    boolean deleted;
 }
