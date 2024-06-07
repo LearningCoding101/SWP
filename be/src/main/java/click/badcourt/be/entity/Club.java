@@ -1,6 +1,5 @@
 package click.badcourt.be.entity;
 
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Club {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,15 +21,12 @@ public class Club {
     String picture_location;
     @OneToOne
     @JoinColumn(name = "Club_owner")
-
     Account account;
 
     @Column(nullable = false)
     boolean deleted;
 
-
     @OneToMany(mappedBy = "club")
-
     List<Court> courts;
 
 }

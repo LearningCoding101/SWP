@@ -1,9 +1,6 @@
 package click.badcourt.be.entity;
 
 import click.badcourt.be.enums.RoleEnum;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Account implements UserDetails {
 
     @Id
@@ -39,7 +33,6 @@ public class Account implements UserDetails {
     List<Booking> bookings;
     @OneToMany(mappedBy = "account")
     List<FeedBack> feedBacks;
-
 
     @OneToOne(mappedBy = "account")
     Club club;

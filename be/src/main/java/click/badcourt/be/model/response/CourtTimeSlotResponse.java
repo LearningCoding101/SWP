@@ -7,9 +7,11 @@ import lombok.Data;
 
 @Data
 public class CourtTimeSlotResponse {
+//    long CourtTimeSlotId;
+//    TimeSlot timeslot;
+//    Court court;
+//    boolean deleted;
     long CourtTimeSlotId;
-    TimeSlot timeslot;
-    Court court;
-    boolean deleted;
-
+    long TimeSlotId;
+    long CourtId;
 }

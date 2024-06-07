@@ -4,12 +4,13 @@ import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.sql.Time;
-import java.time.LocalTime;
 
 @Data
 public class TimeSlotRequest {
-    private LocalTime start_time;
-    private LocalTime end_time;
+    private int startHour;
+    private int startMinute;
+    private int endHour;
+    private int endMinute;
 
 
 }
