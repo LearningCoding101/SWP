@@ -41,7 +41,7 @@ public class CourtApi {
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteClub(@PathVariable long id){
+    public ResponseEntity<String> deleteClub(@PathVariable Long id){
         courtService.deleteCourt(id);
         return ResponseEntity.ok( "courtID :"+id +" is deleted");
     }

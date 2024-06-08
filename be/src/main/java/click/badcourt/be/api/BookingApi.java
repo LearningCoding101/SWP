@@ -42,7 +42,7 @@ public class BookingApi {
     }
 
     @DeleteMapping("/{bookingId}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable long bookingId) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long bookingId) {
         bookingService.deleteBooking(bookingId);
         return ResponseEntity.noContent().build();
     }

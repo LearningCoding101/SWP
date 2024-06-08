@@ -32,7 +32,7 @@ public class BookingService {
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
-    public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, long id){
+    public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
         Booking booking = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
 
         Court court = courtRepository.findById(bookingUpdateRequest.getCourt_id()).orElseThrow(()->new RuntimeException("Court not found"));
@@ -89,7 +89,7 @@ public class BookingService {
         }
     }
 
-    public void deleteBooking(long bookingId){
+    public void deleteBooking(Long bookingId){
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setDeleted(true);
         bookingRepository.save(booking);

@@ -27,7 +27,7 @@ public class CourtTimeSlotService {
     @Autowired
     CourtRepository courtRepository;
 
-    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtId(long id) {
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtId(Long id) {
         List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findCourt_timeslotsByDeletedFalseAndCourt_CourtId(id);
         List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
         for(Court_timeslot court_timeslot : courtTimeslots) {
@@ -59,7 +59,7 @@ public class CourtTimeSlotService {
         }
     }
 
-    public void deleteCourtTimeSlot(long id) {
+    public void deleteCourtTimeSlot(Long id) {
         Court_timeslot court_timeslot = courtTimeSlotRepository.findById(id).orElseThrow(() -> new RuntimeException("CourtTimeSlot not found!"));
         court_timeslot.setDeleted(true);
         courtTimeSlotRepository.save(court_timeslot);
