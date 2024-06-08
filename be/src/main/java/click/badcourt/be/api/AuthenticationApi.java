@@ -22,7 +22,7 @@ public class AuthenticationApi {
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account= authenticationService.register(registerRequest);
         return ResponseEntity.ok(account);

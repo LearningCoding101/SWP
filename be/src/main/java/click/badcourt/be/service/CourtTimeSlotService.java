@@ -27,13 +27,17 @@ public class CourtTimeSlotService {
     @Autowired
     CourtRepository courtRepository;
 
-    public Object getCourtTimeSlots(CourtTimeSlotRequest courtTimeSlotRequest) {
-        List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findCourt_timeslotsByDeletedFalseAndCourt_CourtId(courtTimeSlotRequest.getCourtId());
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtId(long id) {
+        List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findCourt_timeslotsByDeletedFalseAndCourt_CourtId(id);
         List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
         for(Court_timeslot court_timeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
             courtTimeSlotResponse.setCourtTimeSlotId(court_timeslot.getCourtTSlotID());
-            courtTimeSlotResponse.setTimeSlotId((courtTimeSlotRequest.getTimeSlotId()));
+            courtTimeSlotResponse.setCourtId(court_timeslot.getCourt().getCourtId());
+            courtTimeSlotResponse.setTimeSlotId(court_timeslot.getTimeslot().getTimeslotId());
+            courtTimeSlotResponse.setPrice(court_timeslot.getCourt().getPrice());
+            courtTimeSlotResponse.setStart_time(court_timeslot.getTimeslot().getStart_time());
+            courtTimeSlotResponse.setEnd_time(court_timeslot.getTimeslot().getEnd_time());
             CourtTimeSlotResponses.add(courtTimeSlotResponse);
         }
         return CourtTimeSlotResponses;
