@@ -5,8 +5,9 @@ import lombok.Data;
 
 @Data
 public class CourtCreateRequest {
+
     double price;
     CourtStatusEnum status;
-    long clubId;
+
 
 }

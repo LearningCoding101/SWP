@@ -22,14 +22,17 @@ import java.util.Optional;
 
 @Service
 public class BookingService {
+
     @Autowired
     private BookingRepository bookingRepository;
+
     @Autowired
     private CourtRepository courtRepository;
+
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
-    public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, long id){
+    public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
         Booking booking = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
 
         Court court = courtRepository.findById(bookingUpdateRequest.getCourt_id()).orElseThrow(()->new RuntimeException("Court not found"));
@@ -46,34 +49,28 @@ public class BookingService {
         bookingResponse.setAccount_email(booking.getAccount().getEmail()); // Assuming the Account entity has an email field
         bookingResponse.setAccount_number(booking.getAccount().getPhone()); // Assuming the Account entity has an accountNumber field
         bookingResponse.setStatus(booking.getStatus());
-
         return bookingResponse;
     }
 
-    public List<BookingResponse> getBookingsByCustomerId(Long customerId) {
+    public List<Booking> getBookingsByCustomerId(Long customerId) {
         List<Booking> bookingList= bookingRepository.findBookingsByDeletedFalse();
-        List<BookingResponse> bookings= new ArrayList<>();
-        Optional<Account> account= authenticationRepository.findById(customerId);
-        if(account.isPresent()) {
-            for (Booking b : bookingList) {
-
-                if (b.getAccount().getAccountId() == account.get().getAccountId()) {
-                    BookingResponse bookingResponse = new BookingResponse();
-                    bookingResponse.setId(b.getBookingId());
-                    bookingResponse.setBookingDate(b.getBookingDate());
-                    bookingResponse.setStatus(b.getStatus());
-                    bookingResponse.setAccount_email(b.getAccount().getEmail());
-                    bookingResponse.setAccount_number(b.getAccount().getPhone());
-                    bookingResponse.setClub_name(b.getCourt().getClub().getName());
-                    bookings.add(bookingResponse);
-                }
-
-            }
-            return bookings;
-        }else{
-            throw new IllegalArgumentException("Account not found");
+        if (!authenticationRepository.existsById(customerId)) {
+            throw new IllegalArgumentException("Booking not found with id: " + customerId);
         }
+
+        List<Booking> allBookings = bookingRepository.findBookingsByDeletedFalse();
+
+        // Filter the courts by clubId using a for loop
+        List<Booking> Bookings = new ArrayList<>();
+        for (Booking booking : allBookings) {
+            if (booking.getAccount().getAccountId() == customerId) {
+                Bookings.add(booking);
+            }
+        }
+        return Bookings;
+
     }
+
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();
         Optional<Account> account= authenticationRepository.findById(bookingCreateRequest.getCreated_by());
@@ -91,7 +88,8 @@ public class BookingService {
             throw new IllegalArgumentException("Account or court not found");
         }
     }
-    public void deleteBooking(long bookingId){
+
+    public void deleteBooking(Long bookingId){
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         booking.setDeleted(true);
         bookingRepository.save(booking);

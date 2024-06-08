@@ -6,6 +6,7 @@ import click.badcourt.be.model.request.BookingUpdateRequest;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +32,17 @@ public class BookingApi {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<BookingResponse>> getBookingsByCustomerId(@PathVariable Long customerId) {
-        List<BookingResponse> bookings = bookingService.getBookingsByCustomerId(customerId);
-        return ResponseEntity.ok(bookings);
+    public ResponseEntity<?> getBookingsByCustomerId(@PathVariable Long customerId) {
+        try {
+            List<Booking> bookings = bookingService.getBookingsByCustomerId(customerId);
+            return ResponseEntity.ok(bookings);
+        }catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
     }
 
     @DeleteMapping("/{bookingId}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable long bookingId) {
+    public ResponseEntity<Void> deleteBooking(@PathVariable Long bookingId) {
         bookingService.deleteBooking(bookingId);
         return ResponseEntity.noContent().build();
     }

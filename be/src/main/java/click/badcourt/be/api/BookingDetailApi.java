@@ -1,33 +1,30 @@
 package click.badcourt.be.api;
 
-import click.badcourt.be.entity.Booking_Detail;
 import click.badcourt.be.model.request.BookingDetailRequest;
-import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.service.BookingDetailService;
-import click.badcourt.be.service.CourtTimeSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/")
-public class Booking_DetailApi {
+@RequestMapping("/api/bookingDetail")
+public class BookingDetailApi {
 
     @Autowired
     BookingDetailService bookingDetailService;
 
-    @GetMapping("bookingdetail")
+    @GetMapping
     public ResponseEntity getAllBookingDetail() {
         return ResponseEntity.ok(bookingDetailService.getAllBookingDetails());
     }
-    @GetMapping("bookingdetail/{id}")
-    public ResponseEntity getBookingDetailById(@PathVariable long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity getBookingDetailById(@PathVariable Long id) {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(id));
     }
 
-    @PostMapping("bookingdetail")
+    @PostMapping
     public ResponseEntity createBookingDetail(@RequestBody BookingDetailRequest bookingDetailRequest) {
         try{
             BookingDetailRequest createBookingDetail = bookingDetailService.createBookingDetail(bookingDetailRequest);
@@ -36,8 +33,8 @@ public class Booking_DetailApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PutMapping("bookingdetail/{id}")
-    public ResponseEntity updateBookingDetail(@RequestBody BookingDetailRequest bookingDetailRequest, @PathVariable long id) {
+    @PutMapping("/{id}")
+    public ResponseEntity updateBookingDetail(@RequestBody BookingDetailRequest bookingDetailRequest, @PathVariable Long id) {
         try {
             BookingDetailRequest updateBookingDetail = bookingDetailService.updateBookingDetail(bookingDetailRequest, id);
             BookingDetailResponse bookingDetailResponse = new BookingDetailResponse();
@@ -50,8 +47,8 @@ public class Booking_DetailApi {
         }
     }
 
-    @DeleteMapping("bookingdetail/{id}")
-    public ResponseEntity deleteBookingDetailById(@PathVariable long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteBookingDetailById(@PathVariable Long id) {
         bookingDetailService.deleteBookingDetail(id);
         return ResponseEntity.ok( "BookingDetail  :"+id +" is deleted");
     }

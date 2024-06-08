@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationService implements UserDetailsService {
+
     @Autowired
     AuthenticationRepository authenticationRepository;
 
@@ -140,8 +141,8 @@ public class AuthenticationService implements UserDetailsService {
         Account account = getCurrentAccount();
         account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
         authenticationRepository.save(account);
-
     }
+
     public Account getAccountByEmail(String email) {
         Account account = authenticationRepository.findAccountByEmail(email);
         if(account == null){

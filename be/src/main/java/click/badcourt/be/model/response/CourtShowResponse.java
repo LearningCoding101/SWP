@@ -5,10 +5,12 @@ import lombok.Data;
 
 @Data
 public class CourtShowResponse {
+
     long id;
     double price;
     CourtStatusEnum status;
-    long  clubId;
+    long clubId;
     boolean deleted;
-   String clubName;
+    String clubName;
+
 }

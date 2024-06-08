@@ -16,8 +16,10 @@ import java.util.List;
 
 @Service
 public class ClubService {
+
     @Autowired
     ClubRepository clubRepository;
+
     @Autowired
     AuthenticationRepository authenticationRepository;
 
@@ -37,6 +39,7 @@ public class ClubService {
         }
         return clubCreateResponse;
     }
+
     public Club createClub(ClubCreateRequest clubCreateRequest) {
         Club club = new Club();
         Account accountOptional = authenticationRepository.findAccountByEmail(clubCreateRequest.getEmail());
@@ -50,9 +53,10 @@ public class ClubService {
             club.setDeleted(false);
             return clubRepository.save(club);
         }else{
-            throw new IllegalArgumentException("CourtOwner does not exist");
+            throw new IllegalArgumentException("ClubOwner does not exist");
         }
     }
+
     public Club updateClub(ClubUpdateRequest clubUpdateRequest, long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
         club.setName(clubUpdateRequest.getName());
@@ -62,6 +66,7 @@ public class ClubService {
         club.setPicture_location(clubUpdateRequest.getPicture_location());
         return clubRepository.save(club);
     }
+
     public void deleteClub(long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
         club.setDeleted(true);

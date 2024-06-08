@@ -15,10 +15,13 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
+
     @Autowired
     private TransactionRepository transactionRepository;
+
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
+
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -42,6 +45,7 @@ public class TransactionService {
             throw new IllegalArgumentException("PaymentMethod or Booking not found");
         }
     }
+
     public Transaction updateTransaction(TransactionRequest transactionRequest,Long id) {
         Optional<Transaction> transaction = transactionRepository.findById(id);
         if(transaction.isEmpty()) {

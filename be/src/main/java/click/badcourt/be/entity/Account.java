@@ -2,6 +2,7 @@ package click.badcourt.be.entity;
 
 import click.badcourt.be.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,15 +25,19 @@ public class Account implements UserDetails {
     long accountId;
 
     String password;
+
     @Column(unique = true)
     String phone;
+
     @Column(unique = true)
     String email;
+
     String fullName;
     boolean isDeleted;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "account")
     List<Booking> bookings;
+
     @OneToMany(mappedBy = "account")
     List<FeedBack> feedBacks;
 

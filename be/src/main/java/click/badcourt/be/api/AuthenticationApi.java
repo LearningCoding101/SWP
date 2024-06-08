@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @SecurityRequirement(name = "api")
 public class AuthenticationApi {
+
     @Autowired
     AuthenticationService authenticationService;
+
     @Autowired
     private AuthenticationRepository authenticationRepository;
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account= authenticationService.register(registerRequest);
         return ResponseEntity.ok(account);

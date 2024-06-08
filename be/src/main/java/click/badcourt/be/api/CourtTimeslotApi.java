@@ -1,6 +1,5 @@
 package click.badcourt.be.api;
 
-import click.badcourt.be.entity.Court_timeslot;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.service.CourtTimeSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,17 +8,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/")
-public class Court_timeslotApi {
+@RequestMapping("/api/courtTimeSlot")
+public class CourtTimeslotApi {
+
     @Autowired
     CourtTimeSlotService courtTimeSlotService;
 
-    @GetMapping("court-timeslot")
-    public ResponseEntity getAllCourtTimeslots(@RequestBody CourtTimeSlotRequest courtTimeSlotRequest) {
-        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlots(courtTimeSlotRequest));
+    @GetMapping("/{courtId}")
+    public ResponseEntity getAllCourtTimeslotsByCourtId(@PathVariable Long courtId) {
+        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtId(courtId));
     }
 
-    @PostMapping("court-timeslot")
+    @PostMapping()
     public ResponseEntity createCourtTimeslot(@RequestBody CourtTimeSlotRequest courtTimeSlotRequest) {
         try{
             CourtTimeSlotRequest createCourtTimeslot = courtTimeSlotService.createCourtTimeSlot(courtTimeSlotRequest);
@@ -29,9 +29,9 @@ public class Court_timeslotApi {
         }
     }
 
-    @DeleteMapping("court-timeslot/{id}")
-    public ResponseEntity deleteCourtTimeslot(@PathVariable int id){
-        courtTimeSlotService.deleteCourtTimeSlot(id);
-        return ResponseEntity.ok( "Courst time slot  :"+id +" is deleted");
+    @DeleteMapping("/{Id}")
+    public ResponseEntity deleteCourtTimeslot(@PathVariable Long Id){
+        courtTimeSlotService.deleteCourtTimeSlot(Id);
+        return ResponseEntity.ok( "Courst time slot  :"+Id +" is deleted");
     }
 }

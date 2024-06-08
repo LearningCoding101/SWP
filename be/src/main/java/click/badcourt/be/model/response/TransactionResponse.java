@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class TransactionResponse extends TransactionRequest {
+
     Long id;
     float depositAmount;
+
 }

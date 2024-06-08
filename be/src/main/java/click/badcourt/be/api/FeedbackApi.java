@@ -1,5 +1,5 @@
 package click.badcourt.be.api;
-import click.badcourt.be.entity.FeedBack;
+
 import click.badcourt.be.model.request.FeedbackCreateRequest;
 import click.badcourt.be.model.response.FeedbackResponse;
 import click.badcourt.be.service.FeedbackService;

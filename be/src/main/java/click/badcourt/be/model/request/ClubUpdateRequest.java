@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ClubUpdateRequest {
+
     String name;
     String address;
     int startHour;
