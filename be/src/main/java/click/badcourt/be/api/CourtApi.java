@@ -46,7 +46,7 @@ public class CourtApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateCourt(@RequestBody CourtUpdateRequest courtUpdateRequest, @PathVariable int id){
+    public ResponseEntity<?> updateCourt(@RequestBody CourtUpdateRequest courtUpdateRequest, @PathVariable long id){
         try {
             Court updatedCourt = courtService.updateCourt(courtUpdateRequest, id);
             CourtResponse court= new CourtResponse();
@@ -55,10 +55,11 @@ public class CourtApi {
             court.setStatus(updatedCourt.getStatus());
             court.setPrice(updatedCourt.getPrice());
 
-            return  ResponseEntity.ok(court);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok(court);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }

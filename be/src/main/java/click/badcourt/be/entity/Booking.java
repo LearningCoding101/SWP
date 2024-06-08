@@ -2,6 +2,7 @@ package click.badcourt.be.entity;
 
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

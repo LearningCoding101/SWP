@@ -53,7 +53,7 @@ public class ClubService {
             club.setDeleted(false);
             return clubRepository.save(club);
         }else{
-            throw new IllegalArgumentException("CourtOwner does not exist");
+            throw new IllegalArgumentException("ClubOwner does not exist");
         }
     }
 
