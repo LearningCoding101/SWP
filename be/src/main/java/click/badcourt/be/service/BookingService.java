@@ -52,29 +52,23 @@ public class BookingService {
         return bookingResponse;
     }
 
-    public List<BookingResponse> getBookingsByCustomerId(Long customerId) {
+    public List<Booking> getBookingsByCustomerId(Long customerId) {
         List<Booking> bookingList= bookingRepository.findBookingsByDeletedFalse();
-        List<BookingResponse> bookings= new ArrayList<>();
-        Optional<Account> account= authenticationRepository.findById(customerId);
-        if(account.isPresent()) {
-            for (Booking b : bookingList) {
-
-                if (b.getAccount().getAccountId() == account.get().getAccountId()) {
-                    BookingResponse bookingResponse = new BookingResponse();
-                    bookingResponse.setId(b.getBookingId());
-                    bookingResponse.setBookingDate(b.getBookingDate());
-                    bookingResponse.setStatus(b.getStatus());
-                    bookingResponse.setAccount_email(b.getAccount().getEmail());
-                    bookingResponse.setAccount_number(b.getAccount().getPhone());
-                    bookingResponse.setClub_name(b.getCourt().getClub().getName());
-                    bookings.add(bookingResponse);
-                }
-
-            }
-            return bookings;
-        }else{
-            throw new IllegalArgumentException("Account not found");
+        if (!authenticationRepository.existsById(customerId)) {
+            throw new IllegalArgumentException("Booking not found with id: " + customerId);
         }
+
+        List<Booking> allBookings = bookingRepository.findBookingsByDeletedFalse();
+
+        // Filter the courts by clubId using a for loop
+        List<Booking> Bookings = new ArrayList<>();
+        for (Booking booking : allBookings) {
+            if (booking.getAccount().getAccountId() == customerId) {
+                Bookings.add(booking);
+            }
+        }
+        return Bookings;
+
     }
 
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {

@@ -61,19 +61,21 @@ public class CourtService {
         return courts;
     }
 
-    public Court createCourt (CourtCreateRequest courtCreateRequest){
-        Court newCourt= new Court();
-        Optional<Club> clubOptional= clubRepository.findById(courtCreateRequest.getClubId());
-        if(clubOptional.isPresent()){
+    public Court createCourt(CourtCreateRequest courtCreateRequest, Long clubId) {
+        Court newCourt = new Court();
+        Optional<Club> clubOptional = clubRepository.findById(clubId);
+        if (clubOptional.isPresent()) {
             newCourt.setClub(clubOptional.get());
             newCourt.setDeleted(false);
             newCourt.setPrice(courtCreateRequest.getPrice());
-            newCourt.setStatus(CourtStatusEnum.AVAILABLE);
-            return  courtRepository.save(newCourt);
-        }else{
-            throw new IllegalArgumentException("Club not found");
+            newCourt.setStatus(courtCreateRequest.getStatus());
+            return courtRepository.save(newCourt);
+        } else {
+            throw new IllegalArgumentException("Club not found with id: " + clubId);
         }
     }
+
+
     public Court updateCourt (CourtUpdateRequest courtUpdateRequest, long id){
         Court court = courtRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Court not found"));

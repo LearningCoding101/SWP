@@ -8,6 +8,6 @@ public class CourtCreateRequest {
 
     double price;
     CourtStatusEnum status;
-    long clubId;
+
 
 }
