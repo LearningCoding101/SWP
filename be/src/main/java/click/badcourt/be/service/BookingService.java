@@ -10,6 +10,7 @@ import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.CourtRepository;
+import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ public class BookingService {
 
     @Autowired
     private AuthenticationRepository authenticationRepository;
+    @Autowired
+    AccountUtils accountUtils;
 
     public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
         Booking booking = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
@@ -96,11 +99,10 @@ public class BookingService {
 
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();
-        Optional<Account> account= authenticationRepository.findById(bookingCreateRequest.getCreated_by());
         Optional<Court> court= courtRepository.findById(bookingCreateRequest.getCourt_id());
-        if(account.isPresent() && court.isPresent()&& !court.get().isDeleted()) {
+        if(court.isPresent()&& !court.get().isDeleted()) {
             booking.setBookingDate(bookingCreateRequest.getBookingDate());
-            booking.setAccount(account.get());
+            booking.setAccount(accountUtils.getCurrentAccount());
             booking.setCourt(court.get());
             booking.setStatus(BookingStatusEnum.PENDING);
 //            booking.setDeleted(false);

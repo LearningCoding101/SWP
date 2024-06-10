@@ -28,38 +28,40 @@ public class CourtTimeSlotService {
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
 
-    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long ctsId,Long cId, Date date) {
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long ctsId, Long cId, Date date) {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
-
         List<BookingDetail> bookingList = bookingDetailRepository.findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(ctsId);
-//        List<BookingDetail> bookingList = bookingDetailRepository.findAll();
 
-        List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
+        List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
         int count = 0;
+
         for (BookingDetail booking : bookingList) {
-            if (booking.getDate() == date){
-                count = count + 1;
+            if (booking.getDate().equals(date)) {
+                count++;
             }
         }
-        for(CourtTimeslot court_timeslot : courtTimeslots) {
-            CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
-            courtTimeSlotResponse.setCourtTimeSlotId(court_timeslot.getCourtTSlotID());
-            courtTimeSlotResponse.setCourtId(court_timeslot.getCourt().getCourtId());
-            courtTimeSlotResponse.setTimeSlotId(court_timeslot.getTimeslot().getTimeslotId());
-            courtTimeSlotResponse.setPrice(court_timeslot.getCourt().getPrice());
-            courtTimeSlotResponse.setStart_time(court_timeslot.getTimeslot().getStart_time());
-            courtTimeSlotResponse.setEnd_time(court_timeslot.getTimeslot().getEnd_time());
-//            if(count > 0){
-                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
-//            }
-//            else {
-//                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
-//            }
 
-            CourtTimeSlotResponses.add(courtTimeSlotResponse);
+        for (CourtTimeslot courtTimeslot : courtTimeslots) {
+            CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
+            courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
+            courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
+            courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
+            courtTimeSlotResponse.setPrice(courtTimeslot.getCourt().getPrice());
+            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
+            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+
+            if (count > 0) {
+                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
+            } else {
+                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
+            }
+
+            courtTimeSlotResponses.add(courtTimeSlotResponse);
         }
-        return CourtTimeSlotResponses;
+
+        return courtTimeSlotResponses;
     }
+
 
     public CourtTimeSlotRequest createCourtTimeSlot(CourtTimeSlotRequest courtTimeSlotRequest) {
         Optional<TimeSlot> timeSlotCheck = timeSlotRepository.findTimeSlotByDeletedFalseAndTimeslotId(courtTimeSlotRequest.getTimeSlotId());
