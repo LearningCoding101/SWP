@@ -1,11 +1,13 @@
 package click.badcourt.be.service;
 
+import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.entity.CourtTimeslot;
 import click.badcourt.be.entity.TimeSlot;
 import click.badcourt.be.enums.CourtTSStatusEnum;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.model.response.CourtTimeSlotResponse;
+import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.repository.CourtTimeSlotRepository;
 import click.badcourt.be.repository.TimeSlotRepository;
@@ -28,10 +30,19 @@ public class CourtTimeSlotService {
 
     @Autowired
     CourtRepository courtRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long id, Date date) {
-        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotByByDeletedFalseAndCourt_CourtId(id);
+        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(id);
+        List<Booking> bookingList = bookingRepository.findBookingsByCourt_CourtId(id);
         List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
+        int count = 0;
+        for (Booking booking : bookingList) {
+            if (booking.getBookingDate() == date){
+                count = count + 1;
+            }
+        }
         for(CourtTimeslot court_timeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
             courtTimeSlotResponse.setCourtTimeSlotId(court_timeslot.getCourtTSlotID());
@@ -40,7 +51,7 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setPrice(court_timeslot.getCourt().getPrice());
             courtTimeSlotResponse.setStart_time(court_timeslot.getTimeslot().getStart_time());
             courtTimeSlotResponse.setEnd_time(court_timeslot.getTimeslot().getEnd_time());
-            if(){
+            if(count > 0){
                 courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
             }
             else {
