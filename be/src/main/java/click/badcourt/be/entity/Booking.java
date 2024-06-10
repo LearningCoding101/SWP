@@ -27,8 +27,8 @@ public class Booking {
     @JoinColumn(name = "court_id")
     private Court court;
 
-    @Column(nullable = false)
-    private boolean deleted ;
+//    @Column(nullable = false)
+//    private boolean deleted ;
 
     @OneToOne(mappedBy = "booking")
     FeedBack feedback;

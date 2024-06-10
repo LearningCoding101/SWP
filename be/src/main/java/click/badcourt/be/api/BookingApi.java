@@ -26,24 +26,28 @@ public class BookingApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookingResponse> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable long id) {
-        BookingResponse bookingResponse = bookingService.updateBooking(bookingUpdateRequest, id);
-        return ResponseEntity.ok(bookingResponse);
+    public ResponseEntity<?> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable long id) {
+        try {
+            BookingResponse bookingResponse = bookingService.updateBooking(bookingUpdateRequest, id);
+            return ResponseEntity.ok(bookingResponse);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<?> getBookingsByCustomerId(@PathVariable Long customerId) {
         try {
-            List<Booking> bookings = bookingService.getBookingsByCustomerId(customerId);
+            List<BookingResponse> bookings = bookingService.getBookingsByCustomerIdWithResponse(customerId);
             return ResponseEntity.ok(bookings);
         }catch (IllegalArgumentException e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
     }
 
-    @DeleteMapping("/{bookingId}")
-    public ResponseEntity<Void> deleteBooking(@PathVariable Long bookingId) {
-        bookingService.deleteBooking(bookingId);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/{bookingId}")
+//    public ResponseEntity<Void> deleteBooking(@PathVariable Long bookingId) {
+//        bookingService.deleteBooking(bookingId);
+//        return ResponseEntity.noContent().build();
+//    }
 }
