@@ -22,7 +22,7 @@ public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto generate id
     @Column(name = "account_id")
-    long accountId;
+    Long accountId;
 
     String password;
 

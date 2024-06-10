@@ -14,7 +14,7 @@ public class CourtTimeslot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long CourtTSlotID;
+    Long courtTSlotID;
 
     @ManyToOne
     @JoinColumn(name="from_timeSlot")
@@ -27,8 +27,8 @@ public class CourtTimeslot {
     @JoinColumn(name="from_Court")
     Court court;
 
-    @OneToMany(mappedBy = "court_timeslot")
-    List<Booking_Detail> bookingDetails;
+    @OneToMany(mappedBy = "courtTimeslot")
+    List<BookingDetail> bookingDetails;
 
     @Column(nullable = false)
     boolean deleted;

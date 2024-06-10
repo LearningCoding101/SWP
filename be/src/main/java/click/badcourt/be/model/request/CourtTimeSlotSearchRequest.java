@@ -6,6 +6,6 @@ import java.util.Date;
 
 @Data
 public class CourtTimeSlotSearchRequest {
-    Long CourtId;
+    Long courtId;
     Date date;
 }

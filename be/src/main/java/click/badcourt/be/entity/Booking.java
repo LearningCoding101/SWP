@@ -1,7 +1,6 @@
 package click.badcourt.be.entity;
 
 import click.badcourt.be.enums.BookingStatusEnum;
-import click.badcourt.be.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -38,7 +37,7 @@ public class Booking {
 
     @OneToMany(mappedBy = "booking")
 
-    List<Booking_Detail> bookingDetails;
+    List<BookingDetail> bookingDetails;
 
     @ManyToOne
     @JoinColumn(name = "create_by")

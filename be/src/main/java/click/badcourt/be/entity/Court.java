@@ -15,7 +15,7 @@ public class Court {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long courtId;
+    Long courtId;
 
     double price;
 

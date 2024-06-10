@@ -1,7 +1,7 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Booking;
-import click.badcourt.be.entity.Booking_Detail;
+import click.badcourt.be.entity.BookingDetail;
 
 import click.badcourt.be.entity.CourtTimeslot;
 import click.badcourt.be.model.request.BookingDetailRequest;
@@ -30,9 +30,9 @@ public class BookingDetailService {
     CourtTimeSlotRepository courtTimeSlotRepository;
 
     public List<BookingDetailDeleteResponse> getAllBookingDetails() {
-        List<Booking_Detail> bookingDeleteDetails= bookingDetailRepository.findAll();
+        List<BookingDetail> bookingDeleteDetails= bookingDetailRepository.findAll();
         List<BookingDetailDeleteResponse> bookingDetailDeleteResponses= new ArrayList<>();
-        for(Booking_Detail bookingDeleteDetail : bookingDeleteDetails){
+        for(BookingDetail bookingDeleteDetail : bookingDeleteDetails){
             BookingDetailDeleteResponse bookingDetailDeletedResponse= new BookingDetailDeleteResponse();
             bookingDetailDeletedResponse.setBookingDate(bookingDeleteDetail.getDate());
             bookingDetailDeletedResponse.setBookingId(bookingDeleteDetail.getBooking().getBookingId());
@@ -46,10 +46,10 @@ public class BookingDetailService {
     public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
         if(bookingOptional.isPresent()){
-            List<Booking_Detail> bookingDetails = bookingDetailRepository.findBooking_DetailsByBooking_BookingId(bookingId);
+            List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
 
             List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
-            for(Booking_Detail bookingDetail : bookingDetails){
+            for(BookingDetail bookingDetail : bookingDetails){
                 BookingDetailResponse bookingDetailResponse= new BookingDetailResponse();
                 bookingDetailResponse.setBookingDate(bookingDetail.getDate());
                 bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
@@ -64,7 +64,7 @@ public class BookingDetailService {
     }
 
     public BookingDetailRequest createBookingDetail(BookingDetailRequest bookingDetailRequest) {
-        Booking_Detail bookingDetail= new Booking_Detail();
+        BookingDetail bookingDetail= new BookingDetail();
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingDetailRequest.getBookingId());
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());
         if(bookingOptional.isPresent()&&courtTimeslot.isPresent()){
@@ -81,7 +81,7 @@ public class BookingDetailService {
     }
 
     public BookingDetailRequest updateBookingDetail(BookingDetailRequest bookingDetailRequest,Long bookingDetailId) {
-        Optional<Booking_Detail> bookingDetail= bookingDetailRepository.findById(bookingDetailId);
+        Optional<BookingDetail> bookingDetail= bookingDetailRepository.findById(bookingDetailId);
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingDetailRequest.getBookingId());
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());
         if(bookingDetail.isPresent()){
@@ -96,12 +96,12 @@ public class BookingDetailService {
             }
         }
         else{
-            throw new IllegalArgumentException("Booking_Detail Id not found");
+            throw new IllegalArgumentException("BookingDetail Id not found");
         }
     }
 
     public void deleteBookingDetail(Long bookingDetailId) {
-        Booking_Detail bookingDetail= bookingDetailRepository.findById(bookingDetailId).orElseThrow(() -> new RuntimeException("BookingDetail not found!"));
+        BookingDetail bookingDetail= bookingDetailRepository.findById(bookingDetailId).orElseThrow(() -> new RuntimeException("BookingDetail not found!"));
         bookingDetail.setDeleted(true);
 
         bookingDetailRepository.save(bookingDetail);

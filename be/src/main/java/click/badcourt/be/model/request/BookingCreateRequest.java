@@ -11,8 +11,8 @@ import java.util.Date;
 public class BookingCreateRequest {
 
     private Date bookingDate;
-    private long court_id;
-    private long created_by;
+    private Long court_id;
+    private Long created_by;
     private BookingStatusEnum bookingStatusEnum;
 
 }

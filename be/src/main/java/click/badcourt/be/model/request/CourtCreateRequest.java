@@ -7,6 +7,4 @@ public class CourtCreateRequest {
 
     double price;
 
-
-
 }

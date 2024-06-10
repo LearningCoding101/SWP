@@ -19,7 +19,7 @@ public class CourtTimeslotApi {
     CourtTimeSlotService courtTimeSlotService;
 
 //    @PreAuthorize("hasAuthority('STAFF' OR 'CUSTOMER' OR 'ClUB_OWNER')")
-    @GetMapping("/{courtId}")
+    @GetMapping()
     public ResponseEntity getAllCourtTimeslotsByCourtId(@RequestBody CourtTimeSlotSearchRequest courtTimeSlotSearchRequest) {
         return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(courtTimeSlotSearchRequest.getCourtId(), courtTimeSlotSearchRequest.getDate()));
     }

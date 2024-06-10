@@ -13,7 +13,7 @@ import java.util.List;
 public class BookingType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long BookingTypeId;
+    private Long bookingTypeId;
     private float bookingDiscount;
 
     @OneToMany(mappedBy = "bookingType")

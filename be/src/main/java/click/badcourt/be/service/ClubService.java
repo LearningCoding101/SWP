@@ -54,7 +54,7 @@ public class ClubService {
 
     }
 
-    public Club updateClub(ClubUpdateRequest clubUpdateRequest, long id) {
+    public Club updateClub(ClubUpdateRequest clubUpdateRequest, Long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
         club.setName(clubUpdateRequest.getName());
         club.setAddress(clubUpdateRequest.getAddress());
@@ -64,7 +64,7 @@ public class ClubService {
         return clubRepository.save(club);
     }
 
-    public void deleteClub(long id) {
+    public void deleteClub(Long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
         club.setDeleted(true);
         clubRepository.save(club);

@@ -8,7 +8,7 @@ import java.util.Date;
 @Data
 public class BookingUpdateRequest {
 
-    private long court_id;
+    private Long court_id;
 
     private BookingStatusEnum bookingStatusEnum;
 

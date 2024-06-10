@@ -1,16 +1,10 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Booking;
-import click.badcourt.be.entity.Court;
-import click.badcourt.be.entity.CourtTimeslot;
-import click.badcourt.be.entity.TimeSlot;
+import click.badcourt.be.entity.*;
 import click.badcourt.be.enums.CourtTSStatusEnum;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.model.response.CourtTimeSlotResponse;
-import click.badcourt.be.repository.BookingRepository;
-import click.badcourt.be.repository.CourtRepository;
-import click.badcourt.be.repository.CourtTimeSlotRepository;
-import click.badcourt.be.repository.TimeSlotRepository;
+import click.badcourt.be.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,16 +24,20 @@ public class CourtTimeSlotService {
 
     @Autowired
     CourtRepository courtRepository;
+
     @Autowired
-    private BookingRepository bookingRepository;
+    private BookingDetailRepository bookingDetailRepository;
 
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long id, Date date) {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(id);
-        List<Booking> bookingList = bookingRepository.findBookingsByCourt_CourtId(id);
+
+        List<BookingDetail> bookingList = bookingDetailRepository.findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(id);
+//        List<BookingDetail> bookingList = bookingDetailRepository.findAll();
+
         List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
         int count = 0;
-        for (Booking booking : bookingList) {
-            if (booking.getBookingDate() == date){
+        for (BookingDetail booking : bookingList) {
+            if (booking.getDate() == date){
                 count = count + 1;
             }
         }

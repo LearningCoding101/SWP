@@ -49,7 +49,7 @@ public class CourtApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCourt(@RequestBody CourtUpdateRequest courtUpdateRequest, @PathVariable long id){
+    public ResponseEntity<?> updateCourt(@RequestBody CourtUpdateRequest courtUpdateRequest, @PathVariable Long id){
         try {
             Court updatedCourt = courtService.updateCourt(courtUpdateRequest, id);
             CourtResponse court= new CourtResponse();

@@ -28,7 +28,7 @@ public class BookingApi {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable long id) {
+    public ResponseEntity<?> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable Long id) {
         try {
             BookingResponse bookingResponse = bookingService.updateBooking(bookingUpdateRequest, id);
             return ResponseEntity.ok(bookingResponse);

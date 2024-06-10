@@ -5,9 +5,9 @@ import lombok.Data;
 @Data
 public class CourtShowResponse {
 
-    long id;
+    Long id;
     double price;
-    long clubId;
+    Long clubId;
     boolean deleted;
     String clubName;
 

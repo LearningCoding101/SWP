@@ -1,6 +1,5 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Booking_Detail;
 import click.badcourt.be.model.request.QRCodeData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.zxing.*;
@@ -13,7 +12,6 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;

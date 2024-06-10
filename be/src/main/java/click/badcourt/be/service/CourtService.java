@@ -74,7 +74,7 @@ public class CourtService {
     }
 
 
-    public Court updateCourt (CourtUpdateRequest courtUpdateRequest, long id){
+    public Court updateCourt (CourtUpdateRequest courtUpdateRequest, Long id){
         Court court = courtRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Court not found"));
 

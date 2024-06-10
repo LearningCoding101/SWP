@@ -8,9 +8,9 @@ import java.time.LocalTime;
 @Data
 public class CourtTimeSlotResponse {
 
-    long CourtTimeSlotId;
-    long TimeSlotId;
-    long CourtId;
+    Long courtTimeSlotId;
+    Long timeSlotId;
+    Long CourtId;
     double price;
     LocalTime start_time;
     LocalTime end_time;
