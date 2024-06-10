@@ -36,15 +36,16 @@ public class Booking {
     Transaction transaction;
 
     @OneToMany(mappedBy = "booking")
-
     List<BookingDetail> bookingDetails;
 
     @ManyToOne
     @JoinColumn(name = "create_by")
     @JsonBackReference
     Account account;
+    @ManyToOne
+    @JoinColumn(name = "saleBy")
 
+    BookingType bookingType;
     @Enumerated(EnumType.STRING)
     BookingStatusEnum status;
 }
-

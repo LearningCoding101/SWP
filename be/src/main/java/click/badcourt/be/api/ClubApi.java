@@ -39,7 +39,7 @@ public class ClubApi {
 
     }
     @PutMapping("club/{id}")
-    public ResponseEntity updateClub(@RequestBody ClubUpdateRequest clubUpdateRequest, @PathVariable int id){
+    public ResponseEntity updateClub(@RequestBody ClubUpdateRequest clubUpdateRequest, @PathVariable Long id){
         try {
             Club updatedClub = clubService.updateClub(clubUpdateRequest, id);
             ClubResponse club= new ClubResponse();
@@ -55,7 +55,7 @@ public class ClubApi {
         }
     }
     @DeleteMapping("club/{id}")
-    public ResponseEntity deleteClub(@PathVariable int id){
+    public ResponseEntity deleteClub(@PathVariable Long id){
         clubService.deleteClub(id);
         return ResponseEntity.ok( "courtID :"+id +" is deleted");
     }
