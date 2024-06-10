@@ -21,7 +21,7 @@ public class Booking_Detail {
 
     @ManyToOne
     @JoinColumn(name = "from_court_timeslot")
-    Court_timeslot court_timeslot;
+    CourtTimeslot courtTimeslot;
 
     private Date date;
 

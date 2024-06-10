@@ -55,7 +55,6 @@ public class CourtApi {
             CourtResponse court= new CourtResponse();
             court.setId(updatedCourt.getCourtId());
             court.setClubId(updatedCourt.getClub().getClubId());
-            court.setStatus(updatedCourt.getStatus());
             court.setPrice(updatedCourt.getPrice());
 
             return ResponseEntity.ok(court);

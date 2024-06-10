@@ -1,11 +1,13 @@
 package click.badcourt.be.api;
 
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
+import click.badcourt.be.model.request.CourtTimeSlotSearchRequest;
 import click.badcourt.be.service.CourtTimeSlotService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,11 +18,13 @@ public class CourtTimeslotApi {
     @Autowired
     CourtTimeSlotService courtTimeSlotService;
 
+//    @PreAuthorize("hasAuthority('STAFF' OR 'CUSTOMER' OR 'ClUB_OWNER')")
     @GetMapping("/{courtId}")
-    public ResponseEntity getAllCourtTimeslotsByCourtId(@PathVariable Long courtId) {
-        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtId(courtId));
+    public ResponseEntity getAllCourtTimeslotsByCourtId(@RequestBody CourtTimeSlotSearchRequest courtTimeSlotSearchRequest) {
+        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(courtTimeSlotSearchRequest.getCourtId(), courtTimeSlotSearchRequest.getDate()));
     }
 
+//    @PreAuthorize("hasAuthority('CLUB_OWNER')")
     @PostMapping()
     public ResponseEntity createCourtTimeslot(@RequestBody CourtTimeSlotRequest courtTimeSlotRequest) {
         try{
@@ -31,6 +35,7 @@ public class CourtTimeslotApi {
         }
     }
 
+//    @PreAuthorize("hasAuthority('CLUB_OWNER')")
     @DeleteMapping("/{Id}")
     public ResponseEntity deleteCourtTimeslot(@PathVariable Long Id){
         courtTimeSlotService.deleteCourtTimeSlot(Id);

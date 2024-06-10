@@ -1,5 +1,5 @@
 package click.badcourt.be.enums;
 
-public enum CourtStatusEnum {
+public enum CourtTSStatusEnum {
     AVAILABLE, IN_USE
 }

@@ -1,5 +1,6 @@
 package click.badcourt.be.model.response;
 
+import click.badcourt.be.enums.CourtTSStatusEnum;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -13,5 +14,6 @@ public class CourtTimeSlotResponse {
     double price;
     LocalTime start_time;
     LocalTime end_time;
+    CourtTSStatusEnum status;
 
 }

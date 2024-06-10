@@ -17,10 +17,12 @@ public class BookingDetailApi {
     @Autowired
     BookingDetailService bookingDetailService;
 
+
     @GetMapping
     public ResponseEntity getAllBookingDetail() {
         return ResponseEntity.ok(bookingDetailService.getAllBookingDetails());
     }
+
     @GetMapping("/{id}")
     public ResponseEntity getBookingDetailById(@PathVariable Long id) {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(id));
@@ -35,6 +37,7 @@ public class BookingDetailApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
     @PutMapping("/{id}")
     public ResponseEntity updateBookingDetail(@RequestBody BookingDetailRequest bookingDetailRequest, @PathVariable Long id) {
         try {

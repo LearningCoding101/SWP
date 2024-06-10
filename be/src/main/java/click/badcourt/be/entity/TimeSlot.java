@@ -26,5 +26,5 @@ public class TimeSlot {
     boolean deleted;
 
     @OneToMany(mappedBy="timeslot")
-    List<Court_timeslot> court_timeslots;
+    List<CourtTimeslot> courtTimeslots;
 }

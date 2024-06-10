@@ -2,7 +2,6 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Court;
-import click.badcourt.be.enums.CourtStatusEnum;
 import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
 import click.badcourt.be.repository.ClubRepository;
@@ -32,7 +31,6 @@ public class CourtService {
 //
 //        for (Court c : courts) {
 //            CourtShowResponse courtShowResponse = new CourtShowResponse();
-//            courtShowResponse.setStatus(c.getStatus());
 //            courtShowResponse.setPrice(c.getPrice());
 //            courtShowResponse.setId(c.getCourtId());
 //            courtShowResponse.setClubName(c.getClub().getName());
@@ -85,7 +83,6 @@ public class CourtService {
         }
 
         court.setPrice(courtUpdateRequest.getPrice());
-        court.setStatus(courtUpdateRequest.getStatus());
         return courtRepository.save(court);
     }
 

@@ -1,5 +1,6 @@
 package click.badcourt.be.entity;
 
+import click.badcourt.be.enums.CourtTSStatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Court_timeslot {
+public class CourtTimeslot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +19,9 @@ public class Court_timeslot {
     @ManyToOne
     @JoinColumn(name="from_timeSlot")
     TimeSlot timeslot;
+
+    @Enumerated(EnumType.STRING)
+    CourtTSStatusEnum status = CourtTSStatusEnum.AVAILABLE;
 
     @ManyToOne
     @JoinColumn(name="from_Court")

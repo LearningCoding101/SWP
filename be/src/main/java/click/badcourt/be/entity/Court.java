@@ -1,6 +1,5 @@
 package click.badcourt.be.entity;
 
-import click.badcourt.be.enums.CourtStatusEnum;
 import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -20,9 +19,6 @@ public class Court {
 
     double price;
 
-    @Enumerated(EnumType.STRING)
-    CourtStatusEnum status = CourtStatusEnum.AVAILABLE;
-
     @JsonIgnore
     @Column(nullable = false)
     boolean deleted = false;
@@ -32,7 +28,7 @@ public class Court {
     Club club;
 
     @OneToMany(mappedBy = "court")
-    List<Court_timeslot> court_timeslots;
+    List<CourtTimeslot> courtTimeslot;
 
     @OneToMany(mappedBy = "court")
     List<Booking> bookings;
