@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.io.File;
+
 @Service
 public class EmailService {
 
@@ -43,4 +45,34 @@ public class EmailService {
             messagingException.printStackTrace();
         }
     }
+    public void sendEmailWithAttachment(EmailDetail emailDetail, String attachmentPath) throws MessagingException {
+        try{
+            Context context = new Context();
+
+            context.setVariable("link",emailDetail.getLink());
+            context.setVariable("button",emailDetail.getButtonValue());
+            context.setVariable("name", emailDetail.getFullName());
+
+            String text = templateEngine.process("emailtemplate", context);
+
+            // Creating a simple mail message
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+
+            // Setting up necessary details
+            mimeMessageHelper.setFrom("admin@gmail.com");
+            mimeMessageHelper.setTo(emailDetail.getRecipient());
+            mimeMessageHelper.setText(text, true);
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+            File file = new File(attachmentPath);
+            mimeMessageHelper.addAttachment(file.getName(), file);
+
+
+            javaMailSender.send(mimeMessage);
+        }catch (MessagingException messagingException){
+            messagingException.printStackTrace();
+        }
+
+    }
+
 }

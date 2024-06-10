@@ -1,13 +1,9 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Account;
-import click.badcourt.be.entity.Booking;
-import click.badcourt.be.entity.FeedBack;
+import click.badcourt.be.entity.*;
 import click.badcourt.be.model.request.FeedbackCreateRequest;
 import click.badcourt.be.model.response.FeedbackResponse;
-import click.badcourt.be.repository.AuthenticationRepository;
-import click.badcourt.be.repository.BookingRepository;
-import click.badcourt.be.repository.FeedbackRespository;
+import click.badcourt.be.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +22,10 @@ public class FeedbackService {
 
     @Autowired
     private BookingRepository bookingRepository;
+    @Autowired
+    private ClubRepository clubRepository;
+    @Autowired
+    private CourtRepository courtRepository;
 
     public List<FeedbackResponse> getAllFeedback() {
         List<FeedBack> feedBackList= feedbackRespository.findFeedBacksByIsDeletedFalse();
@@ -92,5 +92,41 @@ public class FeedbackService {
         FeedBack feedBack = feedbackRespository.findById(feedbackId).orElseThrow(() -> new RuntimeException("Feedback not found"));
         feedBack.setDeleted(true);
         feedbackRespository.save(feedBack);
+    }
+    public FeedbackResponse getFeedbackByBookingId(Long bookingId) {
+        FeedBack feedBack= feedbackRespository.findByBooking_BookingId(bookingId);
+        FeedbackResponse feedbackResponse = new FeedbackResponse();
+        feedbackResponse.setFeedbackRating(feedBack.getFeedbackRating());
+        feedbackResponse.setFeedbackContent(feedBack.getFeedbackContent());
+        feedbackResponse.setAccountId(feedBack.getAccount().getAccountId());
+        feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
+        return feedbackResponse;
+    }
+    public List<FeedbackResponse> getAllFeedBackByClubId(Long clubId) {
+        Optional<Club> club = clubRepository.findById(clubId);
+        if(club.isEmpty()) {
+            throw new IllegalArgumentException("Club not found");
+        }
+        List<Court> courtList= courtRepository.findCourtsByClub_ClubId(clubId);
+        List<FeedbackResponse> feedbackResponses = new ArrayList<>();
+        List<Booking> bookingList = new ArrayList<>();
+        for(Court court:courtList){
+            List<Booking> bookings = bookingRepository.findBookingsByCourt_CourtId(court.getCourtId());
+            bookingList.addAll(bookings);
+        }
+        for(Booking booking:bookingList){
+            FeedBack feedBack = feedbackRespository.findByBooking_BookingId(booking.getBookingId());
+            if(feedBack != null){
+                    
+            FeedbackResponse feedbackResponse = new FeedbackResponse();
+            feedbackResponse.setFeedbackRating(feedBack.getFeedbackRating());
+            feedbackResponse.setFeedbackContent(feedBack.getFeedbackContent());
+            feedbackResponse.setAccountId(feedBack.getAccount().getAccountId());
+            feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
+            feedbackResponses.add(feedbackResponse);
+            }
+        }
+        return feedbackResponses;
+
     }
 }

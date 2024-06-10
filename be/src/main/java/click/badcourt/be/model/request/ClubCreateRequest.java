@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class ClubCreateRequest {
-
     String name;
     String address;
     int startHour;
@@ -12,6 +11,4 @@ public class ClubCreateRequest {
     int endHour;
     int endMinute;
     String picture_location;
-    String email;
-
 }

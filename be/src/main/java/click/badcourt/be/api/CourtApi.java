@@ -5,6 +5,7 @@ import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
 import click.badcourt.be.model.response.CourtResponse;
 import click.badcourt.be.service.CourtService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/court")
+@SecurityRequirement(name = "api")
 public class CourtApi {
 
     @Autowired
@@ -52,7 +54,7 @@ public class CourtApi {
             Court updatedCourt = courtService.updateCourt(courtUpdateRequest, id);
             CourtResponse court= new CourtResponse();
             court.setId(updatedCourt.getCourtId());
-            court.setClubId(updatedCourt.getClub().getClub_id());
+            court.setClubId(updatedCourt.getClub().getClubId());
             court.setStatus(updatedCourt.getStatus());
             court.setPrice(updatedCourt.getPrice());
 

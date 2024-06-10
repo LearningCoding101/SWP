@@ -21,10 +21,11 @@ public class Court {
     double price;
 
     @Enumerated(EnumType.STRING)
-    CourtStatusEnum status;
+    CourtStatusEnum status = CourtStatusEnum.AVAILABLE;
 
+    @JsonIgnore
     @Column(nullable = false)
-    boolean deleted;
+    boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "club_id")

@@ -3,6 +3,7 @@ package click.badcourt.be.api;
 import click.badcourt.be.entity.PaymentMethod;
 import click.badcourt.be.model.request.PaymentMethodRequest;
 import click.badcourt.be.service.PaymentMethodService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/payment-methods")
+@SecurityRequirement(name = "api")
 public class PaymentMethodApi {
 
     @Autowired

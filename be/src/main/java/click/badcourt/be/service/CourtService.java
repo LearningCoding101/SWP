@@ -7,6 +7,7 @@ import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+
 public class CourtService {
 
     @Autowired
@@ -53,7 +55,7 @@ public class CourtService {
         // Filter the courts by clubId using a for loop
         List<Court> courts = new ArrayList<>();
         for (Court court : allCourts) {
-            if (court.getClub().getClub_id() == clubId) {
+            if (court.getClub().getClubId() == clubId) {
                 courts.add(court);
             }
         }
@@ -66,9 +68,7 @@ public class CourtService {
         Optional<Club> clubOptional = clubRepository.findById(clubId);
         if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
             newCourt.setClub(clubOptional.get());
-            newCourt.setDeleted(false);
             newCourt.setPrice(courtCreateRequest.getPrice());
-            newCourt.setStatus(courtCreateRequest.getStatus());
             return courtRepository.save(newCourt);
         } else {
             throw new IllegalArgumentException("Club not found with id: " + clubId);

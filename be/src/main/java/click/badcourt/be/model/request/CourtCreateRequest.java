@@ -7,7 +7,7 @@ import lombok.Data;
 public class CourtCreateRequest {
 
     double price;
-    CourtStatusEnum status;
+
 
 
 }
