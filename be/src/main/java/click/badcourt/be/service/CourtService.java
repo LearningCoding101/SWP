@@ -64,7 +64,7 @@ public class CourtService {
     public Court createCourt(CourtCreateRequest courtCreateRequest, Long clubId) {
         Court newCourt = new Court();
         Optional<Club> clubOptional = clubRepository.findById(clubId);
-        if (clubOptional.isPresent()) {
+        if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
             newCourt.setClub(clubOptional.get());
             newCourt.setDeleted(false);
             newCourt.setPrice(courtCreateRequest.getPrice());

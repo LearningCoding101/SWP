@@ -15,5 +15,6 @@ public class BookingResponse {
     String account_email;
     String account_number;
     BookingStatusEnum status;
+    String address;
 
 }
