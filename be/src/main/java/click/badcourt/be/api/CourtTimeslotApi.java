@@ -1,7 +1,6 @@
 package click.badcourt.be.api;
 
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
-import click.badcourt.be.model.request.CourtTimeSlotSearchRequest;
 import click.badcourt.be.model.response.CourtTimeSlotResponse;
 import click.badcourt.be.service.CourtTimeSlotService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,10 +24,9 @@ public class CourtTimeslotApi {
 //    @PreAuthorize("hasAuthority('STAFF' OR 'CUSTOMER' OR 'ClUB_OWNER')")
     @GetMapping()
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(
-            @RequestParam Long ctsId,
             @RequestParam Long cId,
             @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
-        return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(ctsId, cId, date);
+        return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(cId, date);
     }
 
 
