@@ -28,10 +28,10 @@ public class CourtTimeSlotService {
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
 
-    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long id, Date date) {
-        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(id);
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long ctsId,Long cId, Date date) {
+        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
 
-        List<BookingDetail> bookingList = bookingDetailRepository.findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(id);
+        List<BookingDetail> bookingList = bookingDetailRepository.findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(ctsId);
 //        List<BookingDetail> bookingList = bookingDetailRepository.findAll();
 
         List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
@@ -49,12 +49,12 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setPrice(court_timeslot.getCourt().getPrice());
             courtTimeSlotResponse.setStart_time(court_timeslot.getTimeslot().getStart_time());
             courtTimeSlotResponse.setEnd_time(court_timeslot.getTimeslot().getEnd_time());
-            if(count > 0){
+//            if(count > 0){
                 courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
-            }
-            else {
-                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
-            }
+//            }
+//            else {
+//                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
+//            }
 
             CourtTimeSlotResponses.add(courtTimeSlotResponse);
         }

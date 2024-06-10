@@ -44,7 +44,7 @@ public class QRCodeService {
             System.out.println("Error generating QR code: " + e.getMessage());
         }
     }
-    public QRCodeData decodeQr(byte[] data) throws IOException, NotFoundException {
+    public QRCodeData decodeQr(byte[] data) throws IOException, NotFoundException{
         Result result = new MultiFormatReader()
                 .decode(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(
                         ImageIO.read(new ByteArrayInputStream(data))))));

@@ -10,21 +10,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/api/courtTimeSlot")
 @SecurityRequirement(name = "api")
 public class CourtTimeslotApi {
-
     @Autowired
     CourtTimeSlotService courtTimeSlotService;
 
 //    @PreAuthorize("hasAuthority('STAFF' OR 'CUSTOMER' OR 'ClUB_OWNER')")
     @GetMapping()
-    public ResponseEntity getAllCourtTimeslotsByCourtId(@RequestBody CourtTimeSlotSearchRequest courtTimeSlotSearchRequest) {
-        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(courtTimeSlotSearchRequest.getCourtId(), courtTimeSlotSearchRequest.getDate()));
+    public ResponseEntity getAllCourtTimeslotsByCourtId(@RequestParam Long courtTSId, Long courtId, Date date) {
+        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(courtTSId, courtId, date));
     }
 
-//    @PreAuthorize("hasAuthority('CLUB_OWNER')")
+
+    //    @PreAuthorize("hasAuthority('CLUB_OWNER')")
     @PostMapping()
     public ResponseEntity createCourtTimeslot(@RequestBody CourtTimeSlotRequest courtTimeSlotRequest) {
         try{
