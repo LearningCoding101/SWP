@@ -20,8 +20,9 @@ const AddCourt = () => {
             try {
                 const data = await addCourt(courtName, courtAddress, courtOpenTime, courtCloseTime, courtLocation, courtEmail);
                 console.log('Added successful!', data);
-                setShow(true);
-                if (show == true) {
+                
+                if (data) {
+                    setShow(true);
                     <Alert variant="danger" onClose={() => setShow(false)} dismissible>
                         <Alert.Heading>Added new club!</Alert.Heading>
                     </Alert>
@@ -69,7 +70,7 @@ const AddCourt = () => {
                             <label htmlFor="openTime">Open time</label>
                             <input
                                 type="text"
-                                placeholder='Enter club price'
+                                placeholder='Enter club open time'
                                 id="openTime"
                                 value={courtOpenTime}
                                 onChange={(e) => setCourtOpenTime(e.target.value)}
@@ -81,7 +82,7 @@ const AddCourt = () => {
                             <label htmlFor="closeTime">Close time</label>
                             <input
                                 type="text"
-                                placeholder='Enter club address'
+                                placeholder='Enter club close time'
                                 id="closeTime"
                                 value={courtCloseTime}
                                 onChange={(e) => setCourtCloseTime(e.target.value)}
@@ -91,7 +92,7 @@ const AddCourt = () => {
                         </div>
                     </div>
                     <div className="form-group ">
-                        <label htmlFor="location">Club address</label>
+                        <label htmlFor="location">Club picture</label>
                         <input
                             type="text"
                             placeholder='Enter url of your picture'
@@ -117,7 +118,7 @@ const AddCourt = () => {
 
 
                     <button onClick={handleAdd} type="submit" className="login-button">
-                        Add court
+                        Add club
                     </button>
 
                 </form>

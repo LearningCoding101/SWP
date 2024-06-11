@@ -15,10 +15,13 @@ import java.util.Optional;
 
 @Service
 public class TransactionService {
+
     @Autowired
     private TransactionRepository transactionRepository;
+
     @Autowired
     private PaymentMethodRepository paymentMethodRepository;
+
     @Autowired
     private BookingRepository bookingRepository;
 
@@ -31,7 +34,7 @@ public class TransactionService {
         if(paymentMethod.isPresent() && booking.isPresent()) {
             Transaction transaction = new Transaction();
             transaction.setStatus(transactionRequest.getStatus());
-            transaction.setDepositAmount(transactionRequest.getDepositAmount());
+            transaction.setDepositAmount(transactionRequest.getTotalAmount()*50/100);
             transaction.setTotalAmount(transactionRequest.getTotalAmount());
             transaction.setPaymentDate(transactionRequest.getPaymentDate());
             transaction.setPaymentMethod(paymentMethod.get());
@@ -42,6 +45,7 @@ public class TransactionService {
             throw new IllegalArgumentException("PaymentMethod or Booking not found");
         }
     }
+
     public Transaction updateTransaction(TransactionRequest transactionRequest,Long id) {
         Optional<Transaction> transaction = transactionRepository.findById(id);
         if(transaction.isEmpty()) {
@@ -50,7 +54,7 @@ public class TransactionService {
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
         Optional<Booking> booking = bookingRepository.findById(transactionRequest.getBookingId());
         if(paymentMethod.isPresent() && booking.isPresent()) {
-            transaction.get().setDepositAmount(transactionRequest.getDepositAmount());
+            transaction.get().setDepositAmount(transactionRequest.getTotalAmount()*50/100);
             transaction.get().setTotalAmount(transactionRequest.getTotalAmount());
             transaction.get().setPaymentDate(transactionRequest.getPaymentDate());
             transaction.get().setPaymentMethod(paymentMethod.get());

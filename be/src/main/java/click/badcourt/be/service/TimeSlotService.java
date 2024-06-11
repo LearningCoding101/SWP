@@ -11,11 +11,12 @@ import java.util.List;
 
 @Service
 public class TimeSlotService {
+
     @Autowired
     private TimeSlotRepository timeSlotRepository;
 
     public List<TimeSlot> getALlTimeSlot() {
-        return timeSlotRepository.findTimeSlotsByDeletedFalse();
+        return timeSlotRepository.findByDeletedFalse();
     }
 
     public TimeSlot addTimeSlot(TimeSlotRequest timeSlotRequest) {

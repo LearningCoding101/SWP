@@ -1,9 +1,6 @@
 package click.badcourt.be.model.request;
 
-import jakarta.persistence.Column;
 import lombok.Data;
-
-import java.sql.Time;
 
 @Data
 public class TimeSlotRequest {
@@ -11,6 +8,4 @@ public class TimeSlotRequest {
     private int startMinute;
     private int endHour;
     private int endMinute;
-
-
 }

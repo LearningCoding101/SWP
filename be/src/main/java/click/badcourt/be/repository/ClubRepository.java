@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findClubsByDeletedFalse();
+    List<Club> findClubsByAddress(String address);
 }

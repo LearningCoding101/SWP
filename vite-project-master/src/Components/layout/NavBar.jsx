@@ -3,7 +3,7 @@ import { NavLink, Link } from "react-router-dom"
 import Logout from "../Login/Logout"
 const NavBar = () => {
 	const [showAccount, setShowAccount] = useState(false)
-	
+
 	const handleAccountClick = () => {
 		setShowAccount(!showAccount)
 	}
@@ -70,9 +70,10 @@ const NavBar = () => {
 								className={`dropdown-menu ${showAccount ? "show" : ""}`}
 								aria-labelledby="navbarDropdown">
 								{isLoggedIn ? (
-									<Logout 
-									onClick={handleAccountClick}
-									/>
+									<Link className="dropdown-item" to={"/logout"}>
+										Profile
+									</Link>
+									
 								) : (
 									<li>
 										<Link className="dropdown-item" to={"/login"}>

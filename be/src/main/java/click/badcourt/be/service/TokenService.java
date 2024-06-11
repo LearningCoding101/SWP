@@ -1,4 +1,5 @@
 package click.badcourt.be.service;
+
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.repository.AuthenticationRepository;
 import io.jsonwebtoken.Claims;
@@ -55,10 +56,10 @@ public class TokenService {
         return authenticationRepository.findAccountByEmail(email);
     }
 
-
     public boolean isTokenExpired(String token){
         return extractExpiration(token).before(new Date());
     }
+
     // get Expiration form CLAIM
     public Date extractExpiration(String token){
         return extractClaim(token,Claims::getExpiration);

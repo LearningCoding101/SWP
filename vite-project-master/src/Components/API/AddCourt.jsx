@@ -1,15 +1,17 @@
 import axios from 'axios';
 
-export const addCourt = async (name, address, open_time, close_time, picture_location, email) => {
+export const addCourt = async (name, address, startHour, startMinute, endHour, endMinute, picture_location) => {
     const url = 'http://152.42.168.144:8080/api/club';
 
     const payload = {
         name: name,
         address: address,
-        open_time: open_time,
-        close_time: close_time,
+        startHour: startHour,
+        startMinute: startMinute,
+        endHour: endHour,
+        endMinute: endMinute,
         picture_location: picture_location,
-        email: email,
+        
     };
 
     try {

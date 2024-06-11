@@ -1,7 +1,5 @@
 package click.badcourt.be.entity;
 
-
-import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,18 +11,23 @@ import java.util.Date;
 @Getter
 @Setter
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long transactionId;
+    private Long transactionId;
+
     private float depositAmount;
     private Date paymentDate;
     private float totalAmount;
+
     @OneToOne
     @JoinColumn(name="booking_id")
     Booking booking;
+
     @OneToOne
     @JoinColumn(name="payment_method_id")
     PaymentMethod paymentMethod;
+
     @Enumerated(EnumType.STRING)
     TransactionEnum status;
 }

@@ -6,7 +6,9 @@ import java.util.Date;
 
 @Data
 public class BookingDetailRequest {
+
     Long bookingId;
     Long courtTSId;
     Date bookingDate;
+
 }

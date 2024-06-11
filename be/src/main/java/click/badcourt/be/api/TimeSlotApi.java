@@ -1,7 +1,9 @@
 package click.badcourt.be.api;
+
 import click.badcourt.be.entity.TimeSlot;
 import click.badcourt.be.model.request.TimeSlotRequest;
 import click.badcourt.be.service.TimeSlotService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/timeslots")
+@SecurityRequirement(name = "api")
 public class TimeSlotApi {
 
     @Autowired

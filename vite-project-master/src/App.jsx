@@ -22,15 +22,13 @@ import ShowNavBar from './Components/layout/ShowNavBar'
 import ShowFooter from './Components/layout/ShowFooter'
 import CRUD from './Components/common/CRUD'
 import Club from './Components/Clubs/Club'
+import ClubDetail from './Components/Clubs/ClubDetail'
 function App() {
   return (
     <AuthProvider>
       <main>
         
         <Router>
-          <ShowNavBar>
-          <NavBar />
-          </ShowNavBar>
           <Routes>
             <Route
               exact
@@ -67,6 +65,10 @@ function App() {
               element={<Club />}
             />
             <Route
+              path='/clubs/:id'
+              element={<ClubDetail />}
+            />
+            <Route
               path='/CRUD'
               element={<CRUD />}
             />
@@ -76,9 +78,7 @@ function App() {
             />
           </Routes>
         </Router>
-        {/* <ShowFooter> */}
-        <Footer />
-        {/* </ShowFooter> */}
+       
       </main>
      </AuthProvider>
   )
