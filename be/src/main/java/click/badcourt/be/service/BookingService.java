@@ -2,6 +2,7 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.entity.Booking;
+import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.model.request.BookingCreateRequest;
@@ -9,6 +10,7 @@ import click.badcourt.be.model.request.BookingUpdateRequest;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.BookingRepository;
+import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,20 +25,20 @@ public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
-
+    @Autowired
+    private AccountUtils accountUtils;
     @Autowired
     private CourtRepository courtRepository;
-
+    @Autowired
+    private ClubRepository clubRepository;
     @Autowired
     private AuthenticationRepository authenticationRepository;
-    @Autowired
-    AccountUtils accountUtils;
 
     public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
         Booking booking = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
 
-        Court court = courtRepository.findById(bookingUpdateRequest.getCourt_id()).orElseThrow(()->new RuntimeException("Court not found"));
-        booking.setCourt(court);
+        Club club = clubRepository.findById(bookingUpdateRequest.getClub_id()).orElseThrow(()->new RuntimeException("Club not found"));
+        booking.setClub(club);
         booking.setStatus(bookingUpdateRequest.getBookingStatusEnum());
 
         booking = bookingRepository.save(booking);
@@ -45,11 +47,11 @@ public class BookingService {
         BookingResponse bookingResponse = new BookingResponse();
         bookingResponse.setId(booking.getBookingId());
         bookingResponse.setBookingDate(booking.getBookingDate());
-        bookingResponse.setClub_name(court.getClub().getName()); // Assuming the Court entity has a reference to Club
+        bookingResponse.setClub_name(club.getName()); // Assuming the Court entity has a reference to Club
         bookingResponse.setAccount_email(booking.getAccount().getEmail()); // Assuming the Account entity has an email field
         bookingResponse.setAccount_number(booking.getAccount().getPhone()); // Assuming the Account entity has an accountNumber field
         bookingResponse.setStatus(booking.getStatus());
-        bookingResponse.setAddress(booking.getCourt().getClub().getAddress());
+        bookingResponse.setAddress(booking.getClub().getAddress());
         return bookingResponse;
     }
     public List<BookingResponse> getBookingsByCustomerIdWithResponse(Long customerId) {
@@ -66,10 +68,10 @@ public class BookingService {
             if (booking.getAccount().getAccountId() == customerId) {
                 BookingResponse response= new BookingResponse();
                 response.setBookingDate(booking.getBookingDate());
-                response.setAddress(booking.getCourt().getClub().getAddress());
+                response.setAddress(booking.getClub().getAddress());
                 response.setId(booking.getBookingId());
                 response.setStatus(booking.getStatus());
-                response.setClub_name(booking.getCourt().getClub().getName());
+                response.setClub_name(booking.getClub().getName());
                 response.setAccount_number(booking.getAccount().getPhone());
                 response.setAccount_email(booking.getAccount().getEmail());
                 bookingResponses.add(response);
@@ -99,11 +101,12 @@ public class BookingService {
 
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();
-        Optional<Court> court= courtRepository.findById(bookingCreateRequest.getCourt_id());
-        if(court.isPresent()&& !court.get().isDeleted()) {
+        Optional<Club> club= clubRepository.findById(bookingCreateRequest.getClub_id());
+        if(club.isPresent()&& !club.get().isDeleted()) {
+
             booking.setBookingDate(bookingCreateRequest.getBookingDate());
             booking.setAccount(accountUtils.getCurrentAccount());
-            booking.setCourt(court.get());
+            booking.setClub(club.get());
             booking.setStatus(BookingStatusEnum.PENDING);
 //            booking.setDeleted(false);
 
@@ -120,4 +123,5 @@ public class BookingService {
         bookingRepository.save(booking);
 
     }
+
 }
