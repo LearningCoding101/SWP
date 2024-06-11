@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -20,14 +21,14 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingId;
 
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date bookingDate;
 
     @ManyToOne
-    @JoinColumn(name = "court_id")
-    private Court court;
+    @JoinColumn(name = "clubid")
+    private Club club;
 
-//    @Column(nullable = false)
-//    private boolean deleted ;
+
 
     @OneToOne(mappedBy = "booking")
     FeedBack feedback;
@@ -36,6 +37,7 @@ public class Booking {
     Transaction transaction;
 
     @OneToMany(mappedBy = "booking")
+
     List<BookingDetail> bookingDetails;
 
     @ManyToOne
@@ -44,8 +46,8 @@ public class Booking {
     Account account;
     @ManyToOne
     @JoinColumn(name = "saleBy")
-
     BookingType bookingType;
     @Enumerated(EnumType.STRING)
-    BookingStatusEnum status;
+    private BookingStatusEnum status;
 }
+

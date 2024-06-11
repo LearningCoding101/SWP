@@ -32,6 +32,9 @@ public class Club {
     @Column(nullable = false)
     boolean deleted;
 
+    @OneToMany(mappedBy="club")
+    List<Booking> bookings;
+
     @OneToMany(mappedBy = "club")
     List<Court> courts;
 

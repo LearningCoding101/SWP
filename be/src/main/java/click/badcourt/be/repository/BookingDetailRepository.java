@@ -10,6 +10,6 @@ import java.util.List;
 public interface BookingDetailRepository extends JpaRepository<BookingDetail,Long> {
 
     List<BookingDetail> findBookingDetailsByBooking_BookingId(Long bookingId);
-    List<BookingDetail> findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(Long courtTSlotID);
+    List<BookingDetail> findBookingDetailsByDeletedFalse();
 
 }

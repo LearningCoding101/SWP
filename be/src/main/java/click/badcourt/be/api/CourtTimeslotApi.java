@@ -1,16 +1,18 @@
 package click.badcourt.be.api;
 
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
-import click.badcourt.be.model.request.CourtTimeSlotSearchRequest;
+import click.badcourt.be.model.response.CourtTimeSlotResponse;
 import click.badcourt.be.service.CourtTimeSlotService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/courtTimeSlot")
@@ -21,9 +23,12 @@ public class CourtTimeslotApi {
 
 //    @PreAuthorize("hasAuthority('STAFF' OR 'CUSTOMER' OR 'ClUB_OWNER')")
     @GetMapping()
-    public ResponseEntity getAllCourtTimeslotsByCourtId(@RequestParam Long courtTSId, Long courtId, Date date) {
-        return ResponseEntity.ok(courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(courtTSId, courtId, date));
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(
+            @RequestParam Long cId,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+        return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(cId, date);
     }
+
 
 
     //    @PreAuthorize("hasAuthority('CLUB_OWNER')")
