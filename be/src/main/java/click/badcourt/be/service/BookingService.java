@@ -54,10 +54,10 @@ public class BookingService {
         bookingResponse.setAddress(booking.getClub().getAddress());
         return bookingResponse;
     }
-    public List<BookingResponse> getBookingsByCustomerIdWithResponse(Long customerId) {
+    public List<BookingResponse> getBookingsByCustomerIdWithResponse() {
         List<Booking> bookingList= bookingRepository.findAll();
-        if (!authenticationRepository.existsById(customerId)) {
-            throw new IllegalArgumentException("Booking not found with id: " + customerId);
+        if (!authenticationRepository.existsById(accountUtils.getCurrentAccount().getAccountId())) {
+            throw new IllegalArgumentException("Booking not found with id: " + accountUtils.getCurrentAccount().getAccountId());
         }
 
         List<Booking> allBookings = bookingRepository.findAll();
@@ -65,7 +65,7 @@ public class BookingService {
         // Filter the courts by clubId using a for loop
         List<Booking> Bookings = new ArrayList<>();
         for (Booking booking : allBookings) {
-            if (booking.getAccount().getAccountId() == customerId) {
+            if (booking.getAccount().getAccountId() == accountUtils.getCurrentAccount().getAccountId()) {
                 BookingResponse response= new BookingResponse();
                 response.setBookingDate(booking.getBookingDate());
                 response.setAddress(booking.getClub().getAddress());

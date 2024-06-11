@@ -42,10 +42,10 @@ public class BookingApi {
         }
     }
 
-    @GetMapping("/customer/{customerId}")
-    public ResponseEntity<?> getBookingsByCustomerId(@PathVariable Long customerId) {
+    @GetMapping("/customer")
+    public ResponseEntity<?> getBookingsByCustomerId() {
         try {
-            List<BookingResponse> bookings = bookingService.getBookingsByCustomerIdWithResponse(customerId);
+            List<BookingResponse> bookings = bookingService.getBookingsByCustomerIdWithResponse();
             return ResponseEntity.ok(bookings);
         }catch (IllegalArgumentException e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

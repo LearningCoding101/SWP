@@ -76,7 +76,7 @@ public class BookingDetailService {
             return bookingDetailRequest;
         }
         else {
-            throw new IllegalArgumentException("Booking or Court_Timeslot not found");
+            throw new IllegalArgumentException("Booking or CourtTimeslot not found");
         }
     }
 

@@ -98,30 +98,30 @@ public class FeedbackService {
         feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
         return feedbackResponse;
     }
-    public List<FeedbackResponse> getAllFeedBackByClubId(Long clubId) {
-        Optional<Club> club = clubRepository.findById(clubId);
-        if(club.isEmpty()) {
-            throw new IllegalArgumentException("Club not found");
-        }
-        List<Court> courtList= courtRepository.findCourtsByClub_ClubId(clubId);
-        List<FeedbackResponse> feedbackResponses = new ArrayList<>();
-        List<Booking> bookingList = new ArrayList<>();
-        for(Court court:courtList){
-            List<Booking> bookings = bookingRepository.findBookingsByCourt_CourtId(court.getCourtId());
-            bookingList.addAll(bookings);
-        }
-        for(Booking booking:bookingList){
-            FeedBack feedBack = feedbackRespository.findByBooking_BookingId(booking.getBookingId());
-            if(feedBack != null){
-                    
-            FeedbackResponse feedbackResponse = new FeedbackResponse();
-            feedbackResponse.setFeedbackRating(feedBack.getFeedbackRating());
-            feedbackResponse.setFeedbackContent(feedBack.getFeedbackContent());
-            feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
-            feedbackResponses.add(feedbackResponse);
-            }
-        }
-        return feedbackResponses;
-
-    }
+//    public List<FeedbackResponse> getAllFeedBackByClubId(Long clubId) {
+//        Optional<Club> club = clubRepository.findById(clubId);
+//        if(club.isEmpty()) {
+//            throw new IllegalArgumentException("Club not found");
+//        }
+//        List<Court> courtList= courtRepository.findCourtsByClub_ClubId(clubId);
+//        List<FeedbackResponse> feedbackResponses = new ArrayList<>();
+//        List<Booking> bookingList = new ArrayList<>();
+//        for(Court court:courtList){
+//            List<Booking> bookings = bookingRepository.findBookingsByCourt_CourtId(court.getCourtId());
+//            bookingList.addAll(bookings);
+//        }
+//        for(Booking booking:bookingList){
+//            FeedBack feedBack = feedbackRespository.findByBooking_BookingId(booking.getBookingId());
+//            if(feedBack != null){
+//
+//            FeedbackResponse feedbackResponse = new FeedbackResponse();
+//            feedbackResponse.setFeedbackRating(feedBack.getFeedbackRating());
+//            feedbackResponse.setFeedbackContent(feedBack.getFeedbackContent());
+//            feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
+//            feedbackResponses.add(feedbackResponse);
+//            }
+//        }
+//        return feedbackResponses;
+//
+//    }
 }
