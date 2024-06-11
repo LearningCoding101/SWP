@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate, } from 'react-router-dom';
 import { login } from '../API/LoginService';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+// import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 <script src="https://accounts.google.com/gsi/client" async></script>
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
@@ -36,7 +36,8 @@ const Login = () => {
                 console.log('Login successful!', data);
                 localStorage.setItem("userName", email)
                 const token = data.token
-                authen.handleLogin(token)
+                // localStorage.setItem("token", token)
+                authen.handleLogin(token)    
                 navigate("/")
 
 
@@ -46,20 +47,20 @@ const Login = () => {
                 setError(err.message);
             }
         }
-}
-// const handleLoginGG = async () => {
-//     try {
-//         const result = await signInWithPopup(auth, provider);
-//         const token = result.user.accessToken;
-       
-//         const res = await axios.post("http://152.42.168.144:8080/api/login-google",{token:token})
-        
-//         console.log(res.data);
+    }
+    // const handleLoginGG = async () => {
+    //     try {
+    //         const result = await signInWithPopup(auth, provider);
+    //         const token = result.user.accessToken;
 
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
+    //         const res = await axios.post("http://152.42.168.144:8080/api/login-google", { token: token })
+
+    //         console.log(res.data);
+
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     return (
 
@@ -88,7 +89,7 @@ const Login = () => {
                             id="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="form-input"                           
+                            className="form-input"
                         />
                         {/* <div className='' onClick={togglePasswordVisibility}>
                             {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
@@ -109,11 +110,7 @@ const Login = () => {
                         Login
                     </button>
                     {/* <div className='google-button'>
-                        
-                            <GoogleLogin shape='pill'
-                            //    onClick={handleLoginGG}
-                            />
-                      
+                        <button onClick={handleLoginGG}>Google</button>
                     </div> */}
                 </form>
                 <div className='footer-content'>

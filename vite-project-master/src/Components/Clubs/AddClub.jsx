@@ -1,31 +1,30 @@
 import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { addCourt } from '../API/AddCourt';
-import Alert from 'react-bootstrap/Alert';
-const AddCourt = () => {
+import Alert from '@mui/material/Alert';
+import 'bootstrap/dist/css/bootstrap.min.css';
+const AddClub = () => {
     const [courtAddress, setCourtAddress] = useState('');
     const [courtName, setCourtName] = useState('');
-    const [courtOpenTime, setCourtOpenTime] = useState('')
-    const [courtCloseTime, setCourtCloseTime] = useState('')
+    const [courtStartHour, setCourtStartHour] = useState('')
+    const [courtStartMinute, setCourtStartMinute] = useState('')
+    const [courtEndHour, setCourtEndHour] = useState('')
+    const [courtEndMinute, setCourtEndMinute] = useState('')
     const [courtLocation, setCourtLocation] = useState('')
     const [courtEmail, setCourtEmail] = useState('')
     const [error, setError] = useState('');
-    const [show, setShow] = useState(false);
     const handleAdd = async (e) => {
         e.preventDefault();
-        if (courtName.trim() === '' || courtAddress.trim() === '' || courtOpenTime.trim() === '' || courtCloseTime.trim() === '' || courtLocation.trim() === '' || courtEmail.trim() === '') {
+        if (courtName.trim() === '' || courtAddress.trim() === '' || courtStartHour.trim() === '' || courtStartMinute.trim() === '' || courtEndHour.trim() === '' || courtEndMinute.trim() === '' || courtLocation.trim() === '' || courtEmail.trim() === '') {
             setError('Please enter all fields');
         }
         else {
             try {
-                const data = await addCourt(courtName, courtAddress, courtOpenTime, courtCloseTime, courtLocation, courtEmail);
+                const data = await addCourt(courtName, courtAddress, courtStartHour, courtStartMinute, courtEndHour, courtEndMinute, courtLocation, courtEmail);
                 console.log('Added successful!', data);
-                
+
                 if (data) {
-                    setShow(true);
-                    <Alert variant="danger" onClose={() => setShow(false)} dismissible>
-                        <Alert.Heading>Added new club!</Alert.Heading>
-                    </Alert>
+                    <Alert severity="success">Added club successfully!</Alert>
                 }
 
                 // Handle successful 
@@ -46,6 +45,7 @@ const AddCourt = () => {
                         <label htmlFor="name">Club name</label>
                         <input
                             type="text"
+                            required
                             placeholder='Enter club name'
                             id="name"
                             value={courtName}
@@ -57,6 +57,7 @@ const AddCourt = () => {
                         <label htmlFor="address">Club address</label>
                         <input
                             type="text"
+                            required
                             placeholder='Enter club address'
                             id="address"
                             value={courtAddress}
@@ -66,35 +67,65 @@ const AddCourt = () => {
 
                     </div>
                     <div className='column flex-column'>
-                        <div className="form-group ">
+                        <div className="form-group row justify-content-center ">
                             <label htmlFor="openTime">Open time</label>
                             <input
-                                type="text"
-                                placeholder='Enter club open time'
+                                type="number"
+                                required
+                                min={7}
+                                max={23}
+                                placeholder='Open hour'
                                 id="openTime"
-                                value={courtOpenTime}
-                                onChange={(e) => setCourtOpenTime(e.target.value)}
-                                className="form-input"
+                                value={courtStartHour}
+                                onChange={(e) => setCourtStartHour(e.target.value)}
+                                className="form-input col-md-5 me-5"
+                            />
+                            <input
+                                type="number"
+                                required
+                                min={0}
+                                max={59}
+                                placeholder='Open minute'
+                                id="openTime"
+                                value={courtStartMinute}
+                                onChange={(e) => setCourtStartMinute(e.target.value)}
+                                className="form-input col-md-5 "
                             />
 
                         </div>
-                        <div className="form-group ">
+                        <div className="form-group row justify-content-center ">
                             <label htmlFor="closeTime">Close time</label>
                             <input
-                                type="text"
-                                placeholder='Enter club close time'
+                                type="number"
+                                required
+                                min={7}
+                                max={23}
+                                placeholder='Close hour'
                                 id="closeTime"
-                                value={courtCloseTime}
-                                onChange={(e) => setCourtCloseTime(e.target.value)}
-                                className="form-input"
+                                value={courtEndHour}
+                                onChange={(e) => setCourtEndHour(e.target.value)}
+                                className="form-input col-md-5 me-5"
+                                
+                            />
+                            <input
+                                type="number"
+                                required
+                                min={0}
+                                max={59}
+                                placeholder='Close minute'
+                                id="closeTime"
+                                value={courtEndMinute}
+                                onChange={(e) => setCourtEndMinute(e.target.value)}
+                                className="form-input col-md-5"
                             />
 
                         </div>
                     </div>
                     <div className="form-group ">
-                        <label htmlFor="location">Club picture</label>
+                        <label htmlFor="location">Club picture url</label>
                         <input
                             type="text"
+                            required
                             placeholder='Enter url of your picture'
                             id="location"
                             value={courtLocation}
@@ -106,7 +137,8 @@ const AddCourt = () => {
                     <div className="form-group ">
                         <label htmlFor="address">Club owner email</label>
                         <input
-                            type="text"
+                            type="email"
+                            required
                             placeholder='Enter email'
                             id="address"
                             value={courtEmail}
@@ -128,4 +160,4 @@ const AddCourt = () => {
     )
 }
 
-export default AddCourt
+export default AddClub

@@ -1,11 +1,12 @@
-/* .container{
-    display: flex;
+.container{
+    /* display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    
+     */
+     /* border: 1px solid black; */
 }
-.container h3{
+/* .container h3{
     text-align: center;
     
 }
@@ -43,8 +44,8 @@
     color: black;
     margin-bottom: 20px;
     margin-top: 20px;
-}
- */
+} */
+
  .login-container {
     display: flex;
     justify-content: center;
