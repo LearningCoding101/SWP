@@ -11,5 +11,6 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail,Lon
 
     List<BookingDetail> findBookingDetailsByBooking_BookingId(Long bookingId);
     List<BookingDetail> findBookingDetailsByDeletedFalse();
+    List<BookingDetail> findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(Long courtTSlotID);
 
 }

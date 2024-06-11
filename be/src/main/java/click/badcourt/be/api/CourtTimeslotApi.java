@@ -23,6 +23,7 @@ public class CourtTimeslotApi {
 
 //    @PreAuthorize("hasAuthority('STAFF' OR 'CUSTOMER' OR 'ClUB_OWNER')")
     @GetMapping()
+
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(
             @RequestParam Long cId,
             @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {

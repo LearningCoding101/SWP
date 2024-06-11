@@ -60,6 +60,7 @@ public class BookingService {
             throw new IllegalArgumentException("Booking not found with id: " + accountUtils.getCurrentAccount().getAccountId());
         }
 
+
         List<Booking> allBookings = bookingRepository.findAll();
         List<BookingResponse> bookingResponses = new ArrayList<>();
         // Filter the courts by clubId using a for loop

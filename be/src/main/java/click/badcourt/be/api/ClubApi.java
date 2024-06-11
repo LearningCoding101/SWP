@@ -28,7 +28,7 @@ public class ClubApi {
     public ResponseEntity getClub(@PathVariable("address") String address){
         return ResponseEntity.ok(clubService.findClubResponsesByAddress(address));
     }
-//    @PreAuthorize("hasAuthority('CLUB_OWNER')")
+
     @PostMapping("club")
     public ResponseEntity addClub(@RequestBody ClubCreateRequest clubCreateRequest){
         try {

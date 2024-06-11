@@ -22,14 +22,9 @@ public class BookingApi {
     private BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<?> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
-        try {
-            Booking booking = bookingService.createBooking(bookingCreateRequest);
-            return ResponseEntity.ok(booking);
-        }catch(IllegalArgumentException e){
-            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<Booking> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
+        Booking booking = bookingService.createBooking(bookingCreateRequest);
+        return ResponseEntity.ok(booking);
     }
 
     @PutMapping("/{id}")
