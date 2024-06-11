@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@JsonIgnoreProperties({"court_timeslots", "bookings"})
+@JsonIgnoreProperties({"bookings"})
 public class Court {
 
     @Id
@@ -28,9 +28,9 @@ public class Court {
     Club club;
 
     @OneToMany(mappedBy = "court")
+
     List<CourtTimeslot> courtTimeslot;
 
-    @OneToMany(mappedBy = "court")
-    List<Booking> bookings;
+
 
 }

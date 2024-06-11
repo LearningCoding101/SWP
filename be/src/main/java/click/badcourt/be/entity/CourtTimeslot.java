@@ -1,6 +1,8 @@
 package click.badcourt.be.entity;
 
 import click.badcourt.be.enums.CourtTSStatusEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"court","timeslot"})
 public class CourtTimeslot {
 
     @Id
@@ -18,6 +21,7 @@ public class CourtTimeslot {
 
     @ManyToOne
     @JoinColumn(name="from_timeSlot")
+
     TimeSlot timeslot;
 
     @Enumerated(EnumType.STRING)
@@ -25,6 +29,7 @@ public class CourtTimeslot {
 
     @ManyToOne
     @JoinColumn(name="from_Court")
+
     Court court;
 
     @OneToMany(mappedBy = "courtTimeslot")

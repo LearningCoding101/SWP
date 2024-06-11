@@ -25,11 +25,10 @@ public class Booking {
     private Date bookingDate;
 
     @ManyToOne
-    @JoinColumn(name = "court_id")
-    private Court court;
+    @JoinColumn(name = "clubid")
+    private Club club;
 
-//    @Column(nullable = false)
-//    private boolean deleted ;
+
 
     @OneToOne(mappedBy = "booking")
     FeedBack feedback;
@@ -38,6 +37,7 @@ public class Booking {
     Transaction transaction;
 
     @OneToMany(mappedBy = "booking")
+
     List<BookingDetail> bookingDetails;
 
     @ManyToOne
@@ -46,8 +46,8 @@ public class Booking {
     Account account;
     @ManyToOne
     @JoinColumn(name = "saleBy")
-
     BookingType bookingType;
     @Enumerated(EnumType.STRING)
-    BookingStatusEnum status;
+    private BookingStatusEnum status;
 }
+

@@ -1,6 +1,7 @@
 package click.badcourt.be.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@JsonIgnoreProperties({"court_timeslots"})
+@JsonIgnoreProperties({"courtTimeslots"})
 public class TimeSlot {
 
     @Id
@@ -25,6 +26,9 @@ public class TimeSlot {
     @Column(nullable = false)
     boolean deleted;
 
+
+
     @OneToMany(mappedBy="timeslot")
+
     List<CourtTimeslot> courtTimeslots;
 }
