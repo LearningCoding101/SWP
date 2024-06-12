@@ -21,9 +21,9 @@ import java.util.Map;
 
 
 public class QRCodeService {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void generateQRCode(QRCodeData data, String filePath) {
+    public static void generateQRCode(QRCodeData data, String filePath) {
         int width = 300;
         int height = 300;
         String format = "png";
@@ -33,17 +33,25 @@ public class QRCodeService {
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
 
         try {
+            // Convert data to JSON string
             String jsonData = objectMapper.writeValueAsString(data);
+
+            // Generate QR code
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(jsonData, BarcodeFormat.QR_CODE, width, height, hints);
 
+            // Define output file path
             Path path = FileSystems.getDefault().getPath(filePath);
             MatrixToImageWriter.writeToPath(bitMatrix, format, path);
+
             System.out.println("QR code generated successfully!");
-        } catch (WriterException | IOException e) {
+        } catch (WriterException e) {
             System.out.println("Error generating QR code: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("Error writing QR code to file: " + e.getMessage());
         }
     }
+
     public QRCodeData decodeQr(byte[] data) throws IOException, NotFoundException{
         Result result = new MultiFormatReader()
                 .decode(new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(

@@ -4,17 +4,28 @@ import click.badcourt.be.entity.Account;
 import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Court;
+import click.badcourt.be.entity.EmailDetail;
 import click.badcourt.be.enums.BookingStatusEnum;
+import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.BookingCreateRequest;
 import click.badcourt.be.model.request.BookingUpdateRequest;
+import click.badcourt.be.model.request.QRCodeData;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.utils.AccountUtils;
+import com.google.zxing.NotFoundException;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.google.zxing.WriterException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +44,14 @@ public class BookingService {
     private ClubRepository clubRepository;
     @Autowired
     private AuthenticationRepository authenticationRepository;
+
+    @Autowired
+    private EmailService emailService;
+    private QRCodeService qrCodeService;
+    @Autowired
+    private TokenService tokenService;
+
+
 
     public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
         Booking booking = bookingRepository.findById(id).orElseThrow(()->new RuntimeException("Booking not found"));
@@ -122,7 +141,38 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
 //        booking.setDeleted(true);
         bookingRepository.save(booking);
+    }
+    public void sendBookingConfirmation(QRCodeData data) throws WriterException, IOException, MessagingException {
+        String filePath = "D:/Nguyen/qr-code.png";  // Specify the correct path
+        qrCodeService.generateQRCode(data, filePath);
 
+
+        Account account = accountUtils.getCurrentAccount();
+        if (account == null) {
+            try {
+                throw new BadRequestException("Account not found!");
+            }catch (RuntimeException e){
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println(account.getEmail());
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(account.getEmail());
+        emailDetail.setSubject("Booking successfully" );
+        emailDetail.setMsgBody("");
+        emailDetail.setFullName(account.getFullName());
+        emailDetail.setLink("http://badcourts.click/reset-password?token=" + tokenService.generateToken(account));
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                emailService.sendEmailWithAttachment(emailDetail, filePath);
+            }
+        };
+        new Thread(r).start();
     }
 
+    public boolean validateQrCode(byte[] qrCodeData, QRCodeData expectedData) throws IOException, NotFoundException, NotFoundException {
+        QRCodeData decodedData = qrCodeService.decodeQr(qrCodeData);
+        return decodedData != null && decodedData.getBookingId().equals(expectedData.getBookingId());
+    }
 }
