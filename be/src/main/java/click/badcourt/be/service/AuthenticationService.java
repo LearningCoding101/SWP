@@ -55,7 +55,7 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.save(account);
     }
 
-    public AccountResponse  login(LoginRequest loginRequest) {
+    public AccountResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
                 loginRequest.getPassword()

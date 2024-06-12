@@ -79,6 +79,7 @@ public class ClubService {
         }
         return clubList;
     }
+
     public List<ClubResponse> findClubResponsesByAddress(String address) {
         List<ClubResponse> clubResponses = new ArrayList<>();
         List<Club> clubs = getClubsByAddress(address);
