@@ -45,7 +45,7 @@ public class Booking {
     @JsonBackReference
     Account account;
     @ManyToOne
-    @JoinColumn(name = "saleBy")
+    @JoinColumn(name = "booking_type")
     BookingType bookingType;
     @Enumerated(EnumType.STRING)
     private BookingStatusEnum status;
