@@ -42,16 +42,12 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setPrice(courtTimeslot.getCourt().getPrice());
             courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
             courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             for (BookingDetail booking : bookingDTList) {
-                if ((booking.getDate().compareTo(date) == 1) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
-                    count = count + 1;
+                if ((booking.getDate().compareTo(date) == 0) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
+//                    count = count + 1;
+                    courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
                 }
-            }
-            if (count > 0) {
-                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
-                count = 0;
-            } else {
-                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             }
             courtTimeSlotResponses.add(courtTimeSlotResponse);
         }
@@ -68,7 +64,6 @@ public class CourtTimeSlotService {
             court_timeslot.setTimeslot(timeSlotCheck.get());
             court_timeslot.setCourt(courtCheck.get());
             court_timeslot.setDeleted(false);
-            court_timeslot.setStatus(CourtTSStatusEnum.AVAILABLE);
             courtTimeSlotRepository.save(court_timeslot);
             return courtTimeSlotRequest;
         }else {

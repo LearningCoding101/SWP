@@ -64,6 +64,14 @@ public class BookingDetailService {
     }
 
     public BookingDetailRequest createBookingDetail(BookingDetailRequest bookingDetailRequest) {
+
+        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        for (BookingDetail bookingdt : bookingDTList) {
+            if ((bookingdt.getDate().compareTo(bookingDetailRequest.getBookingDate()) == 0) && bookingdt.getCourtTimeslot().getCourtTSlotID() == bookingDetailRequest.getCourtTSId()) {
+                throw new IllegalArgumentException("CourtTimeslot are already in use");
+            }
+        }
+
         BookingDetail bookingDetail= new BookingDetail();
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingDetailRequest.getBookingId());
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());

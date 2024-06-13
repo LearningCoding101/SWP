@@ -20,6 +20,7 @@ public class BookingDetail {
     @JoinColumn(name = "fromBooking")
     Booking booking;
 
+
     @ManyToOne
     @JoinColumn(name = "from_courtTimeslot")
     CourtTimeslot courtTimeslot;

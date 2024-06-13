@@ -24,8 +24,6 @@ public class CourtTimeslot {
 
     TimeSlot timeslot;
 
-    @Enumerated(EnumType.STRING)
-    CourtTSStatusEnum status = CourtTSStatusEnum.AVAILABLE;
 
     @ManyToOne
     @JoinColumn(name="from_Court")
