@@ -9,7 +9,7 @@ import java.util.Date;
 public class BookingUpdateRequest {
 
     private Long club_id;
-
+    private Long bookingTypeID;
     private BookingStatusEnum bookingStatusEnum;
 
 }
