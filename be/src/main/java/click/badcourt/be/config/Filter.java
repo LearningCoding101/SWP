@@ -46,6 +46,8 @@ public class Filter extends OncePerRequestFilter {
             "/api/login",
             "/api/register",
             "/api/registeradmin",
+            "/api/registerclubowner",
+            "/api/registerstaff",
             "/api/forgot-password",
 //            "/api/account",
             "/api/club"
