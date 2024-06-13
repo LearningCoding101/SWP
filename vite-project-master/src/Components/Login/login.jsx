@@ -6,8 +6,8 @@ import { login } from '../API/LoginService';
 import { AiFillEye } from "react-icons/ai";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { AuthContext } from './AuthProvider';
-// import { signInWithPopup } from 'firebase/auth';
-// import { auth, provider } from './../Config/FirebaseConfig';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, provider } from './../Config/FirebaseConfig';
 import axios from 'axios';
 import { useAuth } from "./AuthProvider"
 const Login = () => {
@@ -35,6 +35,9 @@ const Login = () => {
                 const data = await login(email, password);
                 console.log('Login successful!', data);
                 localStorage.setItem("userName", email)
+                
+                const role = data.role
+                localStorage.setItem("userRole", role)
                 const token = data.token
                 // localStorage.setItem("token", token)
                 authen.handleLogin(token)    
@@ -48,19 +51,27 @@ const Login = () => {
             }
         }
     }
-    // const handleLoginGG = async () => {
-    //     try {
-    //         const result = await signInWithPopup(auth, provider);
-    //         const token = result.user.accessToken;
+    const handleLoginGG = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const token = result.user.accessToken;
+            console.log(token);
+            const res = await axios.post("http://152.42.168.144:8080/api/login-google", { token: token })
+            authen.handleLogin(token) 
+            const ggData = res.data
+            const roleGG = ggData.role
+            console.log(roleGG)
+            localStorage.setItem("userRole", roleGG)
+            const email = ggData.email
+            console.log(email);
+            localStorage.setItem("userName", email)
+            navigate("/")
+            console.log(res.data);
 
-    //         const res = await axios.post("http://152.42.168.144:8080/api/login-google", { token: token })
-
-    //         console.log(res.data);
-
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
 
@@ -109,9 +120,9 @@ const Login = () => {
                     <button onClick={handleLogin1} type="submit" className="login-button">
                         Login
                     </button>
-                    {/* <div className='google-button'>
+                    <div className='google-button'>
                         <button onClick={handleLoginGG}>Google</button>
-                    </div> */}
+                    </div>
                 </form>
                 <div className='footer-content'>
                     <p>Dont have an account? <Link to="/signup">Sign up</Link></p>

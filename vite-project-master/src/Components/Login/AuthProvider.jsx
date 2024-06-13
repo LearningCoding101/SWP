@@ -13,8 +13,8 @@ export const AuthProvider = ({ children }) => {
 	const handleLogin = (token) => {
 		const decodedUser = jwtDecode(token)
 		localStorage.setItem("userId", decodedUser.accountId)
-		localStorage.setItem("userRole", decodedUser.role)
-		localStorage.setItem("loginToken", token)
+		// localStorage.setItem("userRole", decodedUser.role)
+		localStorage.setItem("token", token)
 		setUser(decodedUser)
 		console.log(decodedUser)
 	}
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 		localStorage.removeItem('userId')
 		localStorage.removeItem("userName")
 		localStorage.removeItem("userRole")
-		localStorage.removeItem("loginToken")
+		localStorage.removeItem("token")
 		setUser(null)
 	}
 

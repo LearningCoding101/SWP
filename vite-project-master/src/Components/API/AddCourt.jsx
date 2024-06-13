@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const addCourt = async (name, address, startHour, startMinute, endHour, endMinute, picture_location) => {
-    const url = 'http://152.42.168.144:8080/api/club';
+    const url = 'http://152.42.168.144:8080/api/club/register';
 
     const payload = {
         name: name,
