@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class BookingDetailDeleteResponse extends BookingDetailResponse{
 
-    boolean deleted;
+    private boolean deleted;
 
 }

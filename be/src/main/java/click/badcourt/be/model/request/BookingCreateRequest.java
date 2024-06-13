@@ -14,7 +14,6 @@ public class BookingCreateRequest {
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date bookingDate;
     private Long club_id;
-    private Long created_by;
     private BookingStatusEnum bookingStatusEnum;
 
 }

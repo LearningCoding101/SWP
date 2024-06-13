@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CourtTimeSlotRequest {
 
-    Long timeSlotId;
-    Long courtId;
+    private Long timeSlotId;
+    private Long courtId;
 
 }

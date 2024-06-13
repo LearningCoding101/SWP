@@ -8,12 +8,12 @@ import java.time.LocalTime;
 @Data
 public class CourtTimeSlotResponse {
 
-    Long courtTimeSlotId;
-    Long timeSlotId;
-    Long CourtId;
-    double price;
-    LocalTime start_time;
-    LocalTime end_time;
-    CourtTSStatusEnum status;
+    private Long courtTimeSlotId;
+    private Long timeSlotId;
+    private Long CourtId;
+    private double price;
+    private LocalTime start_time;
+    private LocalTime end_time;
+    private CourtTSStatusEnum status;
 
 }

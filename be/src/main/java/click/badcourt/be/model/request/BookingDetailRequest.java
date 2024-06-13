@@ -8,9 +8,9 @@ import java.util.Date;
 @Data
 public class BookingDetailRequest {
 
-    Long bookingId;
-    Long courtTSId;
+    private Long bookingId;
+    private Long courtTSId;
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    Date bookingDate;
+    private Date bookingDate;
 
 }
