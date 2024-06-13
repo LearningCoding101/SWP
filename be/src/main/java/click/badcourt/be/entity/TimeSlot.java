@@ -1,12 +1,9 @@
 package click.badcourt.be.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -26,9 +23,6 @@ public class TimeSlot {
     @Column(nullable = false)
     boolean deleted;
 
-
-
     @OneToMany(mappedBy="timeslot")
-
     List<CourtTimeslot> courtTimeslots;
 }
