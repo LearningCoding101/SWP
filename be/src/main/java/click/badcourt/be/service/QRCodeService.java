@@ -9,6 +9,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
+@Service
 public class QRCodeService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
