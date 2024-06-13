@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,6 +26,27 @@ public class AuthenticationApi {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
         Account account= authenticationService.register(registerRequest);
+        return ResponseEntity.ok(account);
+    }
+
+    @PostMapping("/registeradmin")
+    public ResponseEntity registerAdmin(@RequestBody RegisterRequest registerRequest) {
+        Account account= authenticationService.registerStaff(registerRequest);
+        return ResponseEntity.ok(account);
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/registerclubowner")
+    public ResponseEntity registerClubOwner(@RequestBody RegisterRequest registerRequest) {
+        Account account= authenticationService.registerClubOwner(registerRequest);
+        return ResponseEntity.ok(account);
+    }
+
+
+    @PreAuthorize("hasAuthority('ClUB_OWNER')")
+    @PostMapping("/registerstaff")
+    public ResponseEntity registerStaff(@RequestBody RegisterRequest registerRequest) {
+        Account account= authenticationService.registerStaff(registerRequest);
         return ResponseEntity.ok(account);
     }
 

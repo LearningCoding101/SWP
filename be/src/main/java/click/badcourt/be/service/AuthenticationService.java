@@ -55,6 +55,36 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.save(account);
     }
 
+    public Account registerClubOwner(RegisterRequest reg) {
+        Account account = new Account();
+        account.setPhone(reg.getPhone());
+        account.setPassword(passwordEncoder.encode(reg.getPassword()));
+        account.setRole(RoleEnum.ClUB_OWNER);
+        account.setEmail(reg.getEmail());
+        account.setFullName(reg.getFullName());
+        return authenticationRepository.save(account);
+    }
+
+    public Account registerAdmin(RegisterRequest reg) {
+        Account account = new Account();
+        account.setPhone(reg.getPhone());
+        account.setPassword(passwordEncoder.encode(reg.getPassword()));
+        account.setRole(RoleEnum.ADMIN);
+        account.setEmail(reg.getEmail());
+        account.setFullName(reg.getFullName());
+        return authenticationRepository.save(account);
+    }
+
+    public Account registerStaff(RegisterRequest reg) {
+        Account account = new Account();
+        account.setPhone(reg.getPhone());
+        account.setPassword(passwordEncoder.encode(reg.getPassword()));
+        account.setRole(RoleEnum.STAFF);
+        account.setEmail(reg.getEmail());
+        account.setFullName(reg.getFullName());
+        return authenticationRepository.save(account);
+    }
+
     public AccountResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
