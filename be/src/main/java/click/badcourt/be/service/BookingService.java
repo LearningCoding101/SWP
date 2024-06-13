@@ -1,20 +1,13 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Account;
-import click.badcourt.be.entity.Booking;
-import click.badcourt.be.entity.Club;
-import click.badcourt.be.entity.Court;
-import click.badcourt.be.entity.EmailDetail;
+import click.badcourt.be.entity.*;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.BookingCreateRequest;
 import click.badcourt.be.model.request.BookingUpdateRequest;
 import click.badcourt.be.model.request.QRCodeData;
 import click.badcourt.be.model.response.BookingResponse;
-import click.badcourt.be.repository.AuthenticationRepository;
-import click.badcourt.be.repository.BookingRepository;
-import click.badcourt.be.repository.ClubRepository;
-import click.badcourt.be.repository.CourtRepository;
+import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
 import com.google.zxing.NotFoundException;
 import jakarta.mail.MessagingException;
@@ -50,7 +43,8 @@ public class BookingService {
     private QRCodeService qrCodeService;
     @Autowired
     private TokenService tokenService;
-
+    @Autowired
+    private BookingTypeRepository bookingTypeRepository;
 
 
     public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
@@ -70,6 +64,7 @@ public class BookingService {
         bookingResponse.setAccount_email(booking.getAccount().getEmail()); // Assuming the Account entity has an email field
         bookingResponse.setAccount_number(booking.getAccount().getPhone()); // Assuming the Account entity has an accountNumber field
         bookingResponse.setStatus(booking.getStatus());
+        bookingResponse.setBookingTypeId(bookingResponse.getBookingTypeId());
         bookingResponse.setAddress(booking.getClub().getAddress());
         return bookingResponse;
     }
@@ -89,41 +84,23 @@ public class BookingService {
                 response.setClub_name(booking.getClub().getName());
                 response.setAccount_number(booking.getAccount().getPhone());
                 response.setAccount_email(booking.getAccount().getEmail());
+                response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
                 bookingResponses.add(response);
             }
         }
         return bookingResponses;
     }
-//    public List<Booking> getBookingsByCustomerId(Long customerId) {
-//        List<Booking> bookingList= bookingRepository.findBookingsByDeletedFalse();
-//        if (!authenticationRepository.existsById(customerId)) {
-//            throw new IllegalArgumentException("Booking not found with id: " + customerId);
-//        }
-//
-//        List<Booking> allBookings = bookingRepository.findBookingsByDeletedFalse();
-//
-//        // Filter the courts by clubId using a for loop
-//        List<Booking> Bookings = new ArrayList<>();
-//        for (Booking booking : allBookings) {
-//            if (booking.getAccount().getAccountId() == customerId) {
-//                Bookings.add(booking);
-//            }
-//        }
-//        return Bookings;
-//
-//    }
 
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();
         Optional<Club> club= clubRepository.findById(bookingCreateRequest.getClub_id());
+        Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingCreateRequest.getBooking_type_id());
         if(club.isPresent()&& !club.get().isDeleted()) {
-
             booking.setBookingDate(bookingCreateRequest.getBookingDate());
             booking.setAccount(accountUtils.getCurrentAccount());
             booking.setClub(club.get());
             booking.setStatus(BookingStatusEnum.PENDING);
-//            booking.setDeleted(false);
-
+            booking.setBookingType(bookingType.get());
             return bookingRepository.save(booking);
         }
         else{
@@ -131,9 +108,9 @@ public class BookingService {
         }
     }
 
-    public void deleteBooking(Long bookingId){
+    public void cancelBooking(Long bookingId){
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
-//        booking.setDeleted(true);
+        booking.setStatus(BookingStatusEnum.CANCELED);
         bookingRepository.save(booking);
     }
     public void sendBookingConfirmation(QRCodeData data) throws WriterException, IOException, MessagingException {
@@ -169,4 +146,24 @@ public class BookingService {
         QRCodeData decodedData = qrCodeService.decodeQr(qrCodeData);
         return decodedData != null && decodedData.getBookingId().equals(expectedData.getBookingId());
     }
+
+
+    //    public List<Booking> getBookingsByCustomerId(Long customerId) {
+//        List<Booking> bookingList= bookingRepository.findBookingsByDeletedFalse();
+//        if (!authenticationRepository.existsById(customerId)) {
+//            throw new IllegalArgumentException("Booking not found with id: " + customerId);
+//        }
+//
+//        List<Booking> allBookings = bookingRepository.findBookingsByDeletedFalse();
+//
+//        // Filter the courts by clubId using a for loop
+//        List<Booking> Bookings = new ArrayList<>();
+//        for (Booking booking : allBookings) {
+//            if (booking.getAccount().getAccountId() == customerId) {
+//                Bookings.add(booking);
+//            }
+//        }
+//        return Bookings;
+//
+//    }
 }

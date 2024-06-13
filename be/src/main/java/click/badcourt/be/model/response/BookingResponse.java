@@ -1,5 +1,6 @@
 package click.badcourt.be.model.response;
 
+import click.badcourt.be.entity.BookingType;
 import click.badcourt.be.enums.BookingStatusEnum;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,6 +17,7 @@ public class BookingResponse {
     String account_email;
     String account_number;
     BookingStatusEnum status;
+    Long bookingTypeId;
     String address;
 
 }

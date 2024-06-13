@@ -31,7 +31,7 @@ public class AuthenticationApi {
 
     @PostMapping("/registeradmin")
     public ResponseEntity registerAdmin(@RequestBody RegisterRequest registerRequest) {
-        Account account= authenticationService.registerStaff(registerRequest);
+        Account account= authenticationService.registerAdmin(registerRequest);
         return ResponseEntity.ok(account);
     }
 
