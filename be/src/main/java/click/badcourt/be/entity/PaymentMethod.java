@@ -11,9 +11,9 @@ public class PaymentMethod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long PaymentMethodId;
-    private String PaymentMethodName;
-    private String PaymentInfo;
+    private Long paymentMethodId;
+    private String paymentMethodName;
+    private String paymentInfo;
     @OneToOne(mappedBy = "paymentMethod")
     Transaction transaction;
 

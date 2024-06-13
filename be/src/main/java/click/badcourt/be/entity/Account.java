@@ -2,6 +2,7 @@ package click.badcourt.be.entity;
 
 import click.badcourt.be.enums.RoleEnum;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)//auto generate id
     @Column(name = "account_id")
-    long accountId;
+    Long accountId;
 
     String password;
 
@@ -33,7 +34,7 @@ public class Account implements UserDetails {
 
     String fullName;
     boolean isDeleted;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "account")
     List<Booking> bookings;
 

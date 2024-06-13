@@ -1,6 +1,7 @@
 package click.badcourt.be.model.request;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ public class BookingDetailRequest {
 
     Long bookingId;
     Long courtTSId;
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     Date bookingDate;
 
 }

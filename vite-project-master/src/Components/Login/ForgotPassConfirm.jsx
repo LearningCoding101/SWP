@@ -1,7 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { newPass } from '../API/NewPassService';
+import useGetParams from '../../assets/hooks/useGetParams';
 const ForgotPassConfirm = () => {
+  const params = useGetParams();
+  const token = params("token");
+  console.log(token)
+  useEffect(() =>{
+
+  },[])
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState('');
@@ -19,7 +26,7 @@ const ForgotPassConfirm = () => {
         
         else {
           try {
-            const data = await newPass(password);
+            const data = await newPass(token,password);
             console.log('Reset succesfully', data);
             navigate("/")
             // Handle valid email (e.g., redirect to confirm pass)

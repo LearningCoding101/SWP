@@ -17,7 +17,7 @@ public class Club {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long club_id;
+    Long clubId;
 
     String name;
     String address;
@@ -31,6 +31,9 @@ public class Club {
 
     @Column(nullable = false)
     boolean deleted;
+
+    @OneToMany(mappedBy="club")
+    List<Booking> bookings;
 
     @OneToMany(mappedBy = "club")
     List<Court> courts;

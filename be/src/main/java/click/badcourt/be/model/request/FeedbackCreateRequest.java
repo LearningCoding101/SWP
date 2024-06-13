@@ -7,5 +7,4 @@ public class FeedbackCreateRequest {
     String feedbackContent;
     int feedbackRating;
     Long bookingId;
-    Long accountId;
 }

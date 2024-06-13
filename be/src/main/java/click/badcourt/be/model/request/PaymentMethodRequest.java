@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class PaymentMethodRequest {
 
-    private String PaymentMethodName;
-    private String PaymentInfo;
+    private String paymentMethodName;
+    private String paymentInfo;
 
 }

@@ -14,7 +14,7 @@ public class FeedBack {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long feedbackId;
+    private Long feedbackId;
 
     private String feedbackContent;
 

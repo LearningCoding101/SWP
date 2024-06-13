@@ -1,17 +1,16 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Court;
-import click.badcourt.be.entity.Court_timeslot;
-import click.badcourt.be.entity.TimeSlot;
+import click.badcourt.be.entity.*;
+import click.badcourt.be.enums.CourtTSStatusEnum;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.model.response.CourtTimeSlotResponse;
-import click.badcourt.be.repository.CourtRepository;
-import click.badcourt.be.repository.CourtTimeSlotRepository;
-import click.badcourt.be.repository.TimeSlotRepository;
+import click.badcourt.be.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,31 +26,49 @@ public class CourtTimeSlotService {
     @Autowired
     CourtRepository courtRepository;
 
-    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtId(long id) {
-        List<Court_timeslot> courtTimeslots = courtTimeSlotRepository.findCourt_timeslotsByDeletedFalseAndCourt_CourtId(id);
-        List<CourtTimeSlotResponse> CourtTimeSlotResponses = new ArrayList<>();
-        for(Court_timeslot court_timeslot : courtTimeslots) {
+    @Autowired
+    private BookingDetailRepository bookingDetailRepository;
+
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
+        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
+        int count = 0;
+        for (CourtTimeslot courtTimeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
-            courtTimeSlotResponse.setCourtTimeSlotId(court_timeslot.getCourtTSlotID());
-            courtTimeSlotResponse.setCourtId(court_timeslot.getCourt().getCourtId());
-            courtTimeSlotResponse.setTimeSlotId(court_timeslot.getTimeslot().getTimeslotId());
-            courtTimeSlotResponse.setPrice(court_timeslot.getCourt().getPrice());
-            courtTimeSlotResponse.setStart_time(court_timeslot.getTimeslot().getStart_time());
-            courtTimeSlotResponse.setEnd_time(court_timeslot.getTimeslot().getEnd_time());
-            CourtTimeSlotResponses.add(courtTimeSlotResponse);
+            courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
+            courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
+            courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
+            courtTimeSlotResponse.setPrice(courtTimeslot.getCourt().getPrice());
+            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
+            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            for (BookingDetail booking : bookingDTList) {
+                if ((booking.getDate().compareTo(date) == 1) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
+                    count = count + 1;
+                }
+            }
+            if (count > 0) {
+                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
+                count = 0;
+            } else {
+                courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
+            }
+            courtTimeSlotResponses.add(courtTimeSlotResponse);
         }
-        return CourtTimeSlotResponses;
+        return courtTimeSlotResponses;
     }
+
 
     public CourtTimeSlotRequest createCourtTimeSlot(CourtTimeSlotRequest courtTimeSlotRequest) {
         Optional<TimeSlot> timeSlotCheck = timeSlotRepository.findTimeSlotByDeletedFalseAndTimeslotId(courtTimeSlotRequest.getTimeSlotId());
         Optional<Court> courtCheck = courtRepository.findCourtByDeletedFalseAndCourtId(courtTimeSlotRequest.getCourtId());
 
         if((timeSlotCheck.isPresent()) && (courtCheck.isPresent())) {
-            Court_timeslot court_timeslot = new Court_timeslot();
+            CourtTimeslot court_timeslot = new CourtTimeslot();
             court_timeslot.setTimeslot(timeSlotCheck.get());
             court_timeslot.setCourt(courtCheck.get());
             court_timeslot.setDeleted(false);
+            court_timeslot.setStatus(CourtTSStatusEnum.AVAILABLE);
             courtTimeSlotRepository.save(court_timeslot);
             return courtTimeSlotRequest;
         }else {
@@ -59,10 +76,10 @@ public class CourtTimeSlotService {
         }
     }
 
-    public void deleteCourtTimeSlot(long id) {
-        Court_timeslot court_timeslot = courtTimeSlotRepository.findById(id).orElseThrow(() -> new RuntimeException("CourtTimeSlot not found!"));
-        court_timeslot.setDeleted(true);
-        courtTimeSlotRepository.save(court_timeslot);
+    public void deleteCourtTimeSlot(Long id) {
+        CourtTimeslot courtTimeslot = courtTimeSlotRepository.findById(id).orElseThrow(() -> new RuntimeException("CourtTimeSlot not found!"));
+        courtTimeslot.setDeleted(true);
+        courtTimeSlotRepository.save(courtTimeslot);
     }
 
 }
