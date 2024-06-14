@@ -12,6 +12,7 @@ import click.badcourt.be.utils.AccountUtils;
 import com.google.zxing.NotFoundException;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,8 +91,27 @@ public class BookingService {
         }
         return bookingResponses;
     }
+//    public List<Booking> getBookingsByCustomerId(Long customerId) {
+//        List<Booking> bookingList= bookingRepository.findBookingsByDeletedFalse();
+//        if (!authenticationRepository.existsById(customerId)) {
+//            throw new IllegalArgumentException("Booking not found with id: " + customerId);
+//        }
+//
+//        List<Booking> allBookings = bookingRepository.findBookingsByDeletedFalse();
+//
+//        // Filter the courts by clubId using a for loop
+//        List<Booking> Bookings = new ArrayList<>();
+//        for (Booking booking : allBookings) {
+//            if (booking.getAccount().getAccountId() == customerId) {
+//                Bookings.add(booking);
+//            }
+//        }
+//        return Bookings;
+//
+//    }
 
     public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
+
         Booking booking = new Booking();
         Optional<Club> club= clubRepository.findById(bookingCreateRequest.getClub_id());
         Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingCreateRequest.getBooking_type_id());

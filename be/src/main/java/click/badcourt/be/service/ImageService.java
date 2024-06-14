@@ -44,7 +44,7 @@ package click.badcourt.be.service;
 //
 //    private String getExtension(String fileName) {
 //        return fileName.substring(fileName.lastIndexOf("."));
-//    }
+//    }z
 //
 //
 //    public String upload(MultipartFile multipartFile) {
