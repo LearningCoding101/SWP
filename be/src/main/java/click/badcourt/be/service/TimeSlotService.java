@@ -23,7 +23,7 @@ public class TimeSlotService {
         TimeSlot slot = new TimeSlot();
         slot.setStart_time(LocalTime.of(timeSlotRequest.getStartHour(), timeSlotRequest.getStartMinute()));
         slot.setEnd_time(LocalTime.of(timeSlotRequest.getEndHour(), timeSlotRequest.getEndMinute()));
-
+        slot.setDeleted(false);
         return timeSlotRepository.save(slot);
     }
 

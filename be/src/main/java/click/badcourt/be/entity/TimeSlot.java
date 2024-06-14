@@ -1,6 +1,5 @@
 package click.badcourt.be.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,9 +20,8 @@ public class TimeSlot {
     private LocalTime start_time;
     private LocalTime end_time;
 
-    @JsonIgnore
     @Column(nullable = false)
-    boolean deleted=false;
+    boolean deleted;
 
     @OneToMany(mappedBy="timeslot")
     List<CourtTimeslot> courtTimeslots;

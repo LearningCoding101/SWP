@@ -36,7 +36,7 @@ public class Filter extends OncePerRequestFilter {
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
-    //nen dat ten api lai ro rang vi neu ghi vao list nay mot cai api chung se bao loi string chuyen thanh account ben getcurrentaccount
+
     // list danh sach api valid
     private final List<String> AUTH_PERMISSION = List.of(
             "/swagger-ui/**",
@@ -46,9 +46,11 @@ public class Filter extends OncePerRequestFilter {
             "/api/login",
             "/api/register",
             "/api/registeradmin",
-            "/api/forgot-password"
+            "/api/registerclubowner",
+            "/api/registerstaff",
+            "/api/forgot-password",
 //            "/api/account",
-           // "/api/club"
+            "/api/club"
 //            "/api/account/{email}",
 //            "/api/club/{id}",
 //            "/api/court",

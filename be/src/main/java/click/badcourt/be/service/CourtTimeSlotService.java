@@ -64,7 +64,6 @@ public class CourtTimeSlotService {
             court_timeslot.setTimeslot(timeSlotCheck.get());
             court_timeslot.setCourt(courtCheck.get());
             court_timeslot.setDeleted(false);
-            //court_timeslot.setStatus(CourtTSStatusEnum.AVAILABLE);
             courtTimeSlotRepository.save(court_timeslot);
             return courtTimeSlotRequest;
         }else {

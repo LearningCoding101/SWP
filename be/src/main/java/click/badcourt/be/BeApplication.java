@@ -17,5 +17,5 @@ public class BeApplication {
     public static void main(String[] args) {
         SpringApplication.run(BeApplication.class, args);
     }
-//sai postman phai dang nhap truoc bang /login lay token dang vao thi moi khong dinh jwt token
+
 }

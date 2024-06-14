@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@JsonIgnoreProperties({"court","timeslot","bookingDetails"})
+@JsonIgnoreProperties({"court","timeslot"})
 public class CourtTimeslot {
 
     @Id
