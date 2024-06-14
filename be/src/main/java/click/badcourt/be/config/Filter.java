@@ -50,7 +50,7 @@ public class Filter extends OncePerRequestFilter {
             "/api/registerstaff",
             "/api/forgot-password",
 //            "/api/account",
-            "/api/club"
+            "/api/clubs"
 //            "/api/account/{email}",
 //            "/api/club/{id}",
 //            "/api/court",

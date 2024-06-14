@@ -20,7 +20,7 @@ public class ClubApi {
     @Autowired
     ClubService clubService;
 
-    @GetMapping("club")
+    @GetMapping("clubs")
     public ResponseEntity getAll(){
         return ResponseEntity.ok(clubService.getAllClubs());
     }
@@ -29,7 +29,7 @@ public class ClubApi {
         return ResponseEntity.ok(clubService.findClubResponsesByAddress(address));
     }
 //    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("club/register")
+    @PostMapping("club")
     public ResponseEntity addClub(@RequestBody ClubCreateRequest clubCreateRequest){
         try {
             Club createdClub = clubService.createClub(clubCreateRequest);
