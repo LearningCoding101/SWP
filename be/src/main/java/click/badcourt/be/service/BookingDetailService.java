@@ -10,6 +10,7 @@ import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.CourtTimeSlotRepository;
+import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ public class BookingDetailService {
 
     @Autowired
     CourtTimeSlotRepository courtTimeSlotRepository;
+    @Autowired
+    private AccountUtils accountUtils;
 
     public List<BookingDetailDeleteResponse> getAllBookingDetails() {
         List<BookingDetail> bookingDeleteDetails= bookingDetailRepository.findAll();
@@ -54,6 +57,11 @@ public class BookingDetailService {
                 bookingDetailResponse.setBookingDate(bookingDetail.getDate());
                 bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
                 bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
+                bookingDetailResponse.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
+                bookingDetailResponse.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
+                bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
+                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
+                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
                 bookingDetailResponses.add(bookingDetailResponse);
             }
             return bookingDetailResponses;
