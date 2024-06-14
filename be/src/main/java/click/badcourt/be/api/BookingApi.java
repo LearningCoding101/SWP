@@ -28,8 +28,8 @@ public class BookingApi {
     private BookingService bookingService;
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
-        Booking booking = bookingService.createBooking(bookingCreateRequest);
+    public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
+        BookingResponse booking = bookingService.createBooking(bookingCreateRequest);
         return ResponseEntity.ok(booking);
     }
 
