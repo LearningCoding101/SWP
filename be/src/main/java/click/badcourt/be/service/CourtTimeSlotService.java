@@ -39,7 +39,7 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
             courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
             courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
-            courtTimeSlotResponse.setPrice(courtTimeslot.getCourt().getPrice());
+
             courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
             courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
