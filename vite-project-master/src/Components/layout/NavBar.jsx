@@ -8,7 +8,7 @@ const NavBar = () => {
 		setShowAccount(!showAccount)
 	}
 
-	const isLoggedIn = localStorage.getItem("loginToken")
+	const isLoggedIn = localStorage.getItem("token")
 	const userRole = localStorage.getItem("userRole")
 
 
@@ -34,13 +34,13 @@ const NavBar = () => {
 					<ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
 						<li className="nav-item">
 							<NavLink className="nav-link" aria-current="page" to={"/clubs"}>
-								Browse all courts
+								All clubs
 							</NavLink>
 						</li>
 
-						{isLoggedIn && userRole === "ROLE_ADMIN" && (
+						{isLoggedIn && userRole === "ADMIN" && (
 							<li className="nav-item">
-								<NavLink className="nav-link" aria-current="page" to={"/admin"}>
+								<NavLink className="nav-link" aria-current="page" to={"/adminDashboard"}>
 									Admin
 								</NavLink>
 							</li>
@@ -48,12 +48,13 @@ const NavBar = () => {
 					</ul>
 
 					<ul className="d-flex navbar-nav">
-						<li className="nav-item">
-							<NavLink className="nav-link" to={"/CRUD"}>
-								Find my booking
-							</NavLink>
-						</li>
-
+						{isLoggedIn && userRole === "ClUB_OWNER" && (
+							<li className="nav-item">
+								<NavLink className="nav-link" to={"/CRUD"}>
+									CRUD Demo
+								</NavLink>
+							</li>
+						)}
 						<li className="nav-item dropdown">
 							<a
 								className={`nav-link dropdown-toggle ${showAccount ? "show" : ""}`}
@@ -70,10 +71,23 @@ const NavBar = () => {
 								className={`dropdown-menu ${showAccount ? "show" : ""}`}
 								aria-labelledby="navbarDropdown">
 								{isLoggedIn ? (
-									<Link className="dropdown-item" to={"/logout"}>
-										Profile
-									</Link>
-									
+									<div>
+										<Link className="dropdown-item" to={"/logout"}>
+											Profile
+										</Link>
+										{userRole === "CUSTOMER" && (
+											<div>
+												<Link className="dropdown-item" to={"/bookingHistory"}>
+													History
+												</Link>
+
+												{/* <Link className="dropdown-item" to={"/booking"}>
+													Book now DEMO
+												</Link> */}
+											</div>
+										)}
+									</div>
+
 								) : (
 									<li>
 										<Link className="dropdown-item" to={"/login"}>

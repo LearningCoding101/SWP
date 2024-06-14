@@ -3,6 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { addCourt } from '../API/AddCourt';
 import Alert from '@mui/material/Alert';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import uploadFile from '../util/useUpload';
+// import { storage } from '../../firebase';
+// import { ref } from 'firebase/storage';
 const AddClub = () => {
     const [courtAddress, setCourtAddress] = useState('');
     const [courtName, setCourtName] = useState('');
@@ -10,17 +13,24 @@ const AddClub = () => {
     const [courtStartMinute, setCourtStartMinute] = useState('')
     const [courtEndHour, setCourtEndHour] = useState('')
     const [courtEndMinute, setCourtEndMinute] = useState('')
-    const [courtLocation, setCourtLocation] = useState('')
-    const [courtEmail, setCourtEmail] = useState('')
+    const [courtLocation] = useState('')
+    // const [courtEmail, setCourtEmail] = useState('')
+    const [uploadImage, setUploadImage] = useState(null)
     const [error, setError] = useState('');
+    // const handleUpload = () => {
+    //     if(uploadImage == null) return;
+    //     const imageRef = ref(storage, `images/$`)
+    // }
     const handleAdd = async (e) => {
         e.preventDefault();
-        if (courtName.trim() === '' || courtAddress.trim() === '' || courtStartHour.trim() === '' || courtStartMinute.trim() === '' || courtEndHour.trim() === '' || courtEndMinute.trim() === '' || courtLocation.trim() === '' || courtEmail.trim() === '') {
+        const img = await uploadFile(uploadImage) 
+        console.log(img);
+        if (courtName.trim() === '' || courtAddress.trim() === '' || courtStartHour.trim() === '' || courtStartMinute.trim() === '' || courtEndHour.trim() === '' || courtEndMinute.trim() === '') {
             setError('Please enter all fields');
         }
         else {
             try {
-                const data = await addCourt(courtName, courtAddress, courtStartHour, courtStartMinute, courtEndHour, courtEndMinute, courtLocation, courtEmail);
+                const data = await addCourt(courtName, courtAddress, courtStartHour, courtStartMinute, courtEndHour, courtEndMinute, img);
                 console.log('Added successful!', data);
 
                 if (data) {
@@ -124,29 +134,17 @@ const AddClub = () => {
                     <div className="form-group ">
                         <label htmlFor="location">Club picture url</label>
                         <input
-                            type="text"
+                            type="file"
                             required
                             placeholder='Enter url of your picture'
                             id="location"
                             value={courtLocation}
-                            onChange={(e) => setCourtLocation(e.target.value)}
+                            onChange={(e) => setUploadImage(e.target.files[0])}
                             className="form-input"
                         />
 
                     </div>
-                    <div className="form-group ">
-                        <label htmlFor="address">Club owner email</label>
-                        <input
-                            type="email"
-                            required
-                            placeholder='Enter email'
-                            id="address"
-                            value={courtEmail}
-                            onChange={(e) => setCourtEmail(e.target.value)}
-                            className="form-input"
-                        />
-
-                    </div>
+                
 
 
                     <button onClick={handleAdd} type="submit" className="login-button">
