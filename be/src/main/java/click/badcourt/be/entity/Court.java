@@ -16,13 +16,12 @@ public class Court {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long courtId;
+    String courtname;
 
-    double price;
 
     @JsonIgnore
     @Column(nullable = false)
     boolean deleted = false;
-
     @ManyToOne
     @JoinColumn(name = "club_id")
     Club club;

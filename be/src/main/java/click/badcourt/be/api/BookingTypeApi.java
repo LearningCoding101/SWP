@@ -3,6 +3,7 @@ package click.badcourt.be.api;
 import click.badcourt.be.entity.BookingType;
 import click.badcourt.be.model.request.BookingTypeRequest;
 import click.badcourt.be.service.BookingTypeService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/booking-types")
+@SecurityRequirement(name = "api")
 public class BookingTypeApi {
 
     @Autowired

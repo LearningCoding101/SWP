@@ -6,6 +6,8 @@ import java.time.LocalTime;
 
 @Data
 public class ClubResponse {
+    long clubId;
+    double price;
     String name;
     String address;
     LocalTime open_time;

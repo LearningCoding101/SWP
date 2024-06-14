@@ -24,6 +24,7 @@ public class Club {
     LocalTime open_time;
     LocalTime close_time;
     String picture_location;
+    double price;
 
     @OneToOne
     @JoinColumn(name = "Club_owner")

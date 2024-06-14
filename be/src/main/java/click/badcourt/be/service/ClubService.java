@@ -10,6 +10,7 @@ import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class ClubService {
         List<Club> clubs = clubRepository.findClubsByDeletedFalse();
         List<ClubResponse> clubCreateResponse = new ArrayList<>();
         for(Club club : clubs) {
+
             ClubResponse clubResponse = new ClubResponse();
             clubResponse.setName(club.getName());
             clubResponse.setAddress(club.getAddress());
@@ -36,6 +38,7 @@ public class ClubService {
             clubResponse.setClose_time(club.getClose_time());
             clubResponse.setOwnerName(club.getAccount().getFullName());
             clubResponse.setPicture_location(club.getPicture_location());
+            clubResponse.setPrice(club.getPrice());
             clubCreateResponse.add(clubResponse);
         }
         return clubCreateResponse;
@@ -47,6 +50,8 @@ public class ClubService {
             club.setAccount(accountUtils.getCurrentAccount());
             club.setName(clubCreateRequest.getName());
             club.setAddress(clubCreateRequest.getAddress());
+            club.setPrice(clubCreateRequest.getPrice());
+
             club.setClose_time(LocalTime.of(clubCreateRequest.getEndHour(), clubCreateRequest.getEndMinute()));
             club.setOpen_time(LocalTime.of(clubCreateRequest.getStartHour(), clubCreateRequest.getStartMinute()));
             club.setPicture_location(clubCreateRequest.getPicture_location());
@@ -58,6 +63,7 @@ public class ClubService {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
         club.setName(clubUpdateRequest.getName());
         club.setAddress(clubUpdateRequest.getAddress());
+        club.setPrice(clubUpdateRequest.getPrice());
         club.setClose_time(LocalTime.of(clubUpdateRequest.getEndHour(), clubUpdateRequest.getEndMinute()));
         club.setOpen_time(LocalTime.of(clubUpdateRequest.getStartHour(), clubUpdateRequest.getStartMinute()));
         club.setPicture_location(clubUpdateRequest.getPicture_location());
@@ -87,6 +93,7 @@ public class ClubService {
             ClubResponse clubResponse = new ClubResponse();
             clubResponse.setName(club.getName());
             clubResponse.setAddress(club.getAddress());
+            clubResponse.setPrice(club.getPrice());
             clubResponse.setOpen_time(club.getOpen_time());
             clubResponse.setClose_time(club.getClose_time());
             clubResponse.setOwnerName(club.getAccount().getFullName());

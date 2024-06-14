@@ -42,15 +42,15 @@ public class CourtService {
 //    }
 
     public List<Court> getCourtsByClubId(Long clubId) {
-        // Check if the club exists
+
         if (!clubRepository.existsById(clubId)) {
             throw new IllegalArgumentException("Club not found with id: " + clubId);
         }
 
-        // Get all courts where deleted is false
+
         List<Court> allCourts = courtRepository.findCourtsByDeletedFalse();
 
-        // Filter the courts by clubId using a for loop
+
         List<Court> courts = new ArrayList<>();
         for (Court court : allCourts) {
             if (court.getClub().getClubId() == clubId) {
@@ -66,7 +66,7 @@ public class CourtService {
         Optional<Club> clubOptional = clubRepository.findById(clubId);
         if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
             newCourt.setClub(clubOptional.get());
-            newCourt.setPrice(courtCreateRequest.getPrice());
+            newCourt.setCourtname(courtCreateRequest.getCourtName());
             return courtRepository.save(newCourt);
         } else {
             throw new IllegalArgumentException("Club not found with id: " + clubId);
@@ -82,7 +82,7 @@ public class CourtService {
             throw new RuntimeException("Court has been deleted");
         }
 
-        court.setPrice(courtUpdateRequest.getPrice());
+        court.setCourtname(courtUpdateRequest.getCourtname());
         return courtRepository.save(court);
     }
 

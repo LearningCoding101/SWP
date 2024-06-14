@@ -60,12 +60,14 @@ public class BookingService {
         BookingResponse bookingResponse = new BookingResponse();
         bookingResponse.setId(booking.getBookingId());
         bookingResponse.setBookingDate(booking.getBookingDate());
+        bookingResponse.setPrice(booking.getClub().getPrice());
         bookingResponse.setClub_name(club.getName()); // Assuming the Court entity has a reference to Club
         bookingResponse.setAccount_email(booking.getAccount().getEmail()); // Assuming the Account entity has an email field
         bookingResponse.setAccount_number(booking.getAccount().getPhone()); // Assuming the Account entity has an accountNumber field
         bookingResponse.setStatus(booking.getStatus());
         bookingResponse.setBookingTypeId(bookingResponse.getBookingTypeId());
         bookingResponse.setAddress(booking.getClub().getAddress());
+
         return bookingResponse;
     }
     public List<BookingResponse> getBookingsByCustomerIdWithResponse() {
@@ -85,6 +87,7 @@ public class BookingService {
                 response.setAccount_number(booking.getAccount().getPhone());
                 response.setAccount_email(booking.getAccount().getEmail());
                 response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
+                response.setPrice(booking.getClub().getPrice());
                 bookingResponses.add(response);
             }
         }
@@ -99,6 +102,7 @@ public class BookingService {
             booking.setBookingDate(bookingCreateRequest.getBookingDate());
             booking.setAccount(accountUtils.getCurrentAccount());
             booking.setClub(club.get());
+
             booking.setStatus(BookingStatusEnum.PENDING);
             booking.setBookingType(bookingType.get());
             return bookingRepository.save(booking);

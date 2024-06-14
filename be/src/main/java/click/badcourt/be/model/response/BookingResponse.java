@@ -16,6 +16,7 @@ public class BookingResponse {
     String club_name;
     String account_email;
     String account_number;
+    double price;
     BookingStatusEnum status;
     Long bookingTypeId;
     String address;
