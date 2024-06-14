@@ -84,7 +84,7 @@ public class BookingService {
                 response.setId(booking.getBookingId());
                 response.setStatus(booking.getStatus());
                 response.setClub_name(booking.getClub().getName());
-                response.setAccount_number(booking.getAccount().getPhone());
+                response.setAccount_number(accountUtils.getCurrentAccount().getPhone());
                 response.setAccount_email(booking.getAccount().getEmail());
                 response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
                 response.setPrice(booking.getClub().getPrice());
@@ -94,18 +94,30 @@ public class BookingService {
         return bookingResponses;
     }
 
-    public Booking createBooking(BookingCreateRequest bookingCreateRequest) {
+    public BookingResponse createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();
         Optional<Club> club= clubRepository.findById(bookingCreateRequest.getClub_id());
         Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingCreateRequest.getBooking_type_id());
         if(club.isPresent()&& !club.get().isDeleted()) {
+
             booking.setBookingDate(bookingCreateRequest.getBookingDate());
             booking.setAccount(accountUtils.getCurrentAccount());
             booking.setClub(club.get());
 
             booking.setStatus(BookingStatusEnum.PENDING);
             booking.setBookingType(bookingType.get());
-            return bookingRepository.save(booking);
+            Booking savedBooking= bookingRepository.save(booking);
+            BookingResponse response= new BookingResponse();
+            response.setId(savedBooking.getBookingId());
+            response.setPrice(savedBooking.getClub().getPrice());
+            response.setStatus(savedBooking.getStatus());
+            response.setAccount_email(savedBooking.getAccount().getEmail());
+            response.setAddress(savedBooking.getClub().getAddress());
+            response.setAccount_number(accountUtils.getCurrentAccount().getPhone());
+            response.setBookingDate(savedBooking.getBookingDate());
+            response.setBookingTypeId(savedBooking.getBookingType().getBookingTypeId());
+            response.setClub_name(savedBooking.getClub().getName());
+            return response;
         }
         else{
             throw new IllegalArgumentException("Account or court not found");
