@@ -7,11 +7,14 @@ import click.badcourt.be.model.response.ClubResponse;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.ClubService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/")
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class ClubApi {
     @Autowired
     ClubService clubService;
+
+
 
     @GetMapping("club")
     public ResponseEntity getAll(){
@@ -28,9 +33,23 @@ public class ClubApi {
     public ResponseEntity getClub(@PathVariable("address") String address){
         return ResponseEntity.ok(clubService.findClubResponsesByAddress(address));
     }
+    //@PreAuthorize("hasAuthority('ClUB_OWNER')")
+//    @PostMapping(value="club", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity addClub(@ModelAttribute  ClubCreateRequest clubCreateRequest
+//                                  ){
+//        try {
+//            Club createdClub = clubService.createClub(clubCreateRequest);
+//            return new ResponseEntity<>(createdClub, HttpStatus.CREATED);
+//        } catch (IllegalArgumentException e) {
+//            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//        }
+//
+//    }
     @PreAuthorize("hasAuthority('ClUB_OWNER')")
-    @PostMapping("club")
-    public ResponseEntity addClub(@RequestBody ClubCreateRequest clubCreateRequest){
+    @PostMapping(value="club", consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    //@PostMapping(value="club")
+    public ResponseEntity addClub(@ModelAttribute  ClubCreateRequest clubCreateRequest
+    ){
         try {
             Club createdClub = clubService.createClub(clubCreateRequest);
             return new ResponseEntity<>(createdClub, HttpStatus.CREATED);
@@ -39,8 +58,9 @@ public class ClubApi {
         }
 
     }
+
     @PutMapping("club/{id}")
-    public ResponseEntity updateClub(@RequestBody ClubUpdateRequest clubUpdateRequest, @PathVariable Long id){
+    public ResponseEntity updateClub(@ModelAttribute ClubUpdateRequest clubUpdateRequest, @PathVariable Long id){
         try {
             Club updatedClub = clubService.updateClub(clubUpdateRequest, id);
             ClubResponse club= new ClubResponse();

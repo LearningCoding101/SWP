@@ -1,6 +1,7 @@
 package click.badcourt.be.model.request;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ClubUpdateRequest {
@@ -11,5 +12,5 @@ public class ClubUpdateRequest {
     int startMinute;
     int endHour;
     int endMinute;
-    String picture_location;
+    MultipartFile picture_location;
 }

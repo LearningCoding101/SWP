@@ -10,6 +10,7 @@ import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -24,11 +25,13 @@ public class ClubService {
     AccountUtils accountUtils;
     @Autowired
     AuthenticationRepository authenticationRepository;
-
+    @Autowired
+    ImageService imageService;
     public List<ClubResponse> getAllClubs() {
         List<Club> clubs = clubRepository.findClubsByDeletedFalse();
         List<ClubResponse> clubCreateResponse = new ArrayList<>();
         for(Club club : clubs) {
+
             ClubResponse clubResponse = new ClubResponse();
             clubResponse.setName(club.getName());
             clubResponse.setAddress(club.getAddress());
@@ -44,14 +47,14 @@ public class ClubService {
     public Club createClub(ClubCreateRequest clubCreateRequest) {
         Club club = new Club();
 
-            club.setAccount(accountUtils.getCurrentAccount());
-            club.setName(clubCreateRequest.getName());
-            club.setAddress(clubCreateRequest.getAddress());
-            club.setClose_time(LocalTime.of(clubCreateRequest.getEndHour(), clubCreateRequest.getEndMinute()));
-            club.setOpen_time(LocalTime.of(clubCreateRequest.getStartHour(), clubCreateRequest.getStartMinute()));
-            club.setPicture_location(clubCreateRequest.getPicture_location());
-            return clubRepository.save(club);
-
+        club.setAccount(accountUtils.getCurrentAccount());
+        club.setName(clubCreateRequest.getName());
+        club.setAddress(clubCreateRequest.getAddress());
+        club.setClose_time(LocalTime.of(clubCreateRequest.getEndHour(), clubCreateRequest.getEndMinute()));
+        club.setOpen_time(LocalTime.of(clubCreateRequest.getStartHour(), clubCreateRequest.getStartMinute()));
+        String imageURL = imageService.upload(clubCreateRequest.getPicture_location());
+        club.setPicture_location(imageURL);
+        return clubRepository.save(club);
     }
 
     public Club updateClub(ClubUpdateRequest clubUpdateRequest, Long id) {
@@ -60,10 +63,10 @@ public class ClubService {
         club.setAddress(clubUpdateRequest.getAddress());
         club.setClose_time(LocalTime.of(clubUpdateRequest.getEndHour(), clubUpdateRequest.getEndMinute()));
         club.setOpen_time(LocalTime.of(clubUpdateRequest.getStartHour(), clubUpdateRequest.getStartMinute()));
-        club.setPicture_location(clubUpdateRequest.getPicture_location());
+        String imageURL = imageService.upload(clubUpdateRequest.getPicture_location());
+        club.setPicture_location(imageURL);
         return clubRepository.save(club);
     }
-
     public void deleteClub(Long id) {
         Club club = clubRepository.findById(id).orElseThrow(() -> new RuntimeException("Club not found"));
         club.setDeleted(true);
