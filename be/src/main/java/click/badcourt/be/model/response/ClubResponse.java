@@ -14,4 +14,5 @@ public class ClubResponse {
     LocalTime close_time;
     String picture_location;
     String ownerName;
+//    int count;
 }

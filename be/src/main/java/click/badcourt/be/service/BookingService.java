@@ -88,7 +88,6 @@ public class BookingService {
                 response.setAccount_email(booking.getAccount().getEmail());
                 response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
                 response.setPrice(booking.getClub().getPrice());
-                response.setCount(courtRepository.countCourtsByClub_ClubId(booking.getClub().getClubId()));
                 bookingResponses.add(response);
             }
         }

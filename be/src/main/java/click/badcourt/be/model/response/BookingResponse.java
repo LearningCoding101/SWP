@@ -20,6 +20,5 @@ public class BookingResponse {
     BookingStatusEnum status;
     Long bookingTypeId;
     String address;
-    int count;
 
 }
