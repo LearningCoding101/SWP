@@ -39,7 +39,10 @@ public class ClubService {
             clubResponse.setOwnerName(club.getAccount().getFullName());
             clubResponse.setPicture_location(club.getPicture_location());
             clubResponse.setPrice(club.getPrice());
+            clubResponse.setClubId(club.getClubId());
+
             clubCreateResponse.add(clubResponse);
+
         }
         return clubCreateResponse;
     }
