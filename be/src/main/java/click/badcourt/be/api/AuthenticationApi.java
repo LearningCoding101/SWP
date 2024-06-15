@@ -36,11 +36,11 @@ public class AuthenticationApi {
     }
 
 //    @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping("/registerclubowner")
-    public ResponseEntity registerClubOwner(@RequestBody RegisterRequest registerRequest) {
-        Account account= authenticationService.registerClubOwner(registerRequest);
-        return ResponseEntity.ok(account);
-    }
+//    @PostMapping("/registerclubowner")
+//    public ResponseEntity registerClubOwner(@RequestBody RegisterRequest registerRequest) {
+//        Account account= authenticationService.registerClubOwner(registerRequest);
+//        return ResponseEntity.ok(account);
+//    }
 
 
 //    @PreAuthorize("hasAuthority('ClUB_OWNER')")
