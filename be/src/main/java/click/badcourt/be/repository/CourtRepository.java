@@ -14,4 +14,5 @@ public interface CourtRepository extends JpaRepository<Court,Long> {
     List<Court> findCourtsByDeletedFalse();
     Optional<Court> findCourtByDeletedFalseAndCourtId(Long courtId);
     List<Court> findCourtsByClub_ClubId(Long id);
+    int countCourtsByClub_ClubId(Long id);
 }
