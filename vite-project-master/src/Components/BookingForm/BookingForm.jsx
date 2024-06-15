@@ -4,6 +4,7 @@ import BookingType1 from "./BookingType1";
 import BookingType2 from "./BookingType2";
 import BookingType3 from "./BookingType3";
 import { Link } from 'react-router-dom';
+import { Divider } from "@mui/material";
 
 const BookingForm = () => {
   const [filterValue, updateFilter] = useState();
@@ -115,6 +116,9 @@ const BookingForm = () => {
                     <BookingType3></BookingType3>
                   </>
                 )}
+                <Divider className='divider'>
+                        Looking good?
+                    </Divider>
                 <div className="row flex-row">
                   <div className="form-btn col-md-7">
                     <button className="submit-btn">Book Now</button>

@@ -114,6 +114,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-bottom: 30px;
   }
   
   .login-button:hover {
@@ -128,6 +129,7 @@
   }
 
   .footer-content a{
+
     text-decoration: none;
     color: #007bff;
   }
@@ -165,7 +167,6 @@
     justify-content: center;
     display: flex;
     align-items: center;
-    margin-top: 20px;
   }
   /* .footer-content .row p {
     margin: 0 10px; 
@@ -177,9 +178,12 @@
     }
   }
 
-  .google-button {
-    margin-top: 20px;
-  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
 
   .icon-container {
     position: fixed;
@@ -188,4 +192,7 @@ max-width: 100%;
     top: 47.1%;
     transform: translateY(-50%);
     cursor: pointer;
+}
+.divider{
+  margin-top: 20px;
 }

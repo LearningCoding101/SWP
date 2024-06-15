@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate, } from 'react-router-dom';
 import { login } from '../API/LoginService';
+import Divider from '@mui/material/Divider';
+
 // import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 <script src="https://accounts.google.com/gsi/client" async></script>
 import { AiFillEye } from "react-icons/ai";
@@ -9,13 +11,27 @@ import { AuthContext } from './AuthProvider';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, provider } from './../Config/FirebaseConfig';
 import axios from 'axios';
+import GoogleButton from 'react-google-button'
 import { useAuth } from "./AuthProvider"
+import { Chip } from '@mui/material';
 const Login = () => {
     const [visible, setVisible] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const authen = useContext(AuthContext)
+    const [rememberMe, setRememberMe] = useState(false);
+
+    // Load the remember me state from local storage when the component mounts
+    useEffect(() => {
+        const rememberMeValue = localStorage.getItem('rememberMe') === 'true';
+        setRememberMe(rememberMeValue);
+    }, []);
+    const handleCheckboxChange = (e) => {
+        const isChecked = e.target.checked;
+        setRememberMe(isChecked);
+        localStorage.setItem('rememberMe', isChecked);
+    };
     const togglePasswordVisibility = () => {
         setVisible(!visible);
     };
@@ -35,12 +51,12 @@ const Login = () => {
                 const data = await login(email, password);
                 console.log('Login successful!', data);
                 localStorage.setItem("userName", email)
-                
+
                 const role = data.role
                 localStorage.setItem("userRole", role)
                 const token = data.token
                 // localStorage.setItem("token", token)
-                authen.handleLogin(token)    
+                authen.handleLogin(token)
                 navigate("/")
 
 
@@ -57,7 +73,7 @@ const Login = () => {
             const token = result.user.accessToken;
             console.log(token);
             const res = await axios.post("http://152.42.168.144:8080/api/login-google", { token: token })
-            authen.handleLogin(token) 
+            authen.handleLogin(token)
             const ggData = res.data
             const roleGG = ggData.role
             console.log(roleGG)
@@ -106,26 +122,37 @@ const Login = () => {
                             {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
                         </div> */}
                     </div>
-                    <div className='form-group'>
-                        <div className='row'>
-                            <div className='col-md-8'>
+                    {/* <div className='form-group'>
+                        <div className='row col-md-8'>
+                            <div className=''>
                                 <input
                                     type="checkbox"
+                                    id="rememberme"
+                                    checked={rememberMe}
+                                    onChange={handleCheckboxChange}
                                 />
                                 <label htmlFor="rememberme"> Remember me</label>
                             </div>
-                            <Link to='/forgotpassword' className='col-md-4'>Forgot password</Link>
                         </div>
-                    </div>
+                    </div> */}
                     <button onClick={handleLogin1} type="submit" className="login-button">
                         Login
                     </button>
-                    <div className='google-button'>
+                    {/* <div className='google-button'>
                         <button onClick={handleLoginGG}>Google</button>
+                    </div> */}
+                    <Divider className='divider'>
+                        OR
+                    </Divider>
+                    <div className='button-container'>
+                        <GoogleButton
+                            onClick={handleLoginGG}
+                        />
                     </div>
                 </form>
-                <div className='footer-content'>
-                    <p>Dont have an account? <Link to="/signup">Sign up</Link></p>
+                <div className='footer-content flex-col col text-start-0'>
+                    <p className='col-md-5'> <Link to='/forgotpassword'>Forgot password?</Link></p>
+                    <p >Dont have an account? <Link to="/signup">Sign up</Link></p>
                 </div>
             </div>
         </div>
