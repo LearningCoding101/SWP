@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 public class BookingDetailResponse extends BookingDetailRequest {
-
+    private Long bookingDetailsId;
     private String courtName;
     private String fullnameoforder;
     private String phonenumber;

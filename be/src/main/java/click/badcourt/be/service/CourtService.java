@@ -27,21 +27,7 @@ public class CourtService {
     @Autowired
     ClubRepository clubRepository;
 
-//    public List<CourtShowResponse> getAllCourts() {
-//        List<Court> courts = courtRepository.findCourtsByDeletedFalse();
-//        List<CourtShowResponse> courtShowResponseList = new ArrayList<>();
-//
-//        for (Court c : courts) {
-//            CourtShowResponse courtShowResponse = new CourtShowResponse();
-//            courtShowResponse.setPrice(c.getPrice());
-//            courtShowResponse.setId(c.getCourtId());
-//            courtShowResponse.setClubName(c.getClub().getName());
-//
-//            courtShowResponseList.add(courtShowResponse);
-//        }
-//
-//        return courtShowResponseList;
-//    }
+
 
     public List<CourtShowResponse> getCourtsByClubId(Long clubId) {
 
@@ -68,13 +54,20 @@ public class CourtService {
     }
 
 
-    public Court createCourt(CourtCreateRequest courtCreateRequest, Long clubId) {
+    public CourtShowResponse createCourt(CourtCreateRequest courtCreateRequest, Long clubId) {
         Court newCourt = new Court();
         Optional<Club> clubOptional = clubRepository.findById(clubId);
         if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
             newCourt.setClub(clubOptional.get());
             newCourt.setCourtname(courtCreateRequest.getCourtName());
-            return courtRepository.save(newCourt);
+            Court savedCourt= courtRepository.save(newCourt);
+            CourtShowResponse response= new CourtShowResponse();
+            response.setId(savedCourt.getCourtId());
+            response.setCourtName(savedCourt.getCourtname());
+            response.setClubId(savedCourt.getClub().getClubId());
+            response.setClubName(savedCourt.getClub().getName());
+            response.setDeleted(false);
+            return response;
         } else {
             throw new IllegalArgumentException("Club not found with id: " + clubId);
         }

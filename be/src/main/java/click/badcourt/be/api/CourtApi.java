@@ -35,7 +35,7 @@ public class CourtApi {
     @PostMapping("/{clubId}")
     public ResponseEntity<?> addCourt(@RequestBody CourtCreateRequest courtCreateRequest, @PathVariable Long clubId){
         try {
-            Court createdCourt = courtService.createCourt(courtCreateRequest, clubId);
+            CourtShowResponse createdCourt = courtService.createCourt(courtCreateRequest, clubId);
             return ResponseEntity.ok(createdCourt);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
