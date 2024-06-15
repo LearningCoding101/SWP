@@ -66,6 +66,9 @@ const BookingHistoryList = () => {
         // console.log(response);
         console.log(response.data);
         setCustomers(response.data);
+        const data = response.data;
+        const bookingId = data.id
+        localStorage.setItem("Id", bookingId)
       } catch (error) {
         setError(error.message);
       }

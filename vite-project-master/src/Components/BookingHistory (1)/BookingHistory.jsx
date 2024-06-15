@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import BookingDetails from "./BookingDetails";
+import { useNavigate } from "react-router-dom";
 
 const BookingHistory = (props) => {
+  
   let [showBookingDetail, updateShowBookingDetail] = useState(false);
   function displayDetail() {
     updateShowBookingDetail(true);
@@ -39,6 +41,7 @@ const BookingHistory = (props) => {
         </div>
         <BookingDetails
           showDetail={showBookingDetail}
+          showId={props}
           hideDetail={hideDetail}
         ></BookingDetails>
       </div>
