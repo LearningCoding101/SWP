@@ -70,15 +70,17 @@ public class BookingService {
 
         return bookingResponse;
     }
-    public List<BookingResponse> getBookingsByCustomerIdWithResponse() {
-        if (!authenticationRepository.existsById(accountUtils.getCurrentAccount().getAccountId())) {
-            throw new IllegalArgumentException("Booking not found with id: " + accountUtils.getCurrentAccount().getAccountId());
+    public List<BookingResponse> getCustomerBookingsWithOptionalFilter(Long bookingTypeId) {
+        Long currentCustomerId = accountUtils.getCurrentAccount().getAccountId();
+        if (!authenticationRepository.existsById(currentCustomerId)) {
+            throw new IllegalArgumentException("Account not found with id: " + currentCustomerId);
         }
         List<Booking> allBookings = bookingRepository.findAll();
         List<BookingResponse> bookingResponses = new ArrayList<>();
         for (Booking booking : allBookings) {
-            if (booking.getAccount().getAccountId() == accountUtils.getCurrentAccount().getAccountId()) {
-                BookingResponse response= new BookingResponse();
+            if (booking.getAccount().getAccountId().equals(currentCustomerId) &&
+                    (bookingTypeId == null || booking.getBookingType().getBookingTypeId().equals(bookingTypeId))) {
+                BookingResponse response = new BookingResponse();
                 response.setBookingDate(booking.getBookingDate());
                 response.setAddress(booking.getClub().getAddress());
                 response.setId(booking.getBookingId());
@@ -93,6 +95,9 @@ public class BookingService {
         }
         return bookingResponses;
     }
+
+
+
 
     public BookingResponse createBooking(BookingCreateRequest bookingCreateRequest) {
         Booking booking = new Booking();

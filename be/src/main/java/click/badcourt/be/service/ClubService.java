@@ -48,7 +48,7 @@ public class ClubService {
             clubResponse.setPicture_location(club.getPicture_location());
             clubResponse.setPrice(club.getPrice());
             clubResponse.setClubId(club.getClubId());
-//            clubResponse.setCount(courtRepository.countCourtsByClub_ClubId(club.getClubId()));
+            clubResponse.setCount(courtRepository.countByClub_ClubId(club.getClubId()));
             clubCreateResponse.add(clubResponse);
 
         }
