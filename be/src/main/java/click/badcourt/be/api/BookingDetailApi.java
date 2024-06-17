@@ -29,8 +29,8 @@ public class BookingDetailApi {
     }
 
     @GetMapping("/{bookingid}")
-    public ResponseEntity getBookingDetailById(@PathVariable Long id) {
-        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(id));
+    public ResponseEntity getBookingDetailById(@PathVariable Long bookingid) {
+        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
     }
     @PostMapping("/fixed")
     public ResponseEntity createFixedBooking(@RequestBody FixedBookingDetailRequest fixedBookingDetailRequest) {
