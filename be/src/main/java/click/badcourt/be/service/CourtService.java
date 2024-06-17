@@ -4,7 +4,7 @@ import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
-import click.badcourt.be.model.response.CourtResponse;
+import click.badcourt.be.model.response.CourtNameListShowResponse;
 import click.badcourt.be.model.response.CourtShowResponse;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
@@ -53,6 +53,25 @@ public class CourtService {
         return courts;
     }
 
+    public List<CourtNameListShowResponse> getCourtNamesByClubId(Long clubId) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new IllegalArgumentException("Club not found with id: " + clubId);
+        }
+        List<Court> allCourts = courtRepository.findCourtsByDeletedFalse();
+        List<CourtNameListShowResponse> courts = new ArrayList<>();
+
+        for (Court court : allCourts) {
+            if (court.getClub().getClubId() == clubId) {
+                CourtNameListShowResponse courtNameListShowResponse = new CourtNameListShowResponse();
+                courtNameListShowResponse.setId(court.getCourtId());
+                courtNameListShowResponse.setCourtName(court.getCourtname());
+                courts.add(courtNameListShowResponse);
+            }
+        }
+
+        return courts;
+    }
+
 
     public CourtShowResponse createCourt(CourtCreateRequest courtCreateRequest, Long clubId) {
         Court newCourt = new Court();
@@ -67,6 +86,33 @@ public class CourtService {
             response.setClubId(savedCourt.getClub().getClubId());
             response.setClubName(savedCourt.getClub().getName());
             response.setDeleted(false);
+            return response;
+        } else {
+            throw new IllegalArgumentException("Club not found with id: " + clubId);
+        }
+    }
+
+    public List<CourtShowResponse> createManyCourt(Long clubId, int n) {
+        Optional<Club> clubOptional = clubRepository.findById(clubId);
+        int b = courtRepository.countCourtsByDeletedFalseAndClub_ClubId(clubId);
+        b++;
+        int t = 1;
+        List<CourtShowResponse> response = new ArrayList<>();
+        if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
+            for (int i = b; t <= n; i++) {
+                Court newCourt = new Court();
+                newCourt.setClub(clubOptional.get());
+                newCourt.setCourtname(String.valueOf(i));
+                Court savedCourt = courtRepository.save(newCourt);
+                CourtShowResponse addResponse= new CourtShowResponse();
+                addResponse.setId(savedCourt.getCourtId());
+                addResponse.setCourtName(savedCourt.getCourtname());
+                addResponse.setClubId(savedCourt.getClub().getClubId());
+                addResponse.setClubName(savedCourt.getClub().getName());
+                addResponse.setDeleted(false);
+                response.add(addResponse);
+                t++;
+            }
             return response;
         } else {
             throw new IllegalArgumentException("Club not found with id: " + clubId);

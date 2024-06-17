@@ -3,6 +3,7 @@ package click.badcourt.be.service;
 import click.badcourt.be.entity.*;
 import click.badcourt.be.enums.CourtTSStatusEnum;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
+import click.badcourt.be.model.response.CourtTimeSlotManageResponse;
 import click.badcourt.be.model.response.CourtTimeSlotResponse;
 import click.badcourt.be.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,20 @@ public class CourtTimeSlotService {
         return courtTimeSlotResponses;
     }
 
+    public List<CourtTimeSlotManageResponse> getCourtTimeSlotsByCourtId(Long cId) {
+        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
+        List<CourtTimeSlotManageResponse> courtTimeSlotManageResponses = new ArrayList<>();
+        for (CourtTimeslot courtTimeslot : courtTimeslots) {
+            CourtTimeSlotManageResponse courtTimeSlotManageResponse = new CourtTimeSlotManageResponse();
+            courtTimeSlotManageResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
+            courtTimeSlotManageResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
+            courtTimeSlotManageResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
+            courtTimeSlotManageResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
+            courtTimeSlotManageResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotManageResponses.add(courtTimeSlotManageResponse);
+        }
+        return courtTimeSlotManageResponses;
+    }
 
     public CourtTimeSlotRequest createCourtTimeSlot(CourtTimeSlotRequest courtTimeSlotRequest) {
         Optional<TimeSlot> timeSlotCheck = timeSlotRepository.findTimeSlotByDeletedFalseAndTimeslotId(courtTimeSlotRequest.getTimeSlotId());

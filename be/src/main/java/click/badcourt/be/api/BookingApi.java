@@ -48,16 +48,21 @@ public class BookingApi {
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }
     }
-
     @GetMapping("/customer")
-    public ResponseEntity<?> getBookingsByCustomerId() {
+    public ResponseEntity<?> getCustomerBookingsWithOptionalFilter(@RequestParam(required = false) Long bookingTypeId) {
         try {
-            List<BookingResponse> bookings = bookingService.getBookingsByCustomerIdWithResponse();
-            return ResponseEntity.ok(bookings);
-        }catch (IllegalArgumentException e) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
+            List<BookingResponse> bookingResponses = bookingService.getCustomerBookingsWithOptionalFilter(bookingTypeId);
+            return ResponseEntity.ok(bookingResponses);
+        } catch (IllegalArgumentException e) {
+            // Log the exception details
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
+
+
+
+
     @PostMapping("/confirm")
     public String confirmBooking(@RequestBody QRCodeData data) {
         try {
