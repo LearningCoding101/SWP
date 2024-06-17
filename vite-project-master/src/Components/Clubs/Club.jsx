@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../layout/NavBar';
 import Footer from '../layout/Footer';
-import api from './../../config/axios';
+import api from './../../Config/axios';
 import { Empty } from 'antd'
 function Club() {
   const [clubs, setClubs] = useState([]);
