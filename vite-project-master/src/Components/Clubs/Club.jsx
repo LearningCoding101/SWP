@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { BsSearch } from 'react-icons/bs';
 import axios from 'axios';
-import { Card, CardContent, CardMedia, Typography, Button, Grid } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Button, Grid, Divider } from '@mui/material';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../layout/NavBar';
 import Footer from '../layout/Footer';
 import api from './../../config/axios';
@@ -11,11 +11,19 @@ import { Empty } from 'antd'
 function Club() {
   const [clubs, setClubs] = useState([]);
   // const [searchVal, setSearchVal] = useState("");
+  const accessToken = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     navigate('/login'); // Navigate to the login page or another page if accessToken is null
+  //   }
+  // }, [accessToken, navigate]);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const data = await api.get("/club")
+        const data = await api.get("/clubs")
         console.log('Club data', data.data);
         setClubs(data.data);
       }
@@ -52,7 +60,7 @@ function Club() {
             </div> */}
         {
           clubs.length > 0 ? (
-            <div style={{ margin: '50px 220px 20px' }}>
+            <div style={{ margin: '50px 120px 20px' }}>
               {clubs?.map((club) => (
                 // <div className='container' key={club.id}>
                 //     <p>{club.name}</p>
@@ -62,8 +70,8 @@ function Club() {
                 //     <p>{club.picture_location}</p>
                 //     <Link to={`/clubs/${club.address}`}><button>Detail</button></Link>
                 // </div>
-                <Grid container key={club.id} spacing={2} border={"thick"} borderRadius={1}>
-                  <Grid item xs={4}>
+                <Grid container key={club.id} spacing={2} border={"thick"} borderRadius={1} margin>
+                  <Grid item xs={8}>
                     <CardMedia
                       component="img"
                       image={club.picture_location}
@@ -71,7 +79,7 @@ function Club() {
                       style={{ width: '600px', height: '300px' }}
                     />
                   </Grid>
-                  <Grid item xs={8} marginTop={"50px"}>
+                  <Grid item xs={4} marginTop={"50px"}>
                     <CardContent>
                       <Typography variant="h5" component="div">
                         {club.name}
@@ -83,11 +91,13 @@ function Club() {
                         Open time: {club.open_time} - {club.close_time}
                       </Typography>
                     </CardContent>
-                    <Link to={`/booking`}>
-                      <Button variant="contained" size="small">
-                        Book now
-                      </Button>
-                    </Link>
+                    
+                      <Link to={`/booking`}>
+                        <Button variant="contained" size="small">
+                          Book now
+                        </Button>
+                      </Link>
+                    
                   </Grid>
                 </Grid>
               ))}

@@ -1,6 +1,8 @@
 package click.badcourt.be.api;
 
+import click.badcourt.be.entity.BookingDetail;
 import click.badcourt.be.model.request.BookingDetailRequest;
+import click.badcourt.be.model.request.FixedBookingDetailRequest;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.service.BookingDetailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -8,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookingDetail")
@@ -27,7 +32,15 @@ public class BookingDetailApi {
     public ResponseEntity getBookingDetailById(@PathVariable Long id) {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(id));
     }
-
+    @PostMapping("/fixed")
+    public ResponseEntity createFixedBooking(@RequestBody FixedBookingDetailRequest fixedBookingDetailRequest) {
+        try {
+            List<BookingDetailResponse> fixedBookings = bookingDetailService.createFixedBookings(fixedBookingDetailRequest);
+            return new ResponseEntity<>(fixedBookings, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
     @PostMapping
     public ResponseEntity createBookingDetail(@RequestBody BookingDetailRequest bookingDetailRequest) {
         try{

@@ -107,12 +107,12 @@ const SignUp = () => {
               className="form-input"
             />
           </div> */}
-          <div className='form-group'>
+          {/* <div className='form-group'>
             <input
               type="checkbox"
             />
             <label htmlFor="rememberme"> By signing up, I agree with the Terms of Use & Privacy Policy</label>
-          </div>
+          </div> */}
           <button type="submit" className="login-button">
             Sign Up
           </button>

@@ -9,6 +9,7 @@ import click.badcourt.be.model.request.ClubUpdateRequest;
 import click.badcourt.be.model.response.ClubResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.ClubRepository;
+import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +31,10 @@ public class ClubService {
     AuthenticationRepository authenticationRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    private CourtRepository courtRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public List<ClubResponse> getAllClubs() {
         List<Club> clubs = clubRepository.findClubsByDeletedFalse();
@@ -44,6 +49,8 @@ public class ClubService {
             clubResponse.setOwnerName(club.getAccount().getFullName());
             clubResponse.setPicture_location(club.getPicture_location());
             clubResponse.setPrice(club.getPrice());
+            clubResponse.setClubId(club.getClubId());
+//            clubResponse.setCount(courtRepository.countCourtsByClub_ClubId(club.getClubId()));
             clubResponse.setClubId(club.getClubId());
 
             clubCreateResponse.add(clubResponse);

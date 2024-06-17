@@ -23,8 +23,6 @@ import ShowFooter from './Components/layout/ShowFooter'
 import CRUD from './Components/common/CRUD'
 import Club from './Components/Clubs/Club'
 import ClubDetail from './Components/Clubs/ClubDetail'
-
-import Booking from './Components/CusBooking/Booking'
 import Dashboard from './Components/Admin/Dashboard'
 import BookingHistoryPage from './Components/BookingHistory (1)/BookingHistoryPage'
 import BookingForm from './Components/BookingForm/BookingForm'
@@ -81,6 +79,7 @@ function App() {
               path='/booking'
               element={<BookingForm />}
             />
+           
             <Route
               path='/CRUD'
               element={<CRUD />}

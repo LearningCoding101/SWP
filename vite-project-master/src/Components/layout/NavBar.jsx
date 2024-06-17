@@ -48,7 +48,7 @@ const NavBar = () => {
 					</ul>
 
 					<ul className="d-flex navbar-nav">
-						{isLoggedIn && userRole === "ClUB_OWNER" && (
+						{isLoggedIn && userRole === "ADMIN" && (
 							<li className="nav-item">
 								<NavLink className="nav-link" to={"/CRUD"}>
 									CRUD Demo

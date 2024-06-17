@@ -4,6 +4,7 @@ import click.badcourt.be.entity.Court;
 import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
 import click.badcourt.be.model.response.CourtResponse;
+import click.badcourt.be.model.response.CourtShowResponse;
 import click.badcourt.be.service.CourtService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class CourtApi {
     @GetMapping("/{clubId}")
     public ResponseEntity getCourtsByClubId(@PathVariable Long clubId){
         try {
-            List<Court> courts = courtService.getCourtsByClubId(clubId);
+            List<CourtShowResponse> courts = courtService.getCourtsByClubId(clubId);
             return ResponseEntity.ok(courts);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -34,7 +35,7 @@ public class CourtApi {
     @PostMapping("/{clubId}")
     public ResponseEntity<?> addCourt(@RequestBody CourtCreateRequest courtCreateRequest, @PathVariable Long clubId){
         try {
-            Court createdCourt = courtService.createCourt(courtCreateRequest, clubId);
+            CourtShowResponse createdCourt = courtService.createCourt(courtCreateRequest, clubId);
             return ResponseEntity.ok(createdCourt);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
