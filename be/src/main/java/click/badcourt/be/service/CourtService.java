@@ -4,7 +4,7 @@ import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
-import click.badcourt.be.model.response.CourtResponse;
+import click.badcourt.be.model.response.CourtNameListShowResponse;
 import click.badcourt.be.model.response.CourtShowResponse;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
@@ -47,6 +47,25 @@ public class CourtService {
                 courtShowResponse.setDeleted(court.isDeleted());
                 courtShowResponse.setClubName(court.getClub().getName());
                 courts.add(courtShowResponse);
+            }
+        }
+
+        return courts;
+    }
+
+    public List<CourtNameListShowResponse> getCourtNamesByClubId(Long clubId) {
+        if (!clubRepository.existsById(clubId)) {
+            throw new IllegalArgumentException("Club not found with id: " + clubId);
+        }
+        List<Court> allCourts = courtRepository.findCourtsByDeletedFalse();
+        List<CourtNameListShowResponse> courts = new ArrayList<>();
+
+        for (Court court : allCourts) {
+            if (court.getClub().getClubId() == clubId) {
+                CourtNameListShowResponse courtNameListShowResponse = new CourtNameListShowResponse();
+                courtNameListShowResponse.setId(court.getCourtId());
+                courtNameListShowResponse.setCourtName(court.getCourtname());
+                courts.add(courtNameListShowResponse);
             }
         }
 

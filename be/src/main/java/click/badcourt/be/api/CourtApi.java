@@ -3,6 +3,7 @@ package click.badcourt.be.api;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.model.request.CourtCreateRequest;
 import click.badcourt.be.model.request.CourtUpdateRequest;
+import click.badcourt.be.model.response.CourtNameListShowResponse;
 import click.badcourt.be.model.response.CourtResponse;
 import click.badcourt.be.model.response.CourtShowResponse;
 import click.badcourt.be.service.CourtService;
@@ -25,10 +26,18 @@ public class CourtApi {
     @GetMapping("/{clubId}")
     public List<CourtShowResponse> getCourtsByClubId(@PathVariable Long clubId){
         try {
-            List<CourtShowResponse> courts = courtService.getCourtsByClubId(clubId);
-            return courts;
+            return courtService.getCourtsByClubId(clubId);
         } catch (IllegalArgumentException e) {
             return (List<CourtShowResponse>) new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/court names/{clubId}")
+    public List<CourtNameListShowResponse> getCourtNamesByClubId(@PathVariable Long clubId){
+        try {
+            return courtService.getCourtNamesByClubId(clubId);
+        } catch (IllegalArgumentException e) {
+            return (List<CourtNameListShowResponse>) new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
