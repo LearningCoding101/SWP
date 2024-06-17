@@ -28,7 +28,7 @@ public class BookingDetailApi {
         return ResponseEntity.ok(bookingDetailService.getAllBookingDetails());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{bookingid}")
     public ResponseEntity getBookingDetailById(@PathVariable Long id) {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(id));
     }
