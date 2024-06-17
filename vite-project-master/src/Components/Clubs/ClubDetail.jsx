@@ -23,14 +23,14 @@ function ClubDetail() {
 
   const clubId = useParams();
   const newClub = clubDetail.find(obj => {
-    return obj.id == clubId?.id
+    return obj.address == clubId.address
   })
 
 
   return (
     <div>
       <NavBar />
-      <div className='container-fluid'>
+      <div className='container-fluid text-allign-center'>
         <p>{newClub?.name}</p>
         <p>{newClub?.address}</p>
         <p>{newClub?.open_time}</p>

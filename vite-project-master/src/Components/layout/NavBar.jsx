@@ -8,7 +8,7 @@ const NavBar = () => {
 		setShowAccount(!showAccount)
 	}
 
-	const isLoggedIn = localStorage.getItem("loginToken")
+	const isLoggedIn = localStorage.getItem("token")
 	const userRole = localStorage.getItem("userRole")
 
 
@@ -48,7 +48,7 @@ const NavBar = () => {
 					</ul>
 
 					<ul className="d-flex navbar-nav">
-						{isLoggedIn && userRole === "ClUB_OWNER" && (
+						{isLoggedIn && userRole === "ADMIN" && (
 							<li className="nav-item">
 								<NavLink className="nav-link" to={"/CRUD"}>
 									CRUD Demo
@@ -81,9 +81,9 @@ const NavBar = () => {
 													History
 												</Link>
 
-												<Link className="dropdown-item" to={"/booking"}>
+												{/* <Link className="dropdown-item" to={"/booking"}>
 													Book now DEMO
-												</Link>
+												</Link> */}
 											</div>
 										)}
 									</div>
