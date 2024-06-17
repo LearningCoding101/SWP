@@ -33,8 +33,9 @@ public class ClubService {
     PasswordEncoder passwordEncoder;
     @Autowired
     private CourtRepository courtRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
+
 
     public List<ClubResponse> getAllClubs() {
         List<Club> clubs = clubRepository.findClubsByDeletedFalse();
