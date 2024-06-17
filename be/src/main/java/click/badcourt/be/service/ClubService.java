@@ -2,6 +2,8 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.entity.Club;
+import click.badcourt.be.enums.RoleEnum;
+import click.badcourt.be.model.request.ClubComboCreateRequest;
 import click.badcourt.be.model.request.ClubCreateRequest;
 import click.badcourt.be.model.request.ClubUpdateRequest;
 import click.badcourt.be.model.response.ClubResponse;
@@ -9,6 +11,7 @@ import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +28,8 @@ public class ClubService {
     AccountUtils accountUtils;
     @Autowired
     AuthenticationRepository authenticationRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public List<ClubResponse> getAllClubs() {
         List<Club> clubs = clubRepository.findClubsByDeletedFalse();
@@ -39,7 +44,10 @@ public class ClubService {
             clubResponse.setOwnerName(club.getAccount().getFullName());
             clubResponse.setPicture_location(club.getPicture_location());
             clubResponse.setPrice(club.getPrice());
+            clubResponse.setClubId(club.getClubId());
+
             clubCreateResponse.add(clubResponse);
+
         }
         return clubCreateResponse;
     }
@@ -57,6 +65,19 @@ public class ClubService {
             club.setPicture_location(clubCreateRequest.getPicture_location());
             return clubRepository.save(club);
 
+    }
+
+    public Club createClubCombo(ClubComboCreateRequest clubCreateRequest) {
+        Account account= authenticationRepository.findAccountByEmail(clubCreateRequest.getEmail());
+        Club club = new Club();
+        club.setAccount(account);
+        club.setName(clubCreateRequest.getName());
+        club.setAddress(clubCreateRequest.getAddress());
+        club.setPrice(clubCreateRequest.getPrice());
+        club.setClose_time(LocalTime.of(clubCreateRequest.getEndHour(), clubCreateRequest.getEndMinute()));
+        club.setOpen_time(LocalTime.of(clubCreateRequest.getStartHour(), clubCreateRequest.getStartMinute()));
+        club.setPicture_location(clubCreateRequest.getPicture_location());
+        return clubRepository.save(club);
     }
 
     public Club updateClub(ClubUpdateRequest clubUpdateRequest, Long id) {
