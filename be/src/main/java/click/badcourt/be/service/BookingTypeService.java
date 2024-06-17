@@ -19,6 +19,7 @@ public class BookingTypeService {
         BookingType bookingType = new BookingType();
         bookingType.setBookingTypeName(bookingTypeRequest.getName());
         bookingType.setBookingDiscount(bookingTypeRequest.getDiscount());
+        bookingType.setBookingTypeInfo(null);
         bookingTypeRepository.save(bookingType);
         return bookingType;
     }
@@ -26,6 +27,7 @@ public class BookingTypeService {
         BookingType bookingType= bookingTypeRepository.findById(id).orElseThrow(() -> new RuntimeException("BookingType not found"));
         bookingType.setBookingTypeName(bookingTypeRequest.getName());
         bookingType.setBookingDiscount(bookingTypeRequest.getDiscount());
+        bookingType.setBookingTypeInfo(null);
         bookingTypeRepository.save(bookingType);
         return bookingType;
     }

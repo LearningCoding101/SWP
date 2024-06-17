@@ -136,7 +136,7 @@ public class BookingService {
     }
     public void sendBookingConfirmation(QRCodeData data) throws WriterException, IOException, MessagingException {
         String filePath = "D:/Nguyen/qr-code.png";  // Specify the correct path
-        qrCodeService.generateQRCode(data, filePath);
+        QRCodeService.generateQRCode(data, filePath);
 
 
         Account account = accountUtils.getCurrentAccount();
@@ -163,7 +163,7 @@ public class BookingService {
         new Thread(r).start();
     }
 
-    public boolean validateQrCode(byte[] qrCodeData, QRCodeData expectedData) throws IOException, NotFoundException, NotFoundException {
+    public boolean validateQrCode(byte[] qrCodeData, QRCodeData expectedData) throws IOException,NotFoundException {
         QRCodeData decodedData = qrCodeService.decodeQr(qrCodeData);
         return decodedData != null && decodedData.getBookingId().equals(expectedData.getBookingId());
     }

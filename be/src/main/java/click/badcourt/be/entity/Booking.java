@@ -28,8 +28,6 @@ public class Booking {
     @JoinColumn(name = "clubid")
     private Club club;
 
-
-
     @OneToOne(mappedBy = "booking")
     FeedBack feedback;
 

@@ -17,7 +17,7 @@ public class BookingType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookingTypeId;
-    @Unique
+    @Column(unique = true)
     private String bookingTypeName;
     private float bookingDiscount;
     private String bookingTypeInfo;

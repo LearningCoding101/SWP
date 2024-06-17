@@ -13,6 +13,6 @@ public class TransactionRequest {
     private float totalAmount;
     Long bookingId;
     Long paymentMethodId;
-    TransactionEnum status;
+    String status;
 
 }

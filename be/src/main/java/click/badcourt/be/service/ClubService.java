@@ -15,10 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalTime;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+
+import java.time.LocalTime;
 
 @Service
 public class ClubService {
@@ -130,5 +133,28 @@ public class ClubService {
             clubResponses.add(clubResponse);
         }
         return clubResponses;
+    }
+    public List<LocalDate> convertDayOfWeekToDatesInMonth(DayOfWeek dayOfWeek, Month month, int year) {
+        List<LocalDate> dates = new ArrayList<>();
+
+        // Start from the first day of the specified month and year
+        LocalDate firstDayOfMonth = LocalDate.of(year, month, 1);
+
+        // Find the first occurrence of the specified day of the week in the month
+        int daysToAdd = dayOfWeek.getValue() - firstDayOfMonth.getDayOfWeek().getValue();
+        if (daysToAdd < 0) {
+            daysToAdd += 7;
+        }
+
+        // Get the first occurrence date
+        LocalDate currentDate = firstDayOfMonth.plusDays(daysToAdd);
+
+        // Add all occurrences of the specified day of the week within the month
+        while (currentDate.getMonth() == month) {
+            dates.add(currentDate);
+            currentDate = currentDate.plusWeeks(1);  // Move to the next occurrence of the day of the week
+        }
+
+        return dates;
     }
 }

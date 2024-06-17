@@ -5,6 +5,7 @@ import click.badcourt.be.model.request.BookingTypeRequest;
 import click.badcourt.be.service.BookingTypeService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,18 +19,18 @@ public class BookingTypeApi {
     private BookingTypeService bookingTypeService;
 
     @GetMapping
-    public List<BookingType> getAllBookingTypes() {
-        return bookingTypeService.getAllBookingTypes();
+    public ResponseEntity<List<BookingType>> getAllBookingTypes() {
+        return ResponseEntity.ok(bookingTypeService.getAllBookingTypes());
     }
 
     @PostMapping
-    public BookingType addBookingType(@RequestBody BookingTypeRequest bookingTypeRequest) {
-        return bookingTypeService.add(bookingTypeRequest);
+    public ResponseEntity<BookingType> addBookingType(@RequestBody BookingTypeRequest bookingTypeRequest) {
+        return ResponseEntity.ok(bookingTypeService.add(bookingTypeRequest));
     }
 
     @PutMapping("/{id}")
-    public BookingType updateBookingType(@RequestBody BookingTypeRequest bookingTypeRequest, @PathVariable Long id) {
-        return bookingTypeService.update(bookingTypeRequest, id);
+    public ResponseEntity<BookingType> updateBookingType(@RequestBody BookingTypeRequest bookingTypeRequest, @PathVariable Long id) {
+        return ResponseEntity.ok(bookingTypeService.update(bookingTypeRequest, id));
     }
 }
 
