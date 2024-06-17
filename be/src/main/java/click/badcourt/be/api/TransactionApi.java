@@ -31,7 +31,6 @@ import java.util.List;
                 Transaction createdTransaction = transactionService.addTransaction(request);
                 TransactionResponse transactionResponse = new TransactionResponse();
                 transactionResponse.setId(createdTransaction.getTransactionId());
-                transactionResponse.setStatus(createdTransaction.getStatus());
                 transactionResponse.setDepositAmount(createdTransaction.getDepositAmount());
                 transactionResponse.setPaymentDate(createdTransaction.getPaymentDate());
                 transactionResponse.setTotalAmount(createdTransaction.getTotalAmount());
