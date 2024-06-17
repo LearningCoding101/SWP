@@ -23,8 +23,9 @@ import ShowFooter from "./Components/layout/ShowFooter";
 import CRUD from "./Components/common/CRUD";
 import Club from "./Components/Clubs/Club";
 import ClubDetail from "./Components/Clubs/ClubDetail";
-import BookingHistoryList from "./Components/BookingHistory/BookingHistoryList";
 import BookingHistoryPage from "./Components/BookingHistory/BookingHistoryPage";
+import Booking from "./Components/CusBooking/Booking";
+import Dashboard from "./Components/Admin/Dashboard";
 function App() {
   return (
     <AuthProvider>
@@ -41,8 +42,11 @@ function App() {
             <Route path="/reset-password" element={<ForgotPassConfirm />} />
             <Route path="/clubs" element={<Club />} />
             <Route path="/clubs/:id" element={<ClubDetail />} />
-            <Route path="/CRUD" element={<CRUD />} />
             <Route path="/bookingHistory" element={<BookingHistoryPage />} />
+            <Route path="/CRUD" element={<CRUD />} />
+            <Route path="/CRUD" element={<CRUD />} />
+            <Route path="/booking" element={<Booking />} />
+            <Route path="/adminDashboard" element={<Dashboard />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
