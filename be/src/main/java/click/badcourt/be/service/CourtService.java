@@ -92,6 +92,33 @@ public class CourtService {
         }
     }
 
+    public List<CourtShowResponse> createManyCourt(Long clubId, int n) {
+        Optional<Club> clubOptional = clubRepository.findById(clubId);
+        int b = courtRepository.countCourtsByDeletedFalseAndClub_ClubId(clubId);
+        b++;
+        int t = 1;
+        List<CourtShowResponse> response = new ArrayList<>();
+        if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
+            for (int i = b; t <= n; i++) {
+                Court newCourt = new Court();
+                newCourt.setClub(clubOptional.get());
+                newCourt.setCourtname(String.valueOf(i));
+                Court savedCourt = courtRepository.save(newCourt);
+                CourtShowResponse addResponse= new CourtShowResponse();
+                addResponse.setId(savedCourt.getCourtId());
+                addResponse.setCourtName(savedCourt.getCourtname());
+                addResponse.setClubId(savedCourt.getClub().getClubId());
+                addResponse.setClubName(savedCourt.getClub().getName());
+                addResponse.setDeleted(false);
+                response.add(addResponse);
+                t++;
+            }
+            return response;
+        } else {
+            throw new IllegalArgumentException("Club not found with id: " + clubId);
+        }
+    }
+
 
     public Court updateCourt (CourtUpdateRequest courtUpdateRequest, Long id){
         Court court = courtRepository.findById(id)

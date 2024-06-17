@@ -50,6 +50,14 @@ public class CourtApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/{clubId}/{number}")
+    public List<CourtShowResponse> createCourt(@PathVariable Long clubId, @PathVariable int number){
+        try {
+            return courtService.createManyCourt(clubId, number);
+        } catch (IllegalArgumentException e) {
+            return (List<CourtShowResponse>) new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
 
     @DeleteMapping("/{id}")
