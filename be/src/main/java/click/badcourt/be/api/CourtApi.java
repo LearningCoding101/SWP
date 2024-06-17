@@ -23,12 +23,12 @@ public class CourtApi {
     private CourtService courtService;
 
     @GetMapping("/{clubId}")
-    public ResponseEntity getCourtsByClubId(@PathVariable Long clubId){
+    public List<CourtShowResponse> getCourtsByClubId(@PathVariable Long clubId){
         try {
             List<CourtShowResponse> courts = courtService.getCourtsByClubId(clubId);
-            return ResponseEntity.ok(courts);
+            return courts;
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return (List<CourtShowResponse>) new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
