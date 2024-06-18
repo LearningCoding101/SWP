@@ -1,5 +1,6 @@
 package click.badcourt.be.entity;
 
+import click.badcourt.be.enums.BookingDetailStatusEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,4 +31,6 @@ public class BookingDetail {
 
     @Column(nullable = false)
     boolean deleted;
+    @Enumerated(EnumType.STRING)
+    BookingDetailStatusEnum detailStatus=BookingDetailStatusEnum.NOT_YET;
 }

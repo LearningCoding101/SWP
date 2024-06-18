@@ -56,6 +56,15 @@ public class BookingDetailApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+    @PostMapping("/checkin/{id}")
+    public ResponseEntity checkinBookingDetail(@PathVariable Long id) {
+        try{
+            bookingDetailService.checkin(id);
+            return new ResponseEntity<>("Checkin Successfully !", HttpStatus.CREATED);
+        }catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity updateBookingDetail(@RequestBody BookingDetailRequest bookingDetailRequest, @PathVariable Long id) {

@@ -26,6 +26,8 @@ import ClubDetail from "./Components/Clubs/ClubDetail";
 import Dashboard from "./Components/Admin/Dashboard";
 import BookingHistoryPage from "./Components/BookingHistory (1)/BookingHistoryPage";
 import BookingForm from "./Components/BookingForm/BookingForm";
+import StaffPage from "./StaffPage";
+import QRScanner from "./StaffPage";
 function App() {
   return (
     <AuthProvider>
@@ -33,6 +35,7 @@ function App() {
         <Router>
           <Routes>
             <Route exact path="/" element={<Home />} />
+            <Route exact path="/staff" element={<QRScanner />} />
 
             <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />

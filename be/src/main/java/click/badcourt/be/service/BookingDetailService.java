@@ -4,6 +4,7 @@ import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.BookingDetail;
 
 import click.badcourt.be.entity.CourtTimeslot;
+import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.model.request.BookingDetailRequest;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;
 import click.badcourt.be.model.response.BookingDetailDeleteResponse;
@@ -69,6 +70,7 @@ public class BookingDetailService {
                 bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
                 bookingDetailResponse.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
                 bookingDetailResponse.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
+                bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
                 bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
                 bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
                 bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
@@ -178,5 +180,10 @@ public class BookingDetailService {
         bookingDetail.setDeleted(true);
 
         bookingDetailRepository.save(bookingDetail);
+    }
+    public void checkin(Long id){
+        Optional<BookingDetail> bookingDetail= bookingDetailRepository.findById(id);
+        bookingDetail.ifPresent(detail -> detail.setDetailStatus(BookingDetailStatusEnum.CHECKED_IN));
+        bookingDetailRepository.save(bookingDetail.get());
     }
 }

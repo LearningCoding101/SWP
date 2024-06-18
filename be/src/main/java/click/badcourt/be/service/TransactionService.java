@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -40,7 +41,11 @@ public class TransactionService {
         if(paymentMethod.isPresent() && booking.isPresent()) {
             Transaction transaction = new Transaction();
             if(transactionRequest.getStatus().equals("00")){
-                transaction.setStatus(TransactionEnum.DEPOSITED);
+                if(Objects.equals(booking.get().getBookingType().getBookingTypeName(), "1"))
+                    transaction.setStatus(TransactionEnum.DEPOSITED);
+                else {
+                    transaction.setStatus(TransactionEnum.FULLY_PAID);
+                }
             }
             else {
                 transaction.setStatus(TransactionEnum.CANCELED);
@@ -85,5 +90,8 @@ public class TransactionService {
             totalPrice+= booking.getClub().getPrice();
         }
         return totalPrice*booking.getBookingType().getBookingDiscount();
+    }
+    public Transaction getTransactionsByBookingId(Long bookingId) {
+        return transactionRepository.findByBooking_BookingId(bookingId);
     }
 }
