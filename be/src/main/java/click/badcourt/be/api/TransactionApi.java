@@ -4,6 +4,7 @@ import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.model.request.TransactionRequest;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.service.TransactionService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 
     @RestController
     @RequestMapping("/api/transactions")
+    @SecurityRequirement(name = "api")
     public class TransactionApi {
 
         @Autowired
@@ -35,7 +37,8 @@ import java.util.List;
                 transactionResponse.setPaymentDate(createdTransaction.getPaymentDate());
                 transactionResponse.setTotalAmount(createdTransaction.getTotalAmount());
                 transactionResponse.setBookingId(createdTransaction.getBooking().getBookingId());
-                transactionResponse.setPaymentMethodId(createdTransaction.getPaymentMethod().getPaymentMethodId());
+                transactionResponse.setPaymentMethod(createdTransaction.getPaymentMethod().getPaymentMethodName());
+                transactionResponse.setStatus(createdTransaction.getStatus().toString());
                 return ResponseEntity.ok(transactionResponse);
             }catch (IllegalArgumentException e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -46,5 +49,10 @@ import java.util.List;
         public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody TransactionRequest request) {
             Transaction updatedTransaction = transactionService.updateTransaction(request, id);
             return ResponseEntity.ok(updatedTransaction);
+        }
+        @GetMapping("/{bookingId}")
+        public ResponseEntity getTransactionByBookingId(@PathVariable Long bookingId) {
+            TransactionResponse transactionResponse =transactionService.getTransactionsByBookingId(bookingId);
+            return ResponseEntity.ok(transactionResponse);
         }
     }

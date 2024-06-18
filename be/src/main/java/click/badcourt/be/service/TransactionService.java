@@ -7,6 +7,7 @@ import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
 import click.badcourt.be.model.request.TransactionRequest;
+import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.PaymentMethodRepository;
@@ -35,13 +36,29 @@ public class TransactionService {
     public List<Transaction> findAll() {
         return transactionRepository.findAll();
     }
+    public Transaction addTransactionPending(TransactionRequest transactionRequest) {
+        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
+        Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
+        if(paymentMethod.isPresent() && booking.isPresent()) {
+            Transaction transaction = new Transaction();
+            transaction.setDepositAmount(transactionRequest.getTotalAmount()*50/100);
+            transaction.setTotalAmount(transactionRequest.getTotalAmount());
+            transaction.setPaymentDate(transactionRequest.getPaymentDate());
+            transaction.setPaymentMethod(paymentMethod.get());
+            transaction.setBooking(booking.get());
+            return transactionRepository.save(transaction);
+        }
+        else{
+            throw new IllegalArgumentException("PaymentMethod or Booking not found");
+        }
+    }
     public Transaction addTransaction(TransactionRequest transactionRequest) {
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
         Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
         if(paymentMethod.isPresent() && booking.isPresent()) {
             Transaction transaction = new Transaction();
             if(transactionRequest.getStatus().equals("00")){
-                if(Objects.equals(booking.get().getBookingType().getBookingTypeName(), "1"))
+                if(booking.get().getBookingType().getBookingTypeId() == 1)
                     transaction.setStatus(TransactionEnum.DEPOSITED);
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
@@ -91,7 +108,16 @@ public class TransactionService {
         }
         return totalPrice*booking.getBookingType().getBookingDiscount();
     }
-    public Transaction getTransactionsByBookingId(Long bookingId) {
-        return transactionRepository.findByBooking_BookingId(bookingId);
+    public TransactionResponse getTransactionsByBookingId(Long bookingId) {
+        Transaction transaction = transactionRepository.findByBooking_BookingId(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
+        TransactionResponse transactionResponse = new TransactionResponse();
+        transactionResponse.setBookingId(transaction.getBooking().getBookingId());
+        transactionResponse.setId(transaction.getTransactionId());
+        transactionResponse.setPaymentMethod(transaction.getPaymentMethod().getPaymentMethodName());
+        transactionResponse.setPaymentDate(transaction.getPaymentDate());
+        transactionResponse.setTotalAmount(transaction.getTotalAmount());
+        transactionResponse.setDepositAmount(transaction.getDepositAmount());
+        transactionResponse.setStatus(transaction.getStatus().toString());
+        return transactionResponse;
     }
 }
