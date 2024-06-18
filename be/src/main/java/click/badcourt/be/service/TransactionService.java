@@ -15,6 +15,7 @@ import click.badcourt.be.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,8 +34,21 @@ public class TransactionService {
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
 
-    public List<Transaction> findAll() {
-        return transactionRepository.findAll();
+    public List<TransactionResponse> findAll() {
+        List<Transaction> transactions = transactionRepository.findAll();
+        List<TransactionResponse> transactionResponses = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setBookingId(transaction.getBooking().getBookingId());
+            transactionResponse.setId(transaction.getTransactionId());
+            transactionResponse.setPaymentMethod(transaction.getPaymentMethod().getPaymentMethodName());
+            transactionResponse.setPaymentDate(transaction.getPaymentDate());
+            transactionResponse.setTotalAmount(transaction.getTotalAmount());
+            transactionResponse.setDepositAmount(transaction.getDepositAmount());
+            transactionResponse.setStatus(transaction.getStatus().toString());
+            transactionResponses.add(transactionResponse);
+        }
+        return transactionResponses;
     }
     public Transaction addTransactionPending(TransactionRequest transactionRequest) {
         Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
@@ -119,5 +133,11 @@ public class TransactionService {
         transactionResponse.setDepositAmount(transaction.getDepositAmount());
         transactionResponse.setStatus(transaction.getStatus().toString());
         return transactionResponse;
+    }
+    public void updateFullyPaid(Long transactionId){
+        Optional<Transaction> transaction = transactionRepository.findById(transactionId);
+        if(transaction.isPresent()&&transaction.get().getStatus().equals(TransactionEnum.DEPOSITED)){
+            transaction.get().setStatus(TransactionEnum.FULLY_PAID);
+        }
     }
 }
