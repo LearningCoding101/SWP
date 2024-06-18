@@ -3,6 +3,7 @@ import Home from "./Components/Home/Home";
 import "./Components/css/Login.css";
 import "./Components/css/SignUp.css";
 import "./Components/css/ForgotPassword.css";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   BrowserRouter as Router,
   Routes,
