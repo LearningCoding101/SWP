@@ -139,5 +139,6 @@ public class TransactionService {
         if(transaction.isPresent()&&transaction.get().getStatus().equals(TransactionEnum.DEPOSITED)){
             transaction.get().setStatus(TransactionEnum.FULLY_PAID);
         }
+        transactionRepository.save(transaction.get());
     }
 }
