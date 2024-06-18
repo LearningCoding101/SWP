@@ -30,6 +30,14 @@ public class CourtTimeslotApi {
         return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(cId, date);
     }
 
+    @GetMapping("/{cId}/{startDate}/{endDate}")
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(
+            @PathVariable Long cId,
+            @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
+            @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate) {
+        return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDates(cId, startDate, endDate);
+    }
+
     @GetMapping("/{cId}")
     public List<CourtTimeSlotManageResponse> getCourtTimeSlotsByCourtId(
             @PathVariable Long cId) {

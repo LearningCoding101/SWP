@@ -34,7 +34,6 @@ public class CourtTimeSlotService {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
         List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
         List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
-        int count = 0;
         for (CourtTimeslot courtTimeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
             courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
@@ -46,9 +45,36 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             for (BookingDetail booking : bookingDTList) {
                 if ((booking.getDate().compareTo(date) == 0) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
-//                    count = count + 1;
                     courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
                 }
+            }
+            courtTimeSlotResponses.add(courtTimeSlotResponse);
+        }
+        return courtTimeSlotResponses;
+    }
+
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startdate, @DateTimeFormat(pattern = "yyyy-MM-dd") Date enddate) {
+        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
+        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
+        for (CourtTimeslot courtTimeslot : courtTimeslots) {
+            CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
+            courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
+            courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
+            courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
+
+            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
+            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
+            for (BookingDetail booking : bookingDTList) {
+                do
+                {
+                    if ((booking.getDate().compareTo(startdate) == 0) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID())
+                    {
+                        courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
+                        startdate.after(startdate);
+                    }
+                }while (startdate.compareTo(enddate) == 0);
             }
             courtTimeSlotResponses.add(courtTimeSlotResponse);
         }
