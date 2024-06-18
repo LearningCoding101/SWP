@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button, Dropdown, Menu } from "antd";
-import { UserOutlined, DownOutlined } from "@ant-design/icons";
+import { UserOutlined, DownOutlined, SearchOutlined } from "@ant-design/icons";
 import Logout from "../Login/Logout"; // Assuming Logout component handles logout functionality
+import Input from "antd/es/input/Input";
+const { Search } = Input;
 
 const NavBar = () => {
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
@@ -13,7 +15,16 @@ const NavBar = () => {
 
   const isLoggedIn = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");
+  const navigate = useNavigate();
 
+  // const handleSearch = (value) => {
+
+  //   console.log('Search term:', value);
+  // };
+
+  // const handleIconClick = () => {
+  //   window.location.href = link; 
+  // };
   const accountMenu = (
     <Menu>
       {isLoggedIn ? (
@@ -23,6 +34,12 @@ const NavBar = () => {
           </Menu.Item>
           <Menu.Item>
             <Link to="/feedback" style={{ textDecoration: 'none' }}>Feedback Demo</Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link to="/transactionSuccess" style={{ textDecoration: 'none' }}>Success Demo</Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link to="/transactionFailed" style={{ textDecoration: 'none' }}>Fail Demo</Link>
           </Menu.Item>
           {userRole === "CUSTOMER" && (
             <Menu.Item>
@@ -37,16 +54,16 @@ const NavBar = () => {
       )}
     </Menu>
   );
-  
+
 
   return (
     <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center">
       <div className="container-fluid" >
         {/* Logo */}
         <Link to="/" className="navbar-brand text-primary">
-          <img 
-          src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b" 
-          style={{ width: '60px', height: '50px', marginLeft: '30px' , display: 'fixed'}}>
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
+            style={{ width: '60px', height: '50px', marginLeft: '30px', display: 'fixed' }}>
           </img>
         </Link>
 
@@ -59,8 +76,15 @@ const NavBar = () => {
                 isActive ? "nav-link active text-primary" : "nav-link"
               }
             >
+              {/* <Input.Search
+                placeholder="Search clubs"
+                allowClear
+                
+              /> */}
               All clubs
             </NavLink>
+
+
           </li>
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">

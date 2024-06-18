@@ -50,7 +50,8 @@ const Login = () => {
             try {
                 const data = await login(email, password);
                 console.log('Login successful!', data);
-                localStorage.setItem("userName", email)
+                const fullname = data.fullName
+                localStorage.setItem("userName", fullname)
 
                 const role = data.role
                 localStorage.setItem("userRole", role)
@@ -80,8 +81,8 @@ const Login = () => {
             const ggData = res.data
             const roleGG = ggData.role
             localStorage.setItem("userRole", roleGG)
-            const email = ggData.email
-            localStorage.setItem("userName", email)
+            const name = ggData.fullName
+            localStorage.setItem("userName", name)
             navigate("/")
 
         } catch (error) {

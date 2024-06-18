@@ -88,7 +88,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message, Select } from "antd";
 import { Layout, Row, Col } from "antd";
-import api from "../../Config/axios";
+import api from "../../config/axios";
 import { Option } from "antd/es/mentions";
 import NavBar from "../layout/NavBar";
 import Footer from "../layout/Footer";

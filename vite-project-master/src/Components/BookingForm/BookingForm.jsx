@@ -6,14 +6,17 @@ import moment from "moment";
 import { Option } from "antd/es/mentions";
 import NavBar from "../layout/NavBar";
 import Footer from "../layout/Footer";
-import api from "../../Config/axios";
+import api from "../../config/axios";
 import BookingType1 from './BookingType1';
 import BookingType2 from './BookingType2';
 import BookingType3 from './BookingType3';
+import { useNavigate } from "react-router-dom";
 
-const BookingForm = () => {
+const BookingForm = (test) => {
   const [form] = Form.useForm();
   const [bookingType, setBookingType] = useState(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     form.setFieldsValue({
@@ -35,6 +38,10 @@ const BookingForm = () => {
       form.setFieldsValue({
         bookingDate: moment(),
       });
+      const IdData = data.data
+      const Id = IdData?.id
+      localStorage.setItem("bookingId", Id)
+      navigate(`/transaction/${Id}`)
       console.log(data)
     } catch (error) {
       message.error("Booking failed, please try again.");

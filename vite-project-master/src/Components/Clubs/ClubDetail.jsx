@@ -4,7 +4,7 @@ import Footer from '../layout/Footer'
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useParams } from 'react-router-dom';
-import api from '../../Config/axios';
+import api from '../../config/axios';
 function ClubDetail() {
   const [clubDetail, setClubDetail] = useState([]);
   useEffect(() => {
