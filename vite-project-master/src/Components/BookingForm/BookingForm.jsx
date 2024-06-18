@@ -6,7 +6,7 @@ import moment from "moment";
 import { Option } from "antd/es/mentions";
 import NavBar from "../layout/NavBar";
 import Footer from "../layout/Footer";
-import api from "../../config/axios";
+import api from "../../Config/axios";
 import BookingType1 from './BookingType1';
 import BookingType2 from './BookingType2';
 import BookingType3 from './BookingType3';

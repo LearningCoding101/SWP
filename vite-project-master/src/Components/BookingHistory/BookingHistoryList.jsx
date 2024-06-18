@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BookingHistory from "./BookingHistory";
 import axios from "axios";
-import api from './../../config/axios';
+import api from './../../Config/axios';
 
 
 const bookings = [

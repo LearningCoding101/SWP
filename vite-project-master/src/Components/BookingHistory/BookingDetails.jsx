@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./BookingDetails.css";
 import ReactDOM from "react-dom";
-import api from "../../config/axios";
+import api from "../../Config/axios";
 import { List, Card, Image, Typography, Button, Space, Empty } from "antd";
 import { useParams } from "react-router-dom";
 

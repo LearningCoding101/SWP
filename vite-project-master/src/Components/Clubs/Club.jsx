@@ -88,7 +88,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import NavBar from "../layout/NavBar";
 import Footer from "../layout/Footer";
-import api from "../../config/axios";
+import api from "../../Config/axios";
 
 const Club = () => {
   const [clubs, setClubs] = useState([]);
