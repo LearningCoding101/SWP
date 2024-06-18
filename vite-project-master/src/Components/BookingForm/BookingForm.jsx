@@ -1,137 +1,111 @@
-import React, { useState } from "react";
-import "./BookingForm.css";
-import BookingType1 from "./BookingType1";
-import BookingType2 from "./BookingType2";
-import BookingType3 from "./BookingType3";
-import { Link } from 'react-router-dom';
-import { Divider } from "@mui/material";
+
+import React, { useEffect, useState } from "react";
+import { Form, DatePicker, Button, message, Select, InputNumber } from "antd";
+import axios from "axios"; // Assuming you're using axios for API calls
+import moment from "moment";
+import { Option } from "antd/es/mentions";
+import NavBar from "../layout/NavBar";
+import Footer from "../layout/Footer";
+import api from "../../config/axios";
+import BookingType1 from './BookingType1';
+import BookingType2 from './BookingType2';
+import BookingType3 from './BookingType3';
 
 const BookingForm = () => {
-  const [filterValue, updateFilter] = useState();
+  const [form] = Form.useForm();
+  const [bookingType, setBookingType] = useState(null);
 
-  const onFilterValueChanged = (event) => {
-    // console.log(event.target.value);
-    updateFilter(event.target.value);
+  useEffect(() => {
+    form.setFieldsValue({
+      bookingDate: moment(),
+    });
+  }, [form]);
+
+  const onFinish = async (values) => {
+    const payload = {
+      bookingDate: values.bookingDate.toISOString(),
+      club_id: values.club_id,
+      booking_type_id: values.booking_type_id,
+    };
+
+    try {
+      const data = await api.post("/booking", payload); // Assuming your API endpoint
+      message.success("Booking successful!");
+      form.resetFields();
+      form.setFieldsValue({
+        bookingDate: moment(),
+      });
+      console.log(data)
+    } catch (error) {
+      message.error("Booking failed, please try again.");
+      console.error(error); // Log the error for debugging
+      
+    }
   };
 
   return (
-    <div id="booking" className="section">
-      <div className="section-center">
-        <div className="container">
-          <div className="row">
-            <div className="booking-form">
-              <form>
-                <div className="form-group">
-                  <select className="form-control" required>
-                    <option value="" selected hidden>
-                      Select Court
-                    </option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                  </select>
-                  <span className="select-arrow"></span>
-                  <span className="form-label">Court</span>
-                </div>
-                <div className="form-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="Enter your Name"
-                  />
-                  <span className="form-label">Name</span>
-                </div>
-                <div className="form-group">
-                  <input
-                    className="form-control"
-                    type="tel"
-                    placeholder="Enter your Phone number"
-                  />
-                  <span className="form-label">Phone</span>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <select
-                        className="form-control"
-                        required
-                        onChange={onFilterValueChanged}
-                      >
-                        <option value="" selected hidden>
-                          Select Booking Type
-                        </option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                      <span className="select-arrow"></span>
-                      <span className="form-label">Booking Type</span>
-                    </div>
-                  </div>
-                </div>
-                {/* <div className="form-group">
-                  <input
-                    className="form-control"
-                    type="tel"
-                    placeholder="Enter an origin location"
-                  />
-                  <span className="form-label">Pickup Location</span>
-                </div>
-                <div className="form-group">
-                  <input
-                    className="form-control"
-                    type="tel"
-                    placeholder="Enter a destination location"
-                  />
-                  <span className="form-label">Destination Location</span>
-                </div>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <NavBar /> {/* Render NavBar at the top */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 90 }}> {/* Added margin-top for space */}
+        <div
+          style={{
+            width: "500px",
+            padding: 20,
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            border: "1px solid #ccc",
+          }}
+        >
+          <Form
+            form={form}
+            name="bookingForm"
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={{
+              bookingDate: moment(),
+            }}
+          >
+            <Form.Item
+              name="bookingDate"
+              label="Booking Date"
+              rules={[{ required: true, message: "Please select the booking date!" }]}
+            >
+              <DatePicker showTime format="YYYY-MM-DD" />
+            </Form.Item>
 
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <input className="form-control" type="date" required />
-                      <span className="form-label">Pickup Date</span>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <input className="form-control" type="time" required />
-                      <span className="form-label">Pickup Time</span>
-                    </div>
-                  </div>
-                </div> */}
+            <Form.Item
+              name="club_id"
+              label="Club ID"
+              rules={[{ required: true, message: "Please input the club ID!" }]}
+            >
+              <InputNumber min={0} style={{ width: "100%" }} />
+            </Form.Item>
 
-                {filterValue === "1" && (
-                  <>
-                    <BookingType1></BookingType1>
-                  </>
-                )}
-                {filterValue === "2" && (
-                  <>
-                    <BookingType2></BookingType2>
-                  </>
-                )}
-                {filterValue === "3" && (
-                  <>
-                    <BookingType3></BookingType3>
-                  </>
-                )}
-                <Divider className='divider'>
-                        Looking good?
-                    </Divider>
-                <div className="row flex-row">
-                  <div className="form-btn col-md-7">
-                    <button className="submit-btn">Book Now</button>
-                  </div>
-                  <div className="form-btn col-md">
-                    <Link to={"/clubs"}><button className="submit-btn">Cancel</button></Link>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
+            <Form.Item
+              name="booking_type_id"
+              label="Booking Type"
+              rules={[{ required: true, message: "Please select the booking type!" }]}
+            >
+              <Select onChange={(value) => setBookingType(value)}>
+                <Option value={1}>Theo giờ (Hourly)</Option>
+                <Option value={3}>Theo tuần (Weekly)</Option>
+                <Option value={2}>Theo tháng (Monthly)</Option>
+              </Select>
+            </Form.Item>
+
+            {bookingType === 1 && <BookingType1/>}
+            {bookingType === 2 && <BookingType2/>}
+            {bookingType === 3 && <BookingType3/>}
+
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

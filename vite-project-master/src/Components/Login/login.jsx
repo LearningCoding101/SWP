@@ -71,18 +71,18 @@ const Login = () => {
         try {
             const result = await signInWithPopup(auth, provider);
             const token = result.user.accessToken;
-            console.log(token);
             const res = await axios.post("http://152.42.168.144:8080/api/login-google", { token: token })
+            // const newToken = res.token
             authen.handleLogin(token)
+            const newTokenData = res.data
+            const newToken = newTokenData.token
+            localStorage.setItem("token", newToken)
             const ggData = res.data
             const roleGG = ggData.role
-            console.log(roleGG)
             localStorage.setItem("userRole", roleGG)
             const email = ggData.email
-            console.log(email);
             localStorage.setItem("userName", email)
             navigate("/")
-            console.log(res.data);
 
         } catch (error) {
             console.log(error);

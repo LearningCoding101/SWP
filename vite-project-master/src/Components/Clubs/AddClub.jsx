@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Alert from '@mui/material/Alert';
+import { Alert } from "antd";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import uploadFile from '../util/useUpload';
 import { addClubAPI } from '../API/AddClubAPI';
@@ -38,7 +38,7 @@ const AddClub = () => {
                 console.log('Added successful!', data);
 
                 if (data) {
-                    <Alert severity="success">Added club successfully!</Alert>
+                    alert("Added new club!")
                 }
 
                 // Handle successful 
