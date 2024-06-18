@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import BookingHistory from "./BookingHistory";
 import axios from "axios";
+import api from './../../Config/axios';
+
 
 const bookings = [
   {
@@ -29,40 +31,53 @@ const bookings = [
   },
 ];
 const BookingHistoryList = () => {
-  const url = "http://152.42.168.144:8080/api/booking/customer";
-
-  const [bookingHistory, setBookingHistory] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadList();
+    const fetchCustomers = async () => {
+      try {
+        const response = await api.get("/booking/customer", {
+          transformResponse: [
+            (data) => {
+              // Transform the response data to handle empty responses
+              return data ? JSON.parse(data) : [];
+            },
+          ],
+        });
+        // const response = await api.get("/booking/customer");
+        // console.log(response);
+        console.log(response.data);
+        setCustomers(response.data);
+        const data = response.data;
+        const bookingId = data.id
+        localStorage.setItem("Id", bookingId)
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchCustomers();
   }, []);
-
-  const loadList = async () => {
-    const result = await axios.get(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    setBookingHistory(result.data);
-  };
-
-  console.log(bookingHistory);
+  // console.log(customers);
   return (
     <ul className="list-group shadow-sm">
-      {bookings.map((booking, index) => {
+      <h1>History</h1>
+      {customers.map((booking) => {
         return (
           <BookingHistory
-            orderID={index + 1}
-            club={booking?.club_id}
-            //address={booking?.Address}
-            //time={booking?.Time}
-            bookingCreateTime={booking?.created_by}
-            status={booking?.bookingStatusEnum}
+            orderID={booking?.id}
+            club={booking?.club_name}
+            address={booking?.address}
+            time={booking?.Time}
+            type={booking?.bookingTypeId}
+            bookingCreateTime={booking?.bookingDate}
+            status={booking?.status}
           ></BookingHistory>
         );
       })}
     </ul>
+
   );
 };
 

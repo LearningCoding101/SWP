@@ -1,107 +1,108 @@
-import React, { useContext, useState } from "react"
-import { NavLink, Link } from "react-router-dom"
-import Logout from "../Login/Logout"
+import React, { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Button, Dropdown, Menu } from "antd";
+import { UserOutlined, DownOutlined } from "@ant-design/icons";
+import Logout from "../Login/Logout"; // Assuming Logout component handles logout functionality
+
 const NavBar = () => {
-	const [showAccount, setShowAccount] = useState(false)
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
 
-	const handleAccountClick = () => {
-		setShowAccount(!showAccount)
-	}
+  const handleAccountClick = () => {
+    setShowAccountDropdown(!showAccountDropdown);
+  };
 
-	const isLoggedIn = localStorage.getItem("token")
-	const userRole = localStorage.getItem("userRole")
+  const isLoggedIn = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole");
 
+  const accountMenu = (
+    <Menu>
+      {isLoggedIn ? (
+        <>
+          <Menu.Item>
+            <Link to="/profile" style={{ textDecoration: 'none' }}>Profile</Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link to="/feedback" style={{ textDecoration: 'none' }}>Feedback Demo</Link>
+          </Menu.Item>
+          {userRole === "CUSTOMER" && (
+            <Menu.Item>
+              <Link to="/bookingHistory" style={{ textDecoration: 'none' }}>History</Link>
+            </Menu.Item>
+          )}
+        </>
+      ) : (
+        <Menu.Item>
+          <Link to="/login" style={{ textDecoration: 'none' }}>Login</Link>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
+  
 
-	return (
-		<nav className="navbar navbar-expand-lg bg-body-tertiary px-5 shadow sticky-top">
-			<div className="container-fluid">
-				<Link to={"/"} className="navbar-brand">
-					<span className="hotel-color">BadCourts</span>
-				</Link>
+  return (
+    <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center">
+      <div className="container-fluid" >
+        {/* Logo */}
+        <Link to="/" className="navbar-brand text-primary">
+          <img 
+          src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b" 
+          style={{ width: '60px', height: '50px', marginLeft: '30px' , display: 'fixed'}}>
+          </img>
+        </Link>
 
-				<button
-					className="navbar-toggler"
-					type="button"
-					data-bs-toggle="collapse"
-					data-bs-target="#navbarScroll"
-					aria-controls="navbarScroll"
-					aria-expanded="false"
-					aria-label="Toggle navigation">
-					<span className="navbar-toggler-icon"></span>
-				</button>
+        {/* Navigation Links (left-aligned) */}
+        <ul className="nav mb-2 mb-lg-0">
+          <li className="nav-item">
+            <NavLink
+              to="/clubs"
+              className={({ isActive }) =>
+                isActive ? "nav-link active text-primary" : "nav-link"
+              }
+            >
+              All clubs
+            </NavLink>
+          </li>
+          {isLoggedIn && userRole === "ADMIN" && (
+            <li className="nav-item">
+              <NavLink
+                to="/adminDashboard"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active text-primary" : "nav-link"
+                }
+              >
+                Admin
+              </NavLink>
+            </li>
+          )}
+          {isLoggedIn && userRole === "ADMIN" && (
+            <li className="nav-item">
+              <NavLink
+                to="/CRUD"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active text-primary" : "nav-link"
+                }
+              >
+                CRUD Demo
+              </NavLink>
+            </li>
+          )}
+        </ul>
 
-				<div className="collapse navbar-collapse" id="navbarScroll">
-					<ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
-						<li className="nav-item">
-							<NavLink className="nav-link" aria-current="page" to={"/clubs"}>
-								All clubs
-							</NavLink>
-						</li>
+        {/* Account Dropdown (right-aligned) */}
+        <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
+          <Button.Group>
+            <Button type="ghost" onClick={handleAccountClick}>
+              {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
+              <DownOutlined />
+            </Button>
+          </Button.Group>
+        </Dropdown>
+      </div>
 
-						{isLoggedIn && userRole === "ADMIN" && (
-							<li className="nav-item">
-								<NavLink className="nav-link" aria-current="page" to={"/adminDashboard"}>
-									Admin
-								</NavLink>
-							</li>
-						)}
-					</ul>
+      {/* Added a spacer div below the navbar */}
+      <div className="navbar-spacer"></div>
+    </nav>
+  );
+};
 
-					<ul className="d-flex navbar-nav">
-						{isLoggedIn && userRole === "ADMIN" && (
-							<li className="nav-item">
-								<NavLink className="nav-link" to={"/CRUD"}>
-									CRUD Demo
-								</NavLink>
-							</li>
-						)}
-						<li className="nav-item dropdown">
-							<a
-								className={`nav-link dropdown-toggle ${showAccount ? "show" : ""}`}
-								href="#"
-								role="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false"
-								onClick={handleAccountClick}>
-								{" "}
-								Account
-							</a>
-
-							<ul
-								className={`dropdown-menu ${showAccount ? "show" : ""}`}
-								aria-labelledby="navbarDropdown">
-								{isLoggedIn ? (
-									<div>
-										<Link className="dropdown-item" to={"/logout"}>
-											Profile
-										</Link>
-										{userRole === "CUSTOMER" && (
-											<div>
-												<Link className="dropdown-item" to={"/bookingHistory"}>
-													History
-												</Link>
-
-												{/* <Link className="dropdown-item" to={"/booking"}>
-													Book now DEMO
-												</Link> */}
-											</div>
-										)}
-									</div>
-
-								) : (
-									<li>
-										<Link className="dropdown-item" to={"/login"}>
-											Login
-										</Link>
-									</li>
-								)}
-							</ul>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</nav>
-	)
-}
-
-export default NavBar
+export default NavBar;

@@ -22,7 +22,7 @@ import java.util.List;
         private TransactionService transactionService;
 
         @GetMapping
-        public ResponseEntity<List<Transaction>> getAllTransactions() {
+        public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
             return ResponseEntity.ok(transactionService.findAll());
         }
 
@@ -54,5 +54,14 @@ import java.util.List;
         public ResponseEntity getTransactionByBookingId(@PathVariable Long bookingId) {
             TransactionResponse transactionResponse =transactionService.getTransactionsByBookingId(bookingId);
             return ResponseEntity.ok(transactionResponse);
+        }
+        @PostMapping("/{id}")
+        public ResponseEntity updateTransactionFullyPaid(@PathVariable Long id) {
+            try{
+                transactionService.updateFullyPaid(id);
+                return new ResponseEntity<>("FullyPaid Successfully !", HttpStatus.CREATED);
+            }catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
         }
     }

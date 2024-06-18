@@ -147,6 +147,7 @@ public class BookingDetailService {
             bookingDetail.setCourtTimeslot(courtTimeslot.get());
             bookingDetail.setDate(bookingDetailRequest.getBookingDate());
             bookingDetail.setDeleted(false);
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
             bookingDetailRepository.save(bookingDetail);
             return bookingDetailRequest;
         }
