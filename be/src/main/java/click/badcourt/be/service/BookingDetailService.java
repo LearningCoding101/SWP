@@ -152,9 +152,65 @@ public class BookingDetailService {
     }
 
 
+    public List<BookingDetailRequest> createFixedBookingDetailCombos(BookingDetailRequestCombo request, Long id) {
+        LocalDate startDate = request.getBookingDate();
+        DayOfWeek dayOfWeek = request.getDayOfWeek();
+        LocalDate endDate = startDate.plusMonths(request.getDurationInMonths()).with(TemporalAdjusters.previousOrSame(dayOfWeek));
+        //LocalDate endDate = startDate.plusMonths(request.getDurationInMonths()).with(TemporalAdjusters.lastInMonth(dayOfWeek));
+        //ex Nếu ngày bắt đầu của bạn là 2080-16-09 (là Thứ Hai) và thời hạn của bạn là 1 tháng và bạn cần Thứ Năm:
+        //Ngày kết thúc ban đầu sẽ là 2080-17-10 (một tháng sau).
+        //Việc điều chỉnh bằng LastInMonth(THURSDAY) sẽ đặt ngày kết thúc của bạn thành Thứ Năm cuối cùng của tháng 10 năm 2080.
+        //Việc điều chỉnh bằng previousOrSame(THURSDAY) sẽ đặt ngày kết thúc của bạn thành Thứ Năm đầu tiên vào hoặc sau ngày 17-10 năm 2080.
+        LocalDate nextDayOfWeek = startDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+        long weeksBetween = ChronoUnit.WEEKS.between(nextDayOfWeek, endDate);
+        long occurrences = startDate.getDayOfWeek() == dayOfWeek ? weeksBetween + 1 : weeksBetween;
+        //dong nay giai quyet van de ve so thu xuat hien trong thoi han 1 thang bi nhieu hon so vo so thu trong so thang yeu cau
+        List<LocalDate> bookingDates = IntStream.iterate(0, i -> i + 1)
+                .mapToObj(i -> nextDayOfWeek.plusWeeks(i))
+                .limit(occurrences)
+                .collect(Collectors.toList());
+
+
+        List<BookingDetail> existingBookings = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+
+        List<BookingDetailRequest> bookingDetailsResponses = new ArrayList<>();
+
+        for (LocalDate date : bookingDates) {
+
+            boolean isAvailable = existingBookings.stream()
+                    .noneMatch(bookingdt ->
+                            bookingdt.getDate().compareTo(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant())) == 0 &&
+                                    bookingdt.getCourtTimeslot().getCourtTSlotID() == request.getCourtTSId());
+
+            if (!isAvailable) {
+                throw new IllegalArgumentException("CourtTimeslot are already in use");
+            }
+
+
+            BookingDetail bookingDetail = new BookingDetail();
+            bookingDetail.setBooking(bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Booking not found")));
+            bookingDetail.setCourtTimeslot(courtTimeSlotRepository.findById(request.getCourtTSId()).orElseThrow(() -> new RuntimeException("CourtTimeslot not found")));
+            bookingDetail.setDate(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            bookingDetail.setDeleted(false);
+
+
+            BookingDetail savedBookingDetail = bookingDetailRepository.save(bookingDetail);
+
+            BookingDetailRequest response = new BookingDetailRequest();
+
+            response.setBookingDate(savedBookingDetail.getDate());
+            response.setCourtTSId(savedBookingDetail.getCourtTimeslot().getCourtTSlotID());
+            response.setBookingId(savedBookingDetail.getBooking().getBookingId());
+
+            bookingDetailsResponses.add(response);
+        }
+
+        return bookingDetailsResponses;
+    }
+
+
 
     public BookingDetailRequest createBookingDetail(BookingDetailRequest bookingDetailRequest) {
-
         List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
         for (BookingDetail bookingdt : bookingDTList) {
             if ((bookingdt.getDate().compareTo(bookingDetailRequest.getBookingDate()) == 0) && bookingdt.getCourtTimeslot().getCourtTSlotID() == bookingDetailRequest.getCourtTSId()) {
@@ -179,12 +235,12 @@ public class BookingDetailService {
         }
     }
 
-
-    public BookingDetailRequest createBookingDetailCombo(BookingDetailRequestCombo bookingDetailRequest, Long id) {
-
+    public BookingDetailRequest create1stBookingDetailCombo(BookingDetailRequestCombo bookingDetailRequest, Long id) {
+        LocalDate startDate = bookingDetailRequest.getBookingDate();
+        Date datee = Date.from(startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
         for (BookingDetail bookingdt : bookingDTList) {
-            if ((bookingdt.getDate().compareTo(bookingDetailRequest.getBookingDate()) == 0) && bookingdt.getCourtTimeslot().getCourtTSlotID() == bookingDetailRequest.getCourtTSId()) {
+            if ((bookingdt.getDate().compareTo(datee) == 0) && bookingdt.getCourtTimeslot().getCourtTSlotID() == bookingDetailRequest.getCourtTSId()) {
                 throw new IllegalArgumentException("CourtTimeslot are already in use");
             }
         }
@@ -196,12 +252,43 @@ public class BookingDetailService {
         if(bookingOptional.isPresent()&&courtTimeslot.isPresent()){
             bookingDetail.setBooking(bookingOptional.get());
             bookingDetail.setCourtTimeslot(courtTimeslot.get());
-            bookingDetail.setDate(bookingDetailRequest.getBookingDate());
+            bookingDetail.setDate(datee);
             bookingDetail.setDeleted(false);
             bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
             bookingDetailRepository.save(bookingDetail);
             returnBookingDetailRequest.setBookingId(id);
-            returnBookingDetailRequest.setBookingDate(bookingDetailRequest.getBookingDate());
+            returnBookingDetailRequest.setBookingDate(datee);
+            returnBookingDetailRequest.setCourtTSId(courtTimeslot.get().getCourtTSlotID());
+            return returnBookingDetailRequest;
+        }
+        else {
+            throw new IllegalArgumentException("Booking or CourtTimeslot not found");
+        }
+    }
+
+    public BookingDetailRequest create3rdBookingDetailCombo(BookingDetailRequestCombo bookingDetailRequest, Long id) {
+        LocalDate startDate = bookingDetailRequest.getBookingDate();
+        Date datee = Date.from(startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        for (BookingDetail bookingdt : bookingDTList) {
+            if ((bookingdt.getDate().compareTo(datee) == 0) && bookingdt.getCourtTimeslot().getCourtTSlotID() == bookingDetailRequest.getCourtTSId()) {
+                throw new IllegalArgumentException("CourtTimeslot are already in use");
+            }
+        }
+
+        BookingDetail bookingDetail= new BookingDetail();
+        Optional<Booking> bookingOptional= bookingRepository.findById(id);
+        Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());
+        BookingDetailRequest returnBookingDetailRequest = new BookingDetailRequest();
+        if(bookingOptional.isPresent()&&courtTimeslot.isPresent()){
+            bookingDetail.setBooking(bookingOptional.get());
+            bookingDetail.setCourtTimeslot(courtTimeslot.get());
+            bookingDetail.setDate(datee);
+            bookingDetail.setDeleted(false);
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
+            bookingDetailRepository.save(bookingDetail);
+            returnBookingDetailRequest.setBookingId(id);
+            returnBookingDetailRequest.setBookingDate(datee);
             returnBookingDetailRequest.setCourtTSId(courtTimeslot.get().getCourtTSlotID());
             return returnBookingDetailRequest;
         }

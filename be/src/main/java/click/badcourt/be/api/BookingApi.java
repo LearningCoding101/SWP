@@ -49,17 +49,34 @@ public class BookingApi {
         BookingComboResponse bookingComboResponse = new BookingComboResponse();
         bookingComboResponse.setBookingResponse(bkcr);
         List<BookingDetailRequestCombo> bkdtrspl = bookingComboRequest.getBookingDetailRequestCombos();
-        List<BookingDetailRequest> returnlist = new ArrayList<BookingDetailRequest>();
+        List<BookingDetailRequest> returnlist = new ArrayList<>();
         BookingDetailRequest store;
         Long id = bkcr.getId();
-        for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
-            store = bookingDetailService.createBookingDetailCombo(bkdtr, id);
-            returnlist.add(store);
+        if(bkcr.getBookingTypeId() == 1){
+            for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
+                store = bookingDetailService.create1stBookingDetailCombo(bkdtr, id);
+                returnlist.add(store);
+            }
+        } else if (bkcr.getBookingTypeId() == 2) {
+            List<BookingDetailRequest> returnlistAdd = new ArrayList<>();
+            for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
+                returnlistAdd = bookingDetailService.createFixedBookingDetailCombos(bkdtr, id);
+                for(BookingDetailRequest bkdtrAdd : returnlistAdd) {
+                    returnlist.add(bkdtrAdd);
+                }
+                returnlistAdd.clear();
+            }
+        } else if (bkcr.getBookingTypeId() == 3) {
+            for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
+                store = bookingDetailService.create3rdBookingDetailCombo(bkdtr, id);
+                returnlist.add(store);
+            }
         }
-        bookingComboResponse.setBookingDetailRequestList(returnlist);
+
+            bookingComboResponse.setBookingDetailRequestList(returnlist);
         return ResponseEntity.ok(bookingComboResponse);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<BookingComboResponse>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
