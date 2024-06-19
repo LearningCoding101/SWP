@@ -41,7 +41,7 @@ public class BookingApi {
     }
 
 
-    @PostMapping("/bookingcombo")
+    @PostMapping("/bookingCombo")
     public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequest bookingComboRequest) {
 
         try {

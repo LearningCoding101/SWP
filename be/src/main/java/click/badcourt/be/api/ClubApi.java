@@ -46,7 +46,7 @@ public class ClubApi {
         }
     }
 
-    @PostMapping("clubcombo")
+    @PostMapping("clubCombo")
     public ResponseEntity addClubcombo(@RequestBody ClubComboCreateRequest clubComboCreateRequest){
         try {
             HashMap<String, Object> hmap = new HashMap<String, Object>();
