@@ -6,6 +6,7 @@ import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.BookingCreateRequest;
 import click.badcourt.be.model.request.BookingUpdateRequest;
 import click.badcourt.be.model.request.QRCodeData;
+import click.badcourt.be.model.request.BookingComboRequest;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
@@ -14,8 +15,6 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.google.zxing.WriterException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 

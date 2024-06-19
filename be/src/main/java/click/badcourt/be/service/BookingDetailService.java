@@ -5,8 +5,8 @@ import click.badcourt.be.entity.*;
 import click.badcourt.be.entity.CourtTimeslot;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.model.request.BookingDetailRequest;
+import click.badcourt.be.model.request.BookingDetailRequestCombo;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;
-import click.badcourt.be.model.request.FlexibleBookingRequest;
 import click.badcourt.be.model.response.BookingDetailDeleteResponse;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -179,6 +178,39 @@ public class BookingDetailService {
             throw new IllegalArgumentException("Booking or CourtTimeslot not found");
         }
     }
+
+
+    public BookingDetailRequest createBookingDetailCombo(BookingDetailRequestCombo bookingDetailRequest, Long id) {
+
+        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        for (BookingDetail bookingdt : bookingDTList) {
+            if ((bookingdt.getDate().compareTo(bookingDetailRequest.getBookingDate()) == 0) && bookingdt.getCourtTimeslot().getCourtTSlotID() == bookingDetailRequest.getCourtTSId()) {
+                throw new IllegalArgumentException("CourtTimeslot are already in use");
+            }
+        }
+
+        BookingDetail bookingDetail= new BookingDetail();
+        Optional<Booking> bookingOptional= bookingRepository.findById(id);
+        Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());
+        BookingDetailRequest returnBookingDetailRequest = new BookingDetailRequest();
+        if(bookingOptional.isPresent()&&courtTimeslot.isPresent()){
+            bookingDetail.setBooking(bookingOptional.get());
+            bookingDetail.setCourtTimeslot(courtTimeslot.get());
+            bookingDetail.setDate(bookingDetailRequest.getBookingDate());
+            bookingDetail.setDeleted(false);
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
+            bookingDetailRepository.save(bookingDetail);
+            returnBookingDetailRequest.setBookingId(id);
+            returnBookingDetailRequest.setBookingDate(bookingDetailRequest.getBookingDate());
+            returnBookingDetailRequest.setCourtTSId(courtTimeslot.get().getCourtTSlotID());
+            return returnBookingDetailRequest;
+        }
+        else {
+            throw new IllegalArgumentException("Booking or CourtTimeslot not found");
+        }
+    }
+
+
 
     public BookingDetailRequest updateBookingDetail(BookingDetailRequest bookingDetailRequest,Long bookingDetailId) {
         Optional<BookingDetail> bookingDetail= bookingDetailRepository.findById(bookingDetailId);
