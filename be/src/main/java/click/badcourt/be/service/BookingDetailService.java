@@ -86,7 +86,7 @@ public class BookingDetailService {
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
         if (bookingOptional.isPresent()) {
             List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
             List<BookingDetailsCustomerResponse> bookingDetailsCustomerResponses = new ArrayList<>();
             for (BookingDetail bookingDetail : bookingDetails) {
                 BookingDetailsCustomerResponse bookingDetailsCustomerResponse = new BookingDetailsCustomerResponse();
