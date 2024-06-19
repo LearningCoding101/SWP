@@ -1,14 +1,15 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Booking;
-import click.badcourt.be.entity.BookingDetail;
+import click.badcourt.be.entity.*;
 
 import click.badcourt.be.entity.CourtTimeslot;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.model.request.BookingDetailRequest;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;
+import click.badcourt.be.model.request.FlexibleBookingRequest;
 import click.badcourt.be.model.response.BookingDetailDeleteResponse;
 import click.badcourt.be.model.response.BookingDetailResponse;
+import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.CourtTimeSlotRepository;
@@ -16,15 +17,14 @@ import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -55,33 +55,41 @@ public class BookingDetailService {
         }
         return bookingDetailDeleteResponses;
     }
-
-    public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
-        Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
-        if(bookingOptional.isPresent()){
+    public List<BookingDetailsCustomerResponse> getBookingCustomerBookingDetailByBookingId(Long bookingId) {
+        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        if (bookingOptional.isPresent()) {
             List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+            List<BookingDetailsCustomerResponse> bookingDetailsCustomerResponses = new ArrayList<>();
+            for (BookingDetail bookingDetail : bookingDetails) {
+                BookingDetailsCustomerResponse bookingDetailsCustomerResponse = new BookingDetailsCustomerResponse();
+                bookingDetailsCustomerResponse.setBookingDetailsId(bookingDetail.getBookingDetailsId());
+                bookingDetailsCustomerResponse.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
+                String formattedDate = dateFormat.format(bookingDetail.getDate());
+                bookingDetailsCustomerResponse.setDate(formattedDate);
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(bookingDetail.getDate());
+                int dayOfWeekNumeric = calendar.get(Calendar.DAY_OF_WEEK);
+                int adjustedDayOfWeekNumeric = dayOfWeekNumeric == 1 ? 7 : dayOfWeekNumeric - 1;
+                DayOfWeek dayOfWeek = DayOfWeek.of(adjustedDayOfWeekNumeric);
+                bookingDetailsCustomerResponse.setDayOfWeek(dayOfWeek);
+                bookingDetailsCustomerResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
+                bookingDetailsCustomerResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
+                bookingDetailsCustomerResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailsCustomerResponses.add(bookingDetailsCustomerResponse);
 
-            List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
-            for(BookingDetail bookingDetail : bookingDetails){
-                BookingDetailResponse bookingDetailResponse= new BookingDetailResponse();
-                bookingDetailResponse.setBookingDetailsId(bookingDetail.getBookingDetailsId());
-                bookingDetailResponse.setBookingDate(bookingDetail.getDate());
-                bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
-                bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
-                bookingDetailResponse.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
-                bookingDetailResponse.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
-                bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
-                bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
-                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
-                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
-                bookingDetailResponses.add(bookingDetailResponse);
+
+
             }
-            return bookingDetailResponses;
-        }
-        else {
+            return bookingDetailsCustomerResponses;
+        } else {
             throw new IllegalArgumentException("Booking not found");
         }
     }
+
+
+
+
     public List<BookingDetailResponse> createFixedBookings(FixedBookingDetailRequest request) {
         LocalDate startDate = request.getStartDate();
         DayOfWeek dayOfWeek = request.getDayOfWeek();
@@ -100,7 +108,23 @@ public class BookingDetailService {
                 .limit(occurrences)
                 .collect(Collectors.toList());
 
-        List<BookingDetailResponse> bookingDetailsResponses = bookingDates.stream().map(date -> {
+
+        List<BookingDetail> existingBookings = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+
+        List<BookingDetailResponse> bookingDetailsResponses = new ArrayList<>();
+
+        for (LocalDate date : bookingDates) {
+
+            boolean isAvailable = existingBookings.stream()
+                    .noneMatch(bookingdt ->
+                            bookingdt.getDate().compareTo(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant())) == 0 &&
+                                    bookingdt.getCourtTimeslot().getCourtTSlotID() == request.getCourtTSId());
+
+            if (!isAvailable) {
+                throw new IllegalArgumentException("CourtTimeslot are already in use");
+            }
+
+
             BookingDetail bookingDetail = new BookingDetail();
             bookingDetail.setBooking(bookingRepository.findById(request.getBookingId()).orElseThrow(() -> new RuntimeException("Booking not found")));
             bookingDetail.setCourtTimeslot(courtTimeSlotRepository.findById(request.getCourtTSId()).orElseThrow(() -> new RuntimeException("CourtTimeslot not found")));
@@ -122,13 +146,13 @@ public class BookingDetailService {
             response.setStart_time(savedBookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
             response.setEnd_time(savedBookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
 
-
-
-            return response;
-        }).collect(Collectors.toList());
+            bookingDetailsResponses.add(response);
+        }
 
         return bookingDetailsResponses;
     }
+
+
 
     public BookingDetailRequest createBookingDetail(BookingDetailRequest bookingDetailRequest) {
 
@@ -162,7 +186,7 @@ public class BookingDetailService {
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());
         if(bookingDetail.isPresent()){
             if(bookingOptional.isPresent()&&courtTimeslot.isPresent()){
-                bookingDetail.get().setBooking(bookingOptional.get());
+
                 bookingDetail.get().setCourtTimeslot(courtTimeslot.get());
                 bookingDetailRepository.save(bookingDetail.get());
                 return bookingDetailRequest;

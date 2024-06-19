@@ -4,6 +4,7 @@ import click.badcourt.be.entity.BookingDetail;
 import click.badcourt.be.model.request.BookingDetailRequest;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;
 import click.badcourt.be.model.response.BookingDetailResponse;
+import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
 import click.badcourt.be.service.BookingDetailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,10 @@ public class BookingDetailApi {
         return ResponseEntity.ok(bookingDetailService.getAllBookingDetails());
     }
 
-    @GetMapping("/{bookingid}")
-    public ResponseEntity getBookingDetailById(@PathVariable Long bookingid) {
-        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
-    }
+//    @GetMapping("/{bookingid}")
+//    public ResponseEntity getBookingDetailById(@PathVariable Long bookingid) {
+//        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
+//    }
 
 //    @GetMapping("/{bookingid}/{typeId}")
 //    public ResponseEntity getBookingDetailByTypeId(@PathVariable Long bookingid, @PathVariable Long typeId) {
@@ -45,6 +46,15 @@ public class BookingDetailApi {
             return new ResponseEntity<>(fixedBookings, HttpStatus.CREATED);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<List<BookingDetailsCustomerResponse>> getBookingBookingDetailByBookingId(@PathVariable Long id) {
+        try {
+            List<BookingDetailsCustomerResponse> bookingDetailsCustomerResponses = bookingDetailService.getBookingCustomerBookingDetailByBookingId(id);
+            return ResponseEntity.ok(bookingDetailsCustomerResponses);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
         }
     }
     @PostMapping
