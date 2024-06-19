@@ -44,7 +44,7 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             for (BookingDetail booking : bookingDTList) {
-                if ((booking.getDate().compareTo(date) == 0) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
+                if ((booking.getDate().getDate()==date.getDate() && booking.getDate().getMonth()==date.getMonth() && booking.getDate().getYear()==date.getYear() ) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
                     courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
                 }
             }

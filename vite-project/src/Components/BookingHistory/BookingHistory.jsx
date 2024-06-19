@@ -56,8 +56,9 @@
 
 
 import React, { useState } from "react";
-import  BookingDetails  from "./BookingDetails"; // Assuming BookingDetails is also redesigned for Ant Design
+import BookingDetails from "./BookingDetails"; // Assuming BookingDetails is also redesigned for Ant Design
 import { Card, List, Space, Button, Collapse } from "antd";
+import QRCode from "qrcode.react"; // Import QRCode from qrcode.react
 
 const BookingHistory = (props) => {
   const [showBookingDetail, updateShowBookingDetail] = useState(false);
@@ -75,6 +76,9 @@ const BookingHistory = (props) => {
       <BookingDetails booking={props} hideDetail={hideDetail} />
     </Collapse.Panel>
   );
+
+  // Generate QR code value based on the format {"bookingId": booking.orderID}
+  const qrCodeValue = JSON.stringify({ bookingId: props.orderID});
 
   return (
     <Card
@@ -101,9 +105,15 @@ const BookingHistory = (props) => {
               title={`Order ID: ${booking.orderID}`}
               description={
                 <Space direction="vertical">
-                  <p>Club: {booking.club} - {booking.address}</p>
+                  <p>
+                    Club: {booking.club} - {booking.address}
+                  </p>
                   <p>Time: {booking.time}</p>
                   <p>Booking Create Time: {booking.bookingCreateTime}</p>
+                  {/* Display QR Code */}
+                  <div style={{ textAlign: "left" }}>
+                    <QRCode value={qrCodeValue} />
+                  </div>
                 </Space>
               }
             />
@@ -111,13 +121,9 @@ const BookingHistory = (props) => {
           </List.Item>
         )}
       />
-      <BookingDetails
-          showDetail={showBookingDetail}
-          showId={props}
-          hideDetail={hideDetail}
-        ></BookingDetails>
     </Card>
   );
 };
 
 export default BookingHistory;
+
