@@ -29,15 +29,11 @@ public class BookingDetailApi {
         return ResponseEntity.ok(bookingDetailService.getAllBookingDetails());
     }
 
-//    @GetMapping("/{bookingid}")
-//    public ResponseEntity getBookingDetailById(@PathVariable Long bookingid) {
-//        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
-//    }
+    @GetMapping("/{bookingid}")
+    public ResponseEntity getBookingDetailById(@PathVariable Long bookingid) {
+        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
+    }
 
-//    @GetMapping("/{bookingid}/{typeId}")
-//    public ResponseEntity getBookingDetailByTypeId(@PathVariable Long bookingid, @PathVariable Long typeId) {
-//
-//    }
 
     @PostMapping("/fixed")
     public ResponseEntity createFixedBooking(@RequestBody FixedBookingDetailRequest fixedBookingDetailRequest) {

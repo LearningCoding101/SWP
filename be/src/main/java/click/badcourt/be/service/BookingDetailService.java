@@ -54,6 +54,27 @@ public class BookingDetailService {
         }
         return bookingDetailDeleteResponses;
     }
+
+    public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
+        Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
+        if(bookingOptional.isPresent()){
+            List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
+
+            List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
+            for(BookingDetail bookingDetail : bookingDetails){
+                BookingDetailResponse bookingDetailResponse= new BookingDetailResponse();
+                bookingDetailResponse.setBookingDate(bookingDetail.getDate());
+                bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
+                bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
+                bookingDetailResponses.add(bookingDetailResponse);
+            }
+            return bookingDetailResponses;
+        }
+        else {
+            throw new IllegalArgumentException("Booking not found");
+        }
+    }
+
     public List<BookingDetailsCustomerResponse> getBookingCustomerBookingDetailByBookingId(Long bookingId) {
         Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
         if (bookingOptional.isPresent()) {
