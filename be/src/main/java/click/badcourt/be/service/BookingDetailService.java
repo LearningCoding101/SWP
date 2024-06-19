@@ -66,6 +66,13 @@ public class BookingDetailService {
                 bookingDetailResponse.setBookingDate(bookingDetail.getDate());
                 bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
                 bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
+                bookingDetailResponse.setBookingDetailsId(bookingDetail.getBookingDetailsId());
+                bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
+                bookingDetailResponse.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
+                bookingDetailResponse.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
+                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
+                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
                 bookingDetailResponses.add(bookingDetailResponse);
             }
             return bookingDetailResponses;

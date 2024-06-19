@@ -44,7 +44,7 @@ public class BookingDetailApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/{id}")
+    @GetMapping("/customer-history/{id}")
     public ResponseEntity<List<BookingDetailsCustomerResponse>> getBookingBookingDetailByBookingId(@PathVariable Long id) {
         try {
             List<BookingDetailsCustomerResponse> bookingDetailsCustomerResponses = bookingDetailService.getBookingCustomerBookingDetailByBookingId(id);
