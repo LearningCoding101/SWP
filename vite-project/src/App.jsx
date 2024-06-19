@@ -24,6 +24,7 @@ import BookingHistoryPage from './Components/BookingHistory/BookingHistoryPage'
 import BookingForm from './Components/BookingForm/BookingForm';
 import Feedback from './Components/Feedback/Feedback'
 import Transaction from './Components/Payment/Transaction'
+import QRScanner from './Components/QRCheckin/StaffPage'
 
 
 function App() {
@@ -42,6 +43,10 @@ function App() {
             <Route
               path="/login"
               element={<Login />}
+            />
+             <Route
+              path="/staff"
+              element={<QRScanner />}
             />
             <Route
               path="/profile"

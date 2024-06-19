@@ -9,18 +9,5 @@ import lombok.Setter;
 @Setter
 public class QRCodeData {
     private Long bookingId;
-    private String name;
-    private String phone;
-    private String email;
-
-    @Override
-    public String toString() {
-        return "QrCodeData{" +
-                "bookingId='" + bookingId + '\'' +
-                ", customerName='" + name + '\''+
-                ", phone='" + phone + '\''+
-                ", email='" + email + '\''+
-                '}';
-    }
 }
 
