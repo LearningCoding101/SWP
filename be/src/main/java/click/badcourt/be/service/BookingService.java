@@ -97,9 +97,37 @@ public class BookingService {
     }
 
 
+    public BookingResponse createBooking(BookingCreateRequest bookingCreateRequest) {
+        Booking booking = new Booking();
+        Optional<Club> club= clubRepository.findById(bookingCreateRequest.getClub_id());
+        Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingCreateRequest.getBooking_type_id());
+        if(club.isPresent()&& !club.get().isDeleted()) {
 
+            booking.setBookingDate(bookingCreateRequest.getBookingDate());
+            booking.setAccount(accountUtils.getCurrentAccount());
+            booking.setClub(club.get());
 
-    public BookingResponse createBooking(Long clubid, Long bookingTypeId) {
+            booking.setStatus(BookingStatusEnum.PENDING);
+            booking.setBookingType(bookingType.get());
+            Booking savedBooking= bookingRepository.save(booking);
+            BookingResponse response= new BookingResponse();
+            response.setId(savedBooking.getBookingId());
+            response.setPrice(savedBooking.getClub().getPrice());
+            response.setStatus(savedBooking.getStatus());
+            response.setAccount_email(savedBooking.getAccount().getEmail());
+            response.setAddress(savedBooking.getClub().getAddress());
+            response.setAccount_number(accountUtils.getCurrentAccount().getPhone());
+            response.setBookingDate(savedBooking.getBookingDate());
+            response.setBookingTypeId(savedBooking.getBookingType().getBookingTypeId());
+            response.setClub_name(savedBooking.getClub().getName());
+            return response;
+        }
+        else{
+            throw new IllegalArgumentException("Account or court not found");
+        }
+    }
+
+    public BookingResponse createBookingNew(Long clubid, Long bookingTypeId) {
         Booking booking = new Booking();
         Optional<Club> club= clubRepository.findById(clubid);
         Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingTypeId);
