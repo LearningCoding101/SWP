@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   DesktopOutlined,
   FileOutlined,
@@ -7,6 +7,9 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+
+import api from '../../config/axios';
+import Table from 'react-bootstrap/Table';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -28,6 +31,20 @@ const items = [
   getItem('Files', '9', <FileOutlined />),
 ];
 const Dashboard = () => {
+  const [transactions, setTransactions] = useState([])
+
+  useEffect(() => {
+    const fetchClubs = async () => {
+      try {
+        const response = await api.get("/transactions");
+        setTransactions(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchClubs();
+  }, []);
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -70,7 +87,39 @@ const Dashboard = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            Bill is a cat.
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Date</th>
+                  <th>Payment Method</th>
+                  <th>Deposit Amount</th>
+                  <th>Total Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions?.map((transaction) => (
+                  <tr key={transaction.id}>
+                    <td>{transaction.bookingId}</td>
+                    <td>{new Date(transaction.paymentDate).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' })}</td>
+                    <td>{transaction.paymentMethod}</td>
+                    <td>{transaction.depositAmount} VND</td>
+                    <td>{transaction.totalAmount} VND</td>
+                    
+                  </tr>
+                ))}
+
+              </tbody>
+            </Table>
+            {/* {transactions?.map((transaction) => (
+              <div key={transaction.id}>
+                <div>{transaction.paymentDate}</div>
+                <div>{transaction.totalAmount}</div>
+                <div>{transaction.bookingId}</div>
+                <div>{transaction.paymentMethod}</div>
+                <div>{transaction.depositAmount}</div>
+              </div>
+            ))} */}
           </div>
         </Content>
         <Footer
