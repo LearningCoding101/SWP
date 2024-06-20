@@ -36,9 +36,9 @@ public class BookingApi {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity cancelBooking(@PathVariable Long bookingId) {
-        bookingService.cancelBooking(bookingId);
-        return ResponseEntity.ok("bookingID :"+bookingId +" is canceled");
+    public ResponseEntity cancelBooking(@PathVariable Long id) {
+        bookingService.cancelBooking(id);
+        return ResponseEntity.ok("bookingID :"+id +" is canceled");
     }
 
 
