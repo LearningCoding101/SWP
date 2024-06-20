@@ -40,7 +40,7 @@ public class WalletService {
         String tmnCode = "NI3BAGS1";
         String secretKey = "2AZPVYA4RTHWMOQKDGK3FR0OMSR20SKY";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://badcourts.click";
+        String returnUrl = "http://badcourts.click/transaction";
 
         String currCode = "VND";
         Map<String, String> vnpParams = new TreeMap<>();

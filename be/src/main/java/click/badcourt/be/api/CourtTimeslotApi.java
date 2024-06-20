@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DayOfWeek;
 import java.util.Date;
 import java.util.List;
 
@@ -30,12 +31,13 @@ public class CourtTimeslotApi {
         return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDate(cId, date);
     }
 
-    @GetMapping("/{cId}/{startDate}/{endDate}")
+    @GetMapping("/{cId}/{startDate}/{endDate}/{weekday}")
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(
             @PathVariable Long cId,
             @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date startDate,
-            @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate) {
-        return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDates(cId, startDate, endDate);
+            @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date endDate,
+            @PathVariable DayOfWeek weekday) {
+        return courtTimeSlotService.getCourtTimeSlotsByCourtIdAndDates(cId, startDate, endDate, weekday);
     }
 
     @GetMapping("/{cId}")

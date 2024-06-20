@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.DayOfWeek;
+import java.util.*;
 
 @Service
 public class CourtTimeSlotService {
@@ -44,7 +42,7 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             for (BookingDetail booking : bookingDTList) {
-                if ((booking.getDate().getDate()==date.getDate() && booking.getDate().getMonth()==date.getMonth() && booking.getDate().getYear()==date.getYear() ) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
+                if ((booking.getDate().getDate()==date.getDate() && booking.getDate().getMonth()==date.getMonth() && booking.getDate().getYear()==date.getYear()) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
                     courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
                 }
             }
@@ -53,32 +51,41 @@ public class CourtTimeSlotService {
         return courtTimeSlotResponses;
     }
 
-    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startdate, @DateTimeFormat(pattern = "yyyy-MM-dd") Date enddate) {
+    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startdatep, @DateTimeFormat(pattern = "yyyy-MM-dd") Date enddatep, DayOfWeek weekday) {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
         List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
         List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
+        Date startdate = new Date(startdatep.getDate(), startdatep.getMonth(), startdatep.getYear());
+        Date enddate = new Date(enddatep.getDate(), enddatep.getMonth(), enddatep.getYear());
         for (CourtTimeslot courtTimeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
             courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
             courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
             courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
-
             courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
             courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             for (BookingDetail booking : bookingDTList) {
                 do
                 {
-                    if ((booking.getDate().compareTo(startdate) == 0) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID())
+                    if ((booking.getDate().getDate()==startdate.getDate() && booking.getDate().getMonth()==startdate.getMonth() && booking.getDate().getYear()==startdate.getYear()) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID())
+                     /*&& booking.getDate().getDate()==startdate.getDate() && booking.getDate().getMonth()==startdate.getMonth() && booking.getDate().getYear()==startdate.getYear()*/
                     {
-                        courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
-                        startdate.after(startdate);
+                        if(dayofweekreturn(startdate.getDay()) == weekday.getValue()){
+                            courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
+                        }
                     }
-                }while (startdate.compareTo(enddate) == 0);
+                    startdate.after(startdate);
+                }while (enddate.compareTo(startdate) == 1 && courtTimeSlotResponse.getStatus() != CourtTSStatusEnum.IN_USE);
             }
             courtTimeSlotResponses.add(courtTimeSlotResponse);
         }
         return courtTimeSlotResponses;
+    }
+
+    public int dayofweekreturn(int i){
+        if (i == 0) i += 7;
+        return i;
     }
 
     public List<CourtTimeSlotManageResponse> getCourtTimeSlotsByCourtId(Long cId) {

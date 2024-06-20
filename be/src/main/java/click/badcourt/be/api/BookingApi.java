@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/booking")
 @SecurityRequirement(name = "api")
+@CrossOrigin("*")
 public class BookingApi {
 
     @Autowired
@@ -28,11 +29,11 @@ public class BookingApi {
     @Autowired
     private BookingDetailService bookingDetailService;
 
-    @PostMapping
-    public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
-        BookingResponse booking = bookingService.createBooking(bookingCreateRequest);
-        return ResponseEntity.ok(booking);
-    }
+//    @PostMapping
+//    public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
+//        BookingResponse booking = bookingService.createBooking(bookingCreateRequest);
+//        return ResponseEntity.ok(booking);
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity cancelBooking(@PathVariable Long bookingId) {
@@ -43,9 +44,8 @@ public class BookingApi {
 
     @PostMapping("/bookingCombo")
     public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequest bookingComboRequest) {
-
         try {
-        BookingResponse bkcr = bookingService.createBooking(bookingComboRequest.getBookingCreateRequest());
+        BookingResponse bkcr = bookingService.createBooking(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
         BookingComboResponse bookingComboResponse = new BookingComboResponse();
         bookingComboResponse.setBookingResponse(bkcr);
         List<BookingDetailRequestCombo> bkdtrspl = bookingComboRequest.getBookingDetailRequestCombos();

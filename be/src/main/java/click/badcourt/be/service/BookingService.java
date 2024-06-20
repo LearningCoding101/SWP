@@ -20,6 +20,7 @@ import java.io.IOException;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,13 +99,13 @@ public class BookingService {
 
 
 
-    public BookingResponse createBooking(BookingCreateRequest bookingCreateRequest) {
+    public BookingResponse createBooking(Long clubid, Long bookingTypeId) {
         Booking booking = new Booking();
-        Optional<Club> club= clubRepository.findById(bookingCreateRequest.getClub_id());
-        Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingCreateRequest.getBooking_type_id());
+        Optional<Club> club= clubRepository.findById(clubid);
+        Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingTypeId);
         if(club.isPresent()&& !club.get().isDeleted()) {
 
-            booking.setBookingDate(bookingCreateRequest.getBookingDate());
+            booking.setBookingDate(new Date());
             booking.setAccount(accountUtils.getCurrentAccount());
             booking.setClub(club.get());
 

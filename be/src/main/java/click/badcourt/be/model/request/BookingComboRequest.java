@@ -5,6 +5,7 @@ import java.util.List;
 
 @Data
 public class BookingComboRequest {
-    BookingCreateRequest bookingCreateRequest;
+    private Long club_id;
+    private Long booking_type_id;
     List<BookingDetailRequestCombo> bookingDetailRequestCombos;
 }

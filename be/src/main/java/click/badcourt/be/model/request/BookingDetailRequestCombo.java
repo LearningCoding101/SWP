@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Data
 public class BookingDetailRequestCombo {
+
     private Long courtTSId;
     private LocalDate bookingDate;
 
