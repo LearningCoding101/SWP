@@ -117,16 +117,16 @@ const BookingForm = () => {
   );
   console.log(bookingDetailRequestCombos);
   const [form] = Form.useForm();
-  //insert today
-  useEffect(() => {
-    form.setFieldsValue({
-      bookingDate: moment(),
-    });
-  }, [form]);
+  // //insert today
+  // useEffect(() => {
+  //   form.setFieldsValue({
+  //     bookingDate: moment(),
+  //   });
+  // }, [form]);
 
   //post api, create booking
   const bookingDetailRequest = (items) => {
-    // console.log(items);
+    console.log(items);
     setBookingDetailRequestCombos(items);
   };
 
@@ -214,11 +214,11 @@ const BookingForm = () => {
             name="bookingForm"
             layout="vertical"
             onFinish={onFinish}
-            initialValues={{
-              bookingDate: moment(),
-            }}
+            // initialValues={{
+            //   bookingDate: moment(),
+            // }}
           >
-            <Form.Item
+            {/* <Form.Item
               name="bookingDate"
               label="Booking Date"
               rules={[
@@ -227,7 +227,7 @@ const BookingForm = () => {
               style={{ display: "none" }} // Hide the field
             >
               <DatePicker showTime format="YYYY-MM-DD" />
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item
               name="name"

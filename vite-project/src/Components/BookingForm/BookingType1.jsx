@@ -8,6 +8,7 @@ const BookingType1 = (props) => {
   const [courtTimeSlots, setCourtTimeSlots] = useState([]);
   const [error, setError] = useState(null);
   console.log(selectedDate);
+
   const handleDateChange = async (date) => {
     setSelectedDate(date.format("YYYY-MM-DD"));
     await fetchCourtTimeSlots(date.format("YYYY-MM-DD"));
@@ -71,18 +72,22 @@ const BookingType1 = (props) => {
         rules={[{ required: true, message: "Please select a time!" }]}
       >
         <Radio.Group>
-          {availableTimes.map((item, index) => (
-            <Radio.Button
-              key={index}
-              value={item.courtTimeSlotId}
-              onClick={() =>
-                handleTimeSelection(item.start_time, item.end_time)
-              }
-              onChange={onChange}
-            >
-              {item.start_time} - {item.end_time}
-            </Radio.Button>
-          ))}
+          {availableTimes[0] != null ? (
+            availableTimes.map((item, index) => (
+              <Radio.Button
+                key={index}
+                value={item.courtTimeSlotId}
+                onClick={() =>
+                  handleTimeSelection(item.start_time, item.end_time)
+                }
+                onChange={onChange}
+              >
+                {item.start_time} - {item.end_time}
+              </Radio.Button>
+            ))
+          ) : (
+            <h6>No available time</h6>
+          )}
         </Radio.Group>
       </Form.Item>
     </div>
