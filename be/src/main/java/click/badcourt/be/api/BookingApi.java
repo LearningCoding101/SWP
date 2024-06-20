@@ -2,6 +2,7 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
+import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.service.BookingDetailService;
 import click.badcourt.be.service.BookingService;
@@ -41,6 +42,15 @@ public class BookingApi {
         return ResponseEntity.ok("bookingID :"+id +" is canceled");
     }
 
+    @PostMapping("/fixed")
+    public ResponseEntity createFixedBooking(@RequestBody FixedBookingDetailRequest fixedBookingDetailRequest) {
+        try {
+            List<BookingDetailResponse> fixedBookings = bookingDetailService.createFixedBookings(fixedBookingDetailRequest);
+            return new ResponseEntity<>(fixedBookings, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PostMapping("/bookingCombo")
     public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequest bookingComboRequest) {
@@ -61,10 +71,7 @@ public class BookingApi {
             List<BookingDetailRequest> returnlistAdd = new ArrayList<>();
             for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
                 returnlistAdd = bookingDetailService.createFixedBookingDetailCombos(bkdtr, id);
-                for(BookingDetailRequest bkdtrAdd : returnlistAdd) {
-                    returnlist.add(bkdtrAdd);
-                }
-                returnlistAdd.clear();
+                returnlist.addAll(returnlistAdd);
             }
         } else if (bkcr.getBookingTypeId() == 3) {
             for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
@@ -72,8 +79,7 @@ public class BookingApi {
                 returnlist.add(store);
             }
         }
-
-            bookingComboResponse.setBookingDetailRequestList(returnlist);
+        bookingComboResponse.setBookingDetailRequestList(returnlist);
         return ResponseEntity.ok(bookingComboResponse);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
