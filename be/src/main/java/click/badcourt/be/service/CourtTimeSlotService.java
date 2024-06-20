@@ -1,6 +1,7 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.*;
+import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.CourtTSStatusEnum;
 import click.badcourt.be.model.request.CourtTimeSlotRequest;
 import click.badcourt.be.model.response.CourtTimeSlotManageResponse;
@@ -30,7 +31,11 @@ public class CourtTimeSlotService {
 
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDate(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
-        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        List<BookingDetail> bookingDTList1 = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        List<BookingDetail> bookingDTList = new ArrayList<>();
+        for (BookingDetail bookingDT : bookingDTList1) {
+            if(!bookingDT.getBooking().getStatus().equals(BookingStatusEnum.CANCELED) ) bookingDTList.add(bookingDT);
+        }
         List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
         for (CourtTimeslot courtTimeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
@@ -53,10 +58,20 @@ public class CourtTimeSlotService {
 
     public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startdatep, @DateTimeFormat(pattern = "yyyy-MM-dd") Date enddatep, DayOfWeek weekday) {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
-        List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        List<BookingDetail> bookingDTList1 = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+        List<BookingDetail> bookingDTList = new ArrayList<>();
+        for (BookingDetail bookingDT : bookingDTList1) {
+            if(!bookingDT.getBooking().getStatus().equals(BookingStatusEnum.CANCELED) ) bookingDTList.add(bookingDT);
+        }
         List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
-        Date startdate = new Date(startdatep.getDate(), startdatep.getMonth(), startdatep.getYear());
-        Date enddate = new Date(enddatep.getDate(), enddatep.getMonth(), enddatep.getYear());
+
+        // Initialize calendar instances for date manipulation
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.setTime(startdatep);
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.setTime(enddatep);
+
+        // Loop through each court timeslot
         for (CourtTimeslot courtTimeslot : courtTimeslots) {
             CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
             courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
@@ -65,28 +80,62 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
             courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
-            for (BookingDetail booking : bookingDTList) {
-                do
-                {
-                    if ((booking.getDate().getDate()==startdate.getDate() && booking.getDate().getMonth()==startdate.getMonth() && booking.getDate().getYear()==startdate.getYear()) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID())
-                     /*&& booking.getDate().getDate()==startdate.getDate() && booking.getDate().getMonth()==startdate.getMonth() && booking.getDate().getYear()==startdate.getYear()*/
-                    {
-                        if(dayofweekreturn(startdate.getDay()) == weekday.getValue()){
-                            courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
-                        }
+
+            // Check each date within the range
+            Calendar currentCalendar = (Calendar) startCalendar.clone();
+            while (!currentCalendar.after(endCalendar)) {
+                for (BookingDetail booking : bookingDTList) {
+                    Calendar bookingCalendar = Calendar.getInstance();
+                    bookingCalendar.setTime(booking.getDate());
+
+                    // Check if the booking date matches the current date and timeslot
+                    if (isSameDay(bookingCalendar, currentCalendar) &&
+                            booking.getCourtTimeslot().getCourtTSlotID().equals(courtTimeslot.getCourtTSlotID()) &&
+                            mapCalendarToDayOfWeek(bookingCalendar.get(Calendar.DAY_OF_WEEK)) == weekday) {
+
+                        courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
+                        break; // No need to check further bookings if the timeslot is already in use
                     }
-                    startdate.after(startdate);
-                }while (enddate.compareTo(startdate) == 1 && courtTimeSlotResponse.getStatus() != CourtTSStatusEnum.IN_USE);
+                }
+
+                if (courtTimeSlotResponse.getStatus() == CourtTSStatusEnum.IN_USE) {
+                    break;
+                }
+
+                // Move to the next day
+                currentCalendar.add(Calendar.DAY_OF_MONTH, 1);
             }
+
+            // Add the response to the list
             courtTimeSlotResponses.add(courtTimeSlotResponse);
         }
+
         return courtTimeSlotResponses;
     }
 
-    public int dayofweekreturn(int i){
-        if (i == 0) i += 7;
-        return i;
+    // Utility function to check if two calendar instances represent the same day
+    private boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
     }
+
+    // Utility function to map Calendar.DAY_OF_WEEK to DayOfWeek
+    private DayOfWeek mapCalendarToDayOfWeek(int calendarDayOfWeek) {
+        switch (calendarDayOfWeek) {
+            case Calendar.SUNDAY: return DayOfWeek.SUNDAY;
+            case Calendar.MONDAY: return DayOfWeek.MONDAY;
+            case Calendar.TUESDAY: return DayOfWeek.TUESDAY;
+            case Calendar.WEDNESDAY: return DayOfWeek.WEDNESDAY;
+            case Calendar.THURSDAY: return DayOfWeek.THURSDAY;
+            case Calendar.FRIDAY: return DayOfWeek.FRIDAY;
+            case Calendar.SATURDAY: return DayOfWeek.SATURDAY;
+            default: throw new IllegalArgumentException("Invalid day of week: " + calendarDayOfWeek);
+        }
+    }
+
+
+
 
     public List<CourtTimeSlotManageResponse> getCourtTimeSlotsByCourtId(Long cId) {
         List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
