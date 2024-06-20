@@ -127,21 +127,13 @@ public class TransactionService {
         return totalPrice - totalPrice*booking.getBookingType().getBookingDiscount();
     }
 
-    public Double TotalPriceMiniCombo(Long bookingId){
-        Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
-        List<BookingDetail> bookingDetails= bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
-        Double totalPrice= 0.0;
-        for(BookingDetail bookingDetail : bookingDetails) {
-            totalPrice+= booking.getClub().getPrice();
-        }
-        return totalPrice;
-    }
-
 
     public PreTransactionResponse TotalPriceCombo(Long bookingId){
         Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
+        int n = bookingDetailRepository.countBookingDetailsByBooking_BookingId(booking.getBookingId());
+        Double totalPrice = booking.getClub().getPrice()*n;
         PreTransactionResponse preTransactionResponse= new PreTransactionResponse();
-            preTransactionResponse.setFullPrice(TotalPrice(bookingId));
+            preTransactionResponse.setFullPrice(totalPrice);
             preTransactionResponse.setSalePrice(preTransactionResponse.getFullPrice()*booking.getBookingType().getBookingDiscount());
             preTransactionResponse.setTotalPriceNeedToPay(preTransactionResponse.getFullPrice()-preTransactionResponse.getSalePrice());
         return preTransactionResponse;
