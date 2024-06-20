@@ -39,6 +39,35 @@ public class ClubService {
 //    @Autowired
 //    PasswordEncoder passwordEncoder;
 
+    public ClubResponse getClubByCurrentAccount() {
+        Account currentAccount = accountUtils.getCurrentAccount();
+
+        if (currentAccount.getRole() != RoleEnum.ClUB_OWNER) {
+
+            throw new IllegalStateException("Access denied: Only club owners can retrieve club information.");
+        }
+
+        Club club = currentAccount.getClub();
+
+        if (club != null) {
+
+            ClubResponse clubResponse = new ClubResponse();
+            clubResponse.setClubId(club.getClubId());
+            clubResponse.setPrice(club.getPrice());
+            clubResponse.setName(club.getName());
+            clubResponse.setAddress(club.getAddress());
+            clubResponse.setOpen_time(club.getOpen_time());
+            clubResponse.setClose_time(club.getClose_time());
+            clubResponse.setPicture_location(club.getPicture_location());
+            clubResponse.setOwnerName(currentAccount.getFullName());
+
+
+            return clubResponse;
+        } else {
+
+            throw new IllegalStateException("Club not found for the current account.");
+        }
+    }
 
     public List<ClubResponse> getAllClubs() {
         List<Club> clubs = clubRepository.findClubsByDeletedFalse();
