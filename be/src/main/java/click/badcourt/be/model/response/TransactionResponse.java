@@ -11,7 +11,7 @@ public class TransactionResponse {
 
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private Date paymentDate;
-    private float totalAmount;
+    private Double totalAmount;
     Long bookingId;
     String paymentMethod;
     String status;

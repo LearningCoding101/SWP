@@ -7,6 +7,7 @@ import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
 import click.badcourt.be.model.request.TransactionRequest;
+import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
@@ -56,7 +57,7 @@ public class TransactionService {
         if(paymentMethod.isPresent() && booking.isPresent()) {
             Transaction transaction = new Transaction();
             transaction.setDepositAmount(transactionRequest.getTotalAmount()*50/100);
-            transaction.setTotalAmount(transactionRequest.getTotalAmount());
+            transaction.setTotalAmount(TotalPrice(booking.get().getBookingId()));
             transaction.setPaymentDate(transactionRequest.getPaymentDate());
             transaction.setPaymentMethod(paymentMethod.get());
             transaction.setBooking(booking.get());
@@ -71,19 +72,21 @@ public class TransactionService {
         Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
         if(paymentMethod.isPresent() && booking.isPresent()) {
             Transaction transaction = new Transaction();
-            if(transactionRequest.getStatus().equals("00")){
-                if(booking.get().getBookingType().getBookingTypeId() == 1)
+            if(transactionRequest.getStatus().equals("00")) {
+                if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
+                    transaction.setDepositAmount(transactionRequest.getTotalAmount() * 50 / 100);
+                    }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
+                    transaction.setDepositAmount(0);
                 }
             }
             else {
                 transaction.setStatus(TransactionEnum.CANCELED);
                 booking.get().setStatus(BookingStatusEnum.CANCELED);
             }
-            transaction.setDepositAmount(transactionRequest.getTotalAmount()*50/100);
-            transaction.setTotalAmount(transactionRequest.getTotalAmount());
+            transaction.setTotalAmount(TotalPrice(transactionRequest.getBookingId()));
             transaction.setPaymentDate(transactionRequest.getPaymentDate());
             transaction.setPaymentMethod(paymentMethod.get());
             transaction.setBooking(booking.get());
@@ -94,25 +97,26 @@ public class TransactionService {
         }
     }
 
-    public Transaction updateTransaction(TransactionRequest transactionRequest,Long id) {
-        Optional<Transaction> transaction = transactionRepository.findById(id);
-        if(transaction.isEmpty()) {
-            throw new IllegalArgumentException("Transaction not found");
-        }
-        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
-        Optional<Booking> booking = bookingRepository.findById(transactionRequest.getBookingId());
-        if(paymentMethod.isPresent() && booking.isPresent()) {
-            transaction.get().setDepositAmount(transactionRequest.getTotalAmount()*50/100);
-            transaction.get().setTotalAmount(transactionRequest.getTotalAmount());
-            transaction.get().setPaymentDate(transactionRequest.getPaymentDate());
-            transaction.get().setPaymentMethod(paymentMethod.get());
-            transaction.get().setBooking(booking.get());
-            return transactionRepository.save(transaction.get());
-        }
-        else {
-            throw new IllegalArgumentException("PaymentMethod or Booking not found");
-        }
-    }
+
+//    public Transaction updateTransaction(TransactionRequest transactionRequest,Long id) {
+//        Optional<Transaction> transaction = transactionRepository.findById(id);
+//        if(transaction.isEmpty()) {
+//            throw new IllegalArgumentException("Transaction not found");
+//        }
+//        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
+//        Optional<Booking> booking = bookingRepository.findById(transactionRequest.getBookingId());
+//        if(paymentMethod.isPresent() && booking.isPresent()) {
+//            transaction.get().setDepositAmount(transactionRequest.getTotalAmount()*50/100);
+//            transaction.get().setTotalAmount(TotalPrice(booking.get().getBookingId()));
+//            transaction.get().setPaymentDate(transactionRequest.getPaymentDate());
+//            transaction.get().setPaymentMethod(paymentMethod.get());
+//            transaction.get().setBooking(booking.get());
+//            return transactionRepository.save(transaction.get());
+//        }
+//        else {
+//            throw new IllegalArgumentException("PaymentMethod or Booking not found");
+//        }
+//    }
     public Double TotalPrice(Long bookingId){
         Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         List<BookingDetail> bookingDetails= bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
@@ -120,8 +124,30 @@ public class TransactionService {
         for(BookingDetail bookingDetail : bookingDetails) {
             totalPrice+= booking.getClub().getPrice();
         }
-        return totalPrice*booking.getBookingType().getBookingDiscount();
+        return totalPrice - totalPrice*booking.getBookingType().getBookingDiscount();
     }
+
+    public Double TotalPriceMiniCombo(Long bookingId){
+        Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
+        List<BookingDetail> bookingDetails= bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
+        Double totalPrice= 0.0;
+        for(BookingDetail bookingDetail : bookingDetails) {
+            totalPrice+= booking.getClub().getPrice();
+        }
+        return totalPrice;
+    }
+
+
+    public PreTransactionResponse TotalPriceCombo(Long bookingId){
+        Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
+        PreTransactionResponse preTransactionResponse= new PreTransactionResponse();
+            preTransactionResponse.setFullPrice(TotalPrice(bookingId));
+            preTransactionResponse.setSalePrice(preTransactionResponse.getFullPrice()*booking.getBookingType().getBookingDiscount());
+            preTransactionResponse.setTotalPriceNeedToPay(preTransactionResponse.getFullPrice()-preTransactionResponse.getSalePrice());
+        return preTransactionResponse;
+    }
+
+
     public TransactionResponse getTransactionsByBookingId(Long bookingId) {
         Transaction transaction = transactionRepository.findByBooking_BookingId(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         TransactionResponse transactionResponse = new TransactionResponse();

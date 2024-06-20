@@ -18,7 +18,7 @@ public class Transaction {
 
     private float depositAmount;
     private Date paymentDate;
-    private float totalAmount;
+    private Double totalAmount;
 
     @OneToOne
     @JoinColumn(name="booking_id")

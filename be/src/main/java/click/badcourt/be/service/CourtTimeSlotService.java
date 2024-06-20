@@ -174,5 +174,72 @@ public class CourtTimeSlotService {
         courtTimeSlotRepository.save(courtTimeslot);
     }
 
+
+
+//    public List<CourtTimeSlotResponse> getCourtTimeSlotsByCourtIdAndDates(Long cId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startdatep, @DateTimeFormat(pattern = "yyyy-MM-dd") Date enddatep, DayOfWeek weekday) {
+//        List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByDeletedFalseAndCourt_CourtId(cId);
+//        List<BookingDetail> bookingDTList1 = bookingDetailRepository.findBookingDetailsByDeletedFalse();
+//        List<BookingDetail> bookingDTList = new ArrayList<>();
+//        for (BookingDetail bookingDT : bookingDTList1) {
+//            if(bookingDT.getBooking().getStatus()!= BookingStatusEnum.CANCELED) bookingDTList.add(bookingDT);
+//        }
+//        List<CourtTimeSlotResponse> courtTimeSlotResponses = new ArrayList<>();
+//        Date startdate = new Date(startdatep.getDate(), startdatep.getMonth(), startdatep.getYear());
+//        Date enddate = new Date(enddatep.getDate(), enddatep.getMonth(), enddatep.getYear());
+//        List<Date> dateList = getDateFromWeekday(startdate, enddate, weekday);
+//        for (CourtTimeslot courtTimeslot : courtTimeslots) {
+//            CourtTimeSlotResponse courtTimeSlotResponse = new CourtTimeSlotResponse();
+//            courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
+//            courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
+//            courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
+//            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
+//            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+//            courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
+//            for (BookingDetail booking : bookingDTList) {
+//                for (Date date : dateList) {
+//                    if ((booking.getDate().getDate() == date.getDate() && booking.getDate().getMonth() == date.getMonth() && booking.getDate().getYear() == date.getYear()) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
+//                        courtTimeSlotResponse.setStatus(CourtTSStatusEnum.IN_USE);
+//                    }
+//                }
+//            }
+//            courtTimeSlotResponses.add(courtTimeSlotResponse);
+//        }
+//        return courtTimeSlotResponses;
+//    }
+//    public List<Date> getDateFromWeekday(Date startdate, Date enddate, DayOfWeek weekday) {
+//        List<Date> dates = new ArrayList<>();
+//        List<Date> datess = new ArrayList<>();
+//        do{
+//            datess.add(startdate);
+//            startdate=getDateAfter(startdate);
+//        }while (enddate.compareTo(startdate) == 1);
+//        for(Date date : datess){
+//            if(dayofweekreturn(date.getDay()) == weekday.getValue()){
+//                dates.add(date);
+//            }
+//        }
+//        return dates;
+//    }
+//    public Date getDateAfter(Date date) {
+//        // Create a Calendar instance and set it to the provided date
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTime(date);
+//
+//        // Add one day to the calendar
+//        calendar.add(Calendar.DAY_OF_YEAR, 1);
+//
+//        // Return the updated date
+//        return calendar.getTime();
+//    }
+//    public Date getDateAfter2(Date date) {
+//        LocalDate localDate = LocalDate.of(date.getYear(), date.getMonth(), date.getDate());
+//        localDate = localDate.plusDays(1);
+//        return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+//    }
+//    public int dayofweekreturn(int i){
+//        if (i == 0) i += 7;
+//        return i;
+//    }
+
 }
 

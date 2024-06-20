@@ -2,6 +2,7 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.model.request.TransactionRequest;
+import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.service.TransactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,6 +26,11 @@ import java.util.List;
         public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
             return ResponseEntity.ok(transactionService.findAll());
         }
+        @GetMapping("/price/{bookingId}")
+        public PreTransactionResponse getPrice(@PathVariable Long bookingId){
+            PreTransactionResponse pretrans = transactionService.TotalPriceCombo(bookingId);
+            return pretrans;
+        }
 
    // @PreAuthorize("hasAuthority('STAFF')")
         @PostMapping
@@ -45,17 +51,17 @@ import java.util.List;
             }
         }
 
-        @PutMapping("/{id}")
-        public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody TransactionRequest request) {
-            Transaction updatedTransaction = transactionService.updateTransaction(request, id);
-            return ResponseEntity.ok(updatedTransaction);
-        }
+//        @PutMapping("/{id}")
+//        public ResponseEntity<Transaction> updateTransaction(@PathVariable Long id, @RequestBody TransactionRequest request) {
+//            Transaction updatedTransaction = transactionService.updateTransaction(request, id);
+//            return ResponseEntity.ok(updatedTransaction);
+//        }
         @GetMapping("/{bookingId}")
         public ResponseEntity getTransactionByBookingId(@PathVariable Long bookingId) {
             TransactionResponse transactionResponse =transactionService.getTransactionsByBookingId(bookingId);
             return ResponseEntity.ok(transactionResponse);
         }
-        @PostMapping("/{id}")
+        @PutMapping("/{id}")
         public ResponseEntity updateTransactionFullyPaid(@PathVariable Long id) {
             try{
                 transactionService.updateFullyPaid(id);
