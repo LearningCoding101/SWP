@@ -26,6 +26,7 @@ import Feedback from './Components/Feedback/Feedback'
 import Transaction from './Components/Payment/Transaction'
 import TransactionSuccess from './Components/Payment/TransactionSuccess'
 import TransactionFailed from './Components/Payment/TransactionFailed'
+import Payment from './Components/Payment/Payment'
 
 
 function App() {
@@ -82,7 +83,7 @@ function App() {
               element={<BookingForm />}
             />
             <Route
-              path='/transaction/:bookingId'
+              path='/transaction'
               element={<Transaction />}
             />
            
@@ -97,6 +98,10 @@ function App() {
            <Route
               path='/feedback'
               element={<Feedback />}
+            />
+             <Route
+              path='/payment'
+              element={<Payment />}
             />
             <Route
               path='/CRUD'

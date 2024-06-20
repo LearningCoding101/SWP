@@ -18,6 +18,7 @@ const BookingForm = (test) => {
   const navigate = useNavigate();
 
 
+
   useEffect(() => {
     form.setFieldsValue({
       bookingDate: moment(),
@@ -30,25 +31,52 @@ const BookingForm = (test) => {
       club_id: values.club_id,
       booking_type_id: values.booking_type_id,
     };
+    
+    const newPayload = {
+      amount : values.amount
+    }
+
+    // const payload2 = {
+    //   paymentDate: values.bookingDate.toISOString(),
+    //   totalAmount: 0,
+    //   bookingId: bookingId,
+    //   paymentMethodId: 0,
+    //   status: "PENDING"
+    // };
 
     try {
-      const data = await api.post("/booking", payload); // Assuming your API endpoint
+      const data = await axios.post("http://localhost:8080/api/booking", payload); // Assuming your API endpoint
       message.success("Booking successful!");
       form.resetFields();
       form.setFieldsValue({
         bookingDate: moment(),
       });
-      const IdData = data.data
-      const Id = IdData?.id
-      localStorage.setItem("bookingId", Id)
-      navigate(`/transaction/${Id}`)
+      // const IdData = data.data
+      // const Id = IdData?.id
+      // localStorage.setItem("bookingId", Id)
+      // const newData = await api.post("/transactions", payload2)
+      // if (newData) {
+      //   navigate(`/transaction/${Id}`)
+      // }
       console.log(data)
+      const res = await api.post("/pay", newPayload)
+      console.log(res)
+      const paymentURL = res.data
+      if(paymentURL){
+        window.location.href = paymentURL;
+        // window.open(paymentURL, '_blank');
+      } else {
+        console.error("No paymentURL found in response");
+      }
+      
     } catch (error) {
       message.error("Booking failed, please try again.");
       console.error(error); // Log the error for debugging
-      
+
     }
   };
+
+  // const bookingId = localStorage.getItem("bookingId");
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -89,6 +117,15 @@ const BookingForm = (test) => {
             </Form.Item>
 
             <Form.Item
+              name="amount"
+              label="Amount (Test)"
+              rules={[{ required: true, message: "Please input the amount" }]}
+            >
+              <InputNumber min={0} style={{ width: "100%" }} />
+            </Form.Item>
+
+
+            <Form.Item
               name="booking_type_id"
               label="Booking Type"
               rules={[{ required: true, message: "Please select the booking type!" }]}
@@ -100,9 +137,9 @@ const BookingForm = (test) => {
               </Select>
             </Form.Item>
 
-            {bookingType === 1 && <BookingType1/>}
-            {bookingType === 2 && <BookingType2/>}
-            {bookingType === 3 && <BookingType3/>}
+            {bookingType === 1 && <BookingType1 />}
+            {bookingType === 2 && <BookingType2 />}
+            {bookingType === 3 && <BookingType3 />}
 
             <Form.Item>
               <Button type="primary" htmlType="submit">
