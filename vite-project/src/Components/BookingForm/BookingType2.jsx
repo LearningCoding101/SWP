@@ -31,12 +31,12 @@ const BookingType2 = (props) => {
   const [courtTimeSlots, setCourtTimeSlots] = useState([]);
   const [weekDay, setWeekDay] = useState();
   const [error, setError] = useState(null);
-
+  const [typeDetailList, setTypeDetailList] = useState([]);
   //GET Booking type 2
-  const fetchCourtTimeSlots = async (date) => {
+  const fetchCourtTimeSlots = async (startDate, enDate, dayOfWeek) => {
     try {
       const response = await api.get(
-        `/courtTimeSlot/${props.courtId}/${date}/${endDate}`
+        `/courtTimeSlot/${props.courtId}/${startDate}/${enDate}/${dayOfWeek}`
       );
       const slotFilter = response.data;
       setCourtTimeSlots(response.data);
@@ -79,13 +79,13 @@ const BookingType2 = (props) => {
     console.log(date.format("YYYY-MM-DD"));
     setSelectedDate(date.format("YYYY-MM-DD"));
     calculateEndDate(date.format("YYYY-MM-DD"), selectedMonth);
-    await fetchCourtTimeSlots(date.format("YYYY-MM-DD"));
+    await fetchCourtTimeSlots(date.format("YYYY-MM-DD"), endDate, weekDay);
   };
 
   const handleMonthChange = async (value) => {
     setSelectedMonth(value);
     calculateEndDate(selectedDate, value);
-    await fetchCourtTimeSlots(selectedDate);
+    await fetchCourtTimeSlots(selectedDate, endDate, weekDay);
   };
 
   const calculateEndDate = async (date, months) => {
@@ -108,7 +108,7 @@ const BookingType2 = (props) => {
         entry.startTime === newEntry.startTime &&
         entry.endTime === newEntry.endTime
     );
-    console.log(selectedSchedule);
+
     if (isDuplicate) {
       message.warning("This schedule is already added");
     } else {
@@ -125,7 +125,27 @@ const BookingType2 = (props) => {
     const newSchedule = [...selectedSchedule];
     newSchedule.splice(index, 1);
     setSelectedSchedule(newSchedule);
+
+    const selectedBooking = [...typeDetailList];
+    selectedBooking.splice(index, 1);
+    setTypeDetailList(selectedBooking);
+
     message.success("Schedule entry deleted");
+  };
+
+  // Prepare bookingDetailRequestCombos
+  const onChange = (values) => {
+    const bookingTypeDetail = {
+      courtTSId: values.target.value, // Update with correct value if available
+      bookingDate: selectedDate,
+      durationInMonths: selectedMonth, // Update with correct value if available
+      dayOfWeek: weekDay, // Update with correct value if available
+    };
+
+    setTypeDetailList([...typeDetailList, bookingTypeDetail]);
+    console.log(typeDetailList);
+
+    props.bookingDetail(typeDetailList);
   };
 
   return (
@@ -133,7 +153,7 @@ const BookingType2 = (props) => {
       <div className="row">
         <div className="col-md-6">
           <Form.Item
-            name="bookingDate"
+            name="Date"
             label="Start Date"
             rules={[
               { required: true, message: "Please select the booking date!" },
@@ -174,29 +194,28 @@ const BookingType2 = (props) => {
           </Form.Item>
         </div> */}
 
-        <div className="col-md-6">
-          <Form.Item
-            name="day_in_week_id"
-            label="Day"
-            rules={[
-              { required: true, message: "Please select the booking type!" },
-            ]}
+        <Form.Item
+          name="day_in_week_id"
+          label="Day"
+          rules={[
+            { required: true, message: "Please select the booking type!" },
+          ]}
+        >
+          <Select
+            onChange={(value) => {
+              setWeekDay(value);
+              fetchCourtTimeSlots(selectedDate, endDate, value);
+            }}
           >
-            <Select
-              onChange={(value) => {
-                setWeekDay(value);
-              }}
-            >
-              <Option value={"SUNDAY"}>Sunday</Option>
-              <Option value={"MONDAY"}>Monday</Option>
-              <Option value={"TUESDAY"}>Tuesday</Option>
-              <Option value={"WEDNESDAY"}>Wednesday</Option>
-              <Option value={"THURSDAY"}>Thursday</Option>
-              <Option value={"FRIDAY"}>Friday</Option>
-              <Option value={"SATURDAY"}>Saturday</Option>
-            </Select>
-          </Form.Item>
-        </div>
+            <Option value={"SUNDAY"}>Sunday</Option>
+            <Option value={"MONDAY"}>Monday</Option>
+            <Option value={"TUESDAY"}>Tuesday</Option>
+            <Option value={"WEDNESDAY"}>Wednesday</Option>
+            <Option value={"THURSDAY"}>Thursday</Option>
+            <Option value={"FRIDAY"}>Friday</Option>
+            <Option value={"SATURDAY"}>Saturday</Option>
+          </Select>
+        </Form.Item>
         <div className="col-md-6">
           <Form.Item
             name="time"
@@ -215,6 +234,7 @@ const BookingType2 = (props) => {
                       item.end_time
                     )
                   }
+                  onChange={onChange}
                 >
                   {item.start_time} - {item.end_time}
                 </Radio.Button>
@@ -230,7 +250,7 @@ const BookingType2 = (props) => {
           renderItem={(item, index) => (
             <List.Item>
               <div>
-                {item.date} at {item.startTime} - {item.endTime}
+                {index} {item.date} at {item.startTime} - {item.endTime}
                 <Button
                   type="link"
                   onClick={() => handleDeleteFromSchedule(index)}

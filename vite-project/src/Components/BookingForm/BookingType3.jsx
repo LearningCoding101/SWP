@@ -8,6 +8,7 @@ const BookingType3 = (props) => {
   const [availableTimes, setAvailableTimes] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState([]);
   const [courtTimeSlots, setCourtTimeSlots] = useState([]);
+  const [typeDetailList, setTypeDetailList] = useState([]);
   const [error, setError] = useState(null);
 
   const handleDateChange = async (date) => {
@@ -45,7 +46,7 @@ const BookingType3 = (props) => {
         entry.startTime === newEntry.startTime &&
         entry.endTime === newEntry.endTime
     );
-    console.log(selectedSchedule);
+
     if (isDuplicate) {
       message.warning("This schedule is already added");
     } else {
@@ -60,12 +61,28 @@ const BookingType3 = (props) => {
     const newSchedule = [...selectedSchedule];
     newSchedule.splice(index, 1);
     setSelectedSchedule(newSchedule);
+
+    const selectedBooking = [...typeDetailList];
+    selectedBooking.splice(index, 1);
+    setTypeDetailList(selectedBooking);
+
     message.success("Schedule entry deleted");
   };
 
-  // const onFinish = () => {
-  //   props.handleSubmitParent(selectedSchedule);
-  // };
+  // Prepare bookingDetailRequestCombos
+  const onChange = (values) => {
+    const bookingTypeDetail = {
+      courtTSId: values.target.value, // Update with correct value if available
+      bookingDate: selectedDate,
+      durationInMonths: 0, // Update with correct value if available
+      dayOfWeek: null, // Update with correct value if available
+    };
+
+    setTypeDetailList([...typeDetailList, bookingTypeDetail]);
+    console.log(typeDetailList);
+
+    props.bookingDetail(typeDetailList);
+  };
 
   return (
     <div name="bookingType3Form" layout="vertical">
@@ -80,9 +97,9 @@ const BookingType3 = (props) => {
         // rules={[{ required: true, message: "Please select a time!" }]}
       >
         <Radio.Group>
-          {availableTimes.map((item) => (
+          {availableTimes.map((item, index) => (
             <Radio.Button
-              // key={index}
+              key={index}
               value={item.courtTimeSlotId}
               onClick={() =>
                 handleAddToSchedule(
@@ -91,6 +108,7 @@ const BookingType3 = (props) => {
                   item.end_time
                 )
               }
+              onChange={onChange}
             >
               {item.start_time} - {item.end_time}
             </Radio.Button>
