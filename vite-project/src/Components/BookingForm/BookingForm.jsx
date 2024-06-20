@@ -156,7 +156,7 @@ const BookingForm = () => {
 
     try {
       // Make the POST request
-      const response = await api.post("/booking/bookingcombo", {
+      const response = await api.post("/booking/bookingCombo", {
         club_id: +id,
         booking_type_id: values.booking_type_id,
         bookingDetailRequestCombos: bookingDetailRequestCombos,

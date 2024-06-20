@@ -81,7 +81,7 @@ function App() {
               element={<BookingHistoryPage />}
             />
              <Route
-              path='/booking'
+              path='/booking/:id'
               element={<BookingForm />}
             />
             <Route

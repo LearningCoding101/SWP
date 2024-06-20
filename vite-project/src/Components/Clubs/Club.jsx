@@ -122,7 +122,7 @@ const Club = () => {
           </Space>
         }
       />
-      <Link to={`/booking`}>
+      <Link to={`/booking/${club.clubId}`}>
         <Button type="primary" size="small">
           Book Now
         </Button>
