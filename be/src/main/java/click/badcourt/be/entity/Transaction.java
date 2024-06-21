@@ -16,17 +16,13 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;
 
-    private float depositAmount;
+    private Double depositAmount;
     private Date paymentDate;
     private Double totalAmount;
 
     @OneToOne
     @JoinColumn(name="booking_id")
     Booking booking;
-
-    @OneToOne
-    @JoinColumn(name="payment_method_id")
-    PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
     TransactionEnum status;

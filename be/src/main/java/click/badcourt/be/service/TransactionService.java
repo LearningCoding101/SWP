@@ -2,7 +2,6 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.BookingDetail;
-import click.badcourt.be.entity.PaymentMethod;
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
@@ -11,14 +10,12 @@ import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
-import click.badcourt.be.repository.PaymentMethodRepository;
 import click.badcourt.be.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,9 +23,6 @@ public class TransactionService {
 
     @Autowired
     private TransactionRepository transactionRepository;
-
-    @Autowired
-    private PaymentMethodRepository paymentMethodRepository;
 
     @Autowired
     private BookingRepository bookingRepository;
@@ -42,7 +36,6 @@ public class TransactionService {
             TransactionResponse transactionResponse = new TransactionResponse();
             transactionResponse.setBookingId(transaction.getBooking().getBookingId());
             transactionResponse.setId(transaction.getTransactionId());
-            transactionResponse.setPaymentMethod(transaction.getPaymentMethod().getPaymentMethodName());
             transactionResponse.setPaymentDate(transaction.getPaymentDate());
             transactionResponse.setTotalAmount(transaction.getTotalAmount());
             transactionResponse.setDepositAmount(transaction.getDepositAmount());
@@ -52,14 +45,12 @@ public class TransactionService {
         return transactionResponses;
     }
     public Transaction addTransactionPending(TransactionRequest transactionRequest) {
-        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
         Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
-        if(paymentMethod.isPresent() && booking.isPresent()) {
+        if(booking.isPresent()) {
             Transaction transaction = new Transaction();
-            transaction.setDepositAmount(transactionRequest.getTotalAmount()*50/100);
+            transaction.setDepositAmount(TotalPrice(transactionRequest.getBookingId())*50/100);
             transaction.setTotalAmount(TotalPrice(booking.get().getBookingId()));
             transaction.setPaymentDate(transactionRequest.getPaymentDate());
-            transaction.setPaymentMethod(paymentMethod.get());
             transaction.setBooking(booking.get());
             return transactionRepository.save(transaction);
         }
@@ -68,18 +59,17 @@ public class TransactionService {
         }
     }
     public Transaction addTransaction(TransactionRequest transactionRequest) {
-        Optional<PaymentMethod> paymentMethod = paymentMethodRepository.findById(transactionRequest.getPaymentMethodId());
         Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
-        if(paymentMethod.isPresent() && booking.isPresent()) {
+        if(booking.isPresent()) {
             Transaction transaction = new Transaction();
             if(transactionRequest.getStatus().equals("00")) {
                 if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
-                    transaction.setDepositAmount(transactionRequest.getTotalAmount() * 50 / 100);
+                    transaction.setDepositAmount(TotalPrice(transactionRequest.getBookingId()) * 50 / 100);
                     }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
-                    transaction.setDepositAmount(0);
+                    transaction.setDepositAmount(0.0);
                 }
             }
             else {
@@ -88,7 +78,6 @@ public class TransactionService {
             }
             transaction.setTotalAmount(TotalPrice(transactionRequest.getBookingId()));
             transaction.setPaymentDate(transactionRequest.getPaymentDate());
-            transaction.setPaymentMethod(paymentMethod.get());
             transaction.setBooking(booking.get());
             return transactionRepository.save(transaction);
         }
@@ -145,7 +134,6 @@ public class TransactionService {
         TransactionResponse transactionResponse = new TransactionResponse();
         transactionResponse.setBookingId(transaction.getBooking().getBookingId());
         transactionResponse.setId(transaction.getTransactionId());
-        transactionResponse.setPaymentMethod(transaction.getPaymentMethod().getPaymentMethodName());
         transactionResponse.setPaymentDate(transaction.getPaymentDate());
         transactionResponse.setTotalAmount(transaction.getTotalAmount());
         transactionResponse.setDepositAmount(transaction.getDepositAmount());

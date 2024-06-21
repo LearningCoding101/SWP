@@ -13,9 +13,8 @@ public class TransactionResponse {
     private Date paymentDate;
     private Double totalAmount;
     Long bookingId;
-    String paymentMethod;
     String status;
     Long id;
-    float depositAmount;
+    Double depositAmount;
 
 }

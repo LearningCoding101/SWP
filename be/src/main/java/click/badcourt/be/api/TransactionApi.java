@@ -43,7 +43,6 @@ import java.util.List;
                 transactionResponse.setPaymentDate(createdTransaction.getPaymentDate());
                 transactionResponse.setTotalAmount(createdTransaction.getTotalAmount());
                 transactionResponse.setBookingId(createdTransaction.getBooking().getBookingId());
-                transactionResponse.setPaymentMethod(createdTransaction.getPaymentMethod().getPaymentMethodName());
                 transactionResponse.setStatus(createdTransaction.getStatus().toString());
                 return ResponseEntity.ok(transactionResponse);
             }catch (IllegalArgumentException e) {
