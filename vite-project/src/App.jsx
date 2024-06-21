@@ -28,6 +28,8 @@ import QRScanner from './Components/QRCheckin/StaffPage'
 import ClubOwnerList from './Components/Clubs/ClubOwnerList'
 import UpdateClub from './Components/Clubs/UpdateClub'
 import CourtList from './Components/Clubs/CourtList'
+import AddCourt from './Components/Clubs/AddCourt'
+import CourtTimeSlotList from './Components/Clubs/CourtTimeSlotList'
 
 
 function App() {
@@ -86,6 +88,14 @@ function App() {
             <Route
               path='/clubs'
               element={<Club />}
+            />
+            <Route
+              path='/addCourt/:clubId'
+              element={<AddCourt />}
+            />
+            <Route
+              path='/CourtsDetail/:courtId'
+              element={<CourtTimeSlotList />}
             />
             <Route
               path='/clubs/:address'
