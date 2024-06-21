@@ -60,7 +60,9 @@ const BookingHistory = (props) => {
   const [showBookingDetail, updateShowBookingDetail] = useState(false);
 
   const displayDetail = () => {
-    updateShowBookingDetail(true);
+    showBookingDetail == false
+      ? updateShowBookingDetail(true)
+      : updateShowBookingDetail(false);
   };
 
   const hideDetail = () => {
@@ -118,15 +120,28 @@ const BookingHistory = (props) => {
                 </Space>
               }
             />
-            {showBookingDetail && renderBookingDetails()}
+            {/* {showBookingDetail && renderBookingDetails()} */}
           </List.Item>
         )}
       />
-      <BookingDetails
-        showDetail={showBookingDetail}
-        showId={props.orderID}
-        hideDetail={hideDetail}
-      ></BookingDetails>
+      {showBookingDetail && (
+        <div
+          className={`alert ${props.showDetail ? "" : "hidden"}`}
+          role="alert"
+          // style={{ backgroundColor: "white", maxWidth: "1200px", display: "" }}
+          // style={{
+          //   backgroundColor: "white",
+          //   overflowY: "auto",
+          //   maxHeight: "400px",
+          // }}
+        >
+          <BookingDetails
+            showDetail={showBookingDetail}
+            showId={props.orderID}
+            // hideDetail={hideDetail}
+          ></BookingDetails>
+        </div>
+      )}
     </Card>
   );
 };
