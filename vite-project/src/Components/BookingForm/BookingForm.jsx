@@ -126,7 +126,6 @@ const BookingForm = () => {
 
   //post api, create booking
   const bookingDetailRequest = (items) => {
-    console.log(items);
     setBookingDetailRequestCombos(items);
   };
 
@@ -156,6 +155,8 @@ const BookingForm = () => {
 
     try {
       // Make the POST request
+      console.log("check");
+      console.log(bookingDetailRequestCombos);
       const response = await api.post("/booking/bookingCombo", {
         club_id: +id,
         booking_type_id: values.booking_type_id,
@@ -197,7 +198,7 @@ const BookingForm = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       <NavBar /> {/* Render NavBar at the top */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 100 }}>
         {" "}
         {/* Added margin-top for space */}
         <div
@@ -214,9 +215,9 @@ const BookingForm = () => {
             name="bookingForm"
             layout="vertical"
             onFinish={onFinish}
-            // initialValues={{
-            //   bookingDate: moment(),
-            // }}
+          // initialValues={{
+          //   bookingDate: moment(),
+          // }}
           >
             {/* <Form.Item
               name="bookingDate"
@@ -283,7 +284,7 @@ const BookingForm = () => {
 
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                Submit
+                Confirm Booking
               </Button>
             </Form.Item>
           </Form>

@@ -133,7 +133,7 @@ const Club = () => {
   return (
     <div>
       <NavBar />
-      <div className="container"> {/* Added a container class for better styling */}
+      <div className="container" style={{marginTop: 100}}> {/* Added a container class for better styling */}
         {clubs.length > 0 ? (
           <List
             itemLayout="horizontal"

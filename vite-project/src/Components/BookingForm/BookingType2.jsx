@@ -143,9 +143,7 @@ const BookingType2 = (props) => {
     };
 
     setTypeDetailList([...typeDetailList, bookingTypeDetail]);
-    console.log(typeDetailList);
-
-    props.bookingDetail(typeDetailList);
+    props.bookingDetail([...typeDetailList, bookingTypeDetail]);
   };
 
   return (
