@@ -25,13 +25,16 @@ import BookingForm from './Components/BookingForm/BookingForm';
 import Feedback from './Components/Feedback/Feedback'
 import Transaction from './Components/Payment/Transaction'
 import QRScanner from './Components/QRCheckin/StaffPage'
+import ClubOwnerList from './Components/Clubs/ClubOwnerList'
+import UpdateClub from './Components/Clubs/UpdateClub'
+import CourtList from './Components/Clubs/CourtList'
 
 
 function App() {
   return (
     <AuthProvider>
       <main>
-        
+
         <Router>
           <Routes>
             <Route
@@ -44,13 +47,25 @@ function App() {
               path="/login"
               element={<Login />}
             />
-             <Route
+            <Route
               path="/staff"
               element={<QRScanner />}
             />
             <Route
               path="/profile"
               element={<Logout />}
+            />
+            <Route
+              path="/clubManage"
+              element={<ClubOwnerList />}
+            />
+            <Route
+              path="/clubUpdate/:clubId"
+              element={<UpdateClub />}
+            />
+            <Route
+              path="/courtList/:clubId"
+              element={<CourtList />}
             />
             <Route
               path="/signup"
@@ -76,11 +91,11 @@ function App() {
               path='/clubs/:address'
               element={<ClubDetail />}
             />
-             <Route
+            <Route
               path='/bookingHistory'
               element={<BookingHistoryPage />}
             />
-             <Route
+            <Route
               path='/booking/:id'
               element={<BookingForm />}
             />
@@ -88,8 +103,8 @@ function App() {
               path='/transaction/:bookingId'
               element={<Transaction />}
             />
-           
-           <Route
+
+            <Route
               path='/feedback'
               element={<Feedback />}
             />
@@ -97,10 +112,10 @@ function App() {
               path='/CRUD'
               element={<CRUD />}
             />
-           
+
             <Route
               path='/adminDashboard'
-              element={<Dashboard/>}
+              element={<Dashboard />}
             />
             <Route
               path="*"
@@ -108,9 +123,9 @@ function App() {
             />
           </Routes>
         </Router>
-       
+
       </main>
-     </AuthProvider>
+    </AuthProvider>
   )
 }
 

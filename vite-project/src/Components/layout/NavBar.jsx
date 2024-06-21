@@ -37,21 +37,33 @@ const NavBar = () => {
       )}
     </Menu>
   );
-  
+
 
   return (
     <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center">
       <div className="container-fluid" >
         {/* Logo */}
         <Link to="/" className="navbar-brand text-primary">
-          <img 
-          src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b" 
-          style={{ width: '60px', height: '50px', marginLeft: '30px' , display: 'fixed'}}>
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
+            style={{ width: '60px', height: '50px', marginLeft: '30px', display: 'fixed' }}>
           </img>
         </Link>
 
         {/* Navigation Links (left-aligned) */}
         <ul className="nav mb-2 mb-lg-0">
+          {isLoggedIn && userRole === "ClUB_OWNER" && (
+            <li className="nav-item">
+              <NavLink
+                to="/clubManage"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active text-primary" : "nav-link"
+                }
+              >
+                Manage Club
+              </NavLink>
+            </li>
+          )}
           <li className="nav-item">
             <NavLink
               to="/clubs"
