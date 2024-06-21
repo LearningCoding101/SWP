@@ -2,10 +2,12 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.model.request.CourtCreateRequest;
+import click.badcourt.be.model.request.CourtCreateRequestCombo;
 import click.badcourt.be.model.request.CourtUpdateRequest;
 import click.badcourt.be.model.response.CourtNameListShowResponse;
 import click.badcourt.be.model.response.CourtResponse;
 import click.badcourt.be.model.response.CourtShowResponse;
+import click.badcourt.be.model.response.CourtShowResponseCombo;
 import click.badcourt.be.service.CourtService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,15 +52,14 @@ public class CourtApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/{clubId}/{number}")
-    public List<CourtShowResponse> createCourt(@PathVariable Long clubId, @PathVariable int number){
+    @PostMapping("/manycourts/{clubId}")
+    public List<CourtShowResponseCombo> createCourt(@PathVariable Long clubId, @RequestBody CourtCreateRequestCombo courtCreateRequestCombo){
         try {
-            return courtService.createManyCourt(clubId, number);
+            return courtService.createManyCourt(clubId, courtCreateRequestCombo);
         } catch (IllegalArgumentException e) {
-            return (List<CourtShowResponse>) new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return (List<CourtShowResponseCombo>) new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteClub(@PathVariable Long id){
