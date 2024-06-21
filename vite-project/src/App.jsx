@@ -29,6 +29,8 @@ import ClubOwnerList from './Components/Clubs/ClubOwnerList'
 import UpdateClub from './Components/Clubs/UpdateClub'
 import CourtList from './Components/Clubs/CourtList'
 import AddClubCombo from './Components/Admin/AddClubCombo'
+import AddCourt from './Components/Clubs/AddCourt'
+import CourtTimeSlotList from './Components/Clubs/CourtTimeSlotList'
 
 
 function App() {
@@ -121,10 +123,6 @@ function App() {
             <Route
               path="*"
               element={<Navigate to="/" />}
-            />
-            <Route
-              path="/AddClubCombo"
-              element={<AddClubCombo/>}
             />
           </Routes>
         </Router>
