@@ -89,12 +89,12 @@ const NavBar = () => {
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">
               <NavLink
-                to="/CRUD"
+                to="/AddClubCombo"
                 className={({ isActive }) =>
                   isActive ? "nav-link active text-primary" : "nav-link"
                 }
               >
-                CRUD Demo
+                CRUD Demo hahaha
               </NavLink>
             </li>
           )}
