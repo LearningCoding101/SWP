@@ -15,4 +15,6 @@ public class ClubResponse {
     String picture_location;
     String ownerName;
     int count;
+    float rating;
+    int feedbacks;
 }
