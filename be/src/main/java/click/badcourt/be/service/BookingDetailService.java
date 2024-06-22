@@ -87,10 +87,11 @@ public class BookingDetailService {
 
     public List<BookingDetailResponse> getBookingDetailByCourtId(Long courtId, Date date) {
             List<BookingDetail> bookingDetails = new ArrayList<>();
+        List<BookingDetail> finding = new ArrayList<>();
             List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByCourt_CourtId(courtId);
             for(CourtTimeslot courtTimeslot : courtTimeslots){
-                List<BookingDetail> findding = bookingDetailRepository.findBookingDetailsByCourtTimeslot_CourtTSlotID(courtTimeslot.getCourtTSlotID());
-                bookingDetails.addAll(findding);
+                finding = bookingDetailRepository.findBookingDetailsByCourtTimeslot_CourtTSlotID(courtTimeslot.getCourtTSlotID());
+                bookingDetails.addAll(finding);
             }
 
             List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
