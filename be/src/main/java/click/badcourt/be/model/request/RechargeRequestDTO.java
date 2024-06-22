@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RechargeRequestDTO {
+    private Long bookingId;
     private String amount;
 
 }
