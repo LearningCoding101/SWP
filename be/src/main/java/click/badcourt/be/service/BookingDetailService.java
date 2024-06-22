@@ -16,6 +16,7 @@ import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.repository.CourtTimeSlotRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -85,7 +86,7 @@ public class BookingDetailService {
         }
     }
 
-    public List<BookingDetailResponse> getBookingDetailByCourtId(Long courtId, Date date) {
+    public List<BookingDetailResponse> getBookingDetailByCourtId(Long courtId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
             List<BookingDetail> bookingDetails = new ArrayList<>();
         List<BookingDetail> finding = new ArrayList<>();
             List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByCourt_CourtId(courtId);

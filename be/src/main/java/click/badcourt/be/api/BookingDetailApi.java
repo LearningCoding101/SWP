@@ -8,6 +8,7 @@ import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
 import click.badcourt.be.service.BookingDetailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class BookingDetailApi {
     }
 
     @GetMapping("/{courtId}/{date}")
-    public ResponseEntity getBookingDetailById(@PathVariable Long courtId, @PathVariable Date date) {
+    public ResponseEntity getBookingDetailById(@PathVariable Long courtId, @PathVariable @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByCourtId(courtId, date));
     }
 
