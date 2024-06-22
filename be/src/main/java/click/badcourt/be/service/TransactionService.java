@@ -65,7 +65,7 @@ public class TransactionService {
             if(transactionRequest.getStatus().equals("00")) {
                 if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
-                    transaction.setDepositAmount(TotalPrice(transactionRequest.getBookingId()) * 50 / 100);
+                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-(TotalPrice(transactionRequest.getBookingId())%10));
                     }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
