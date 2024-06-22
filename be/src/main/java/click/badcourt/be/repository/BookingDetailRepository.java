@@ -1,6 +1,7 @@
 package click.badcourt.be.repository;
 
 import click.badcourt.be.entity.BookingDetail;
+import click.badcourt.be.entity.Court;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,5 +20,6 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail,Lon
     List<BookingDetail> findBookingDetailsByDeletedFalse();
     int countBookingDetailsByBooking_BookingId(Long bookingId);
     List<BookingDetail> findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(Long courtTSlotID);
+    List<BookingDetail> findBookingDetailsByCourtTimeslot_CourtTSlotID(Long courtTSlotID);
 
 }

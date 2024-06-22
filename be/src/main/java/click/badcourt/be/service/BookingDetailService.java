@@ -12,6 +12,7 @@ import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
+import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.repository.CourtTimeSlotRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class BookingDetailService {
     CourtTimeSlotRepository courtTimeSlotRepository;
     @Autowired
     private AccountUtils accountUtils;
+    @Autowired
+    private CourtRepository courtRepository;
 
     public List<BookingDetailDeleteResponse> getAllBookingDetails() {
         List<BookingDetail> bookingDeleteDetails= bookingDetailRepository.findAll();
@@ -68,8 +71,8 @@ public class BookingDetailService {
                 bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
                 bookingDetailResponse.setBookingDetailsId(bookingDetail.getBookingDetailsId());
                 bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
-                bookingDetailResponse.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
-                bookingDetailResponse.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
+                bookingDetailResponse.setFullnameoforder(bookingDetail.getBooking().getAccount().getFullName());
+                bookingDetailResponse.setPhonenumber(bookingDetail.getBooking().getAccount().getPhone());
                 bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
                 bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
                 bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
@@ -80,6 +83,34 @@ public class BookingDetailService {
         else {
             throw new IllegalArgumentException("Booking not found");
         }
+    }
+
+    public List<BookingDetailResponse> getBookingDetailByCourtId(Long courtId, Date date) {
+            List<BookingDetail> bookingDetails = new ArrayList<>();
+            List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByCourt_CourtId(courtId);
+            for(CourtTimeslot courtTimeslot : courtTimeslots){
+                List<BookingDetail> findding = bookingDetailRepository.findBookingDetailsByCourtTimeslot_CourtTSlotID(courtTimeslot.getCourtTSlotID());
+                bookingDetails.addAll(findding);
+            }
+
+            List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
+            for(BookingDetail bookingDetail : bookingDetails){
+                if(date.getDate()==bookingDetail.getDate().getDate() && date.getMonth()==bookingDetail.getDate().getMonth() && date.getYear()==bookingDetail.getDate().getYear()) {
+                    BookingDetailResponse bookingDetailResponse = new BookingDetailResponse();
+                    bookingDetailResponse.setBookingDate(bookingDetail.getDate());
+                    bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
+                    bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
+                    bookingDetailResponse.setBookingDetailsId(bookingDetail.getBookingDetailsId());
+                    bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
+                    bookingDetailResponse.setFullnameoforder(bookingDetail.getBooking().getAccount().getFullName());
+                    bookingDetailResponse.setPhonenumber(bookingDetail.getBooking().getAccount().getPhone());
+                    bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
+                    bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                    bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
+                    bookingDetailResponses.add(bookingDetailResponse);
+                }
+            }
+            return bookingDetailResponses;
     }
 
     public List<BookingDetailsCustomerResponse> getBookingCustomerBookingDetailByBookingId(Long bookingId) {

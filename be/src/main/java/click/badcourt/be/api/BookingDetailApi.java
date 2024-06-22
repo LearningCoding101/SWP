@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,10 @@ public class BookingDetailApi {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
     }
 
+    @GetMapping("/{courtId}")
+    public ResponseEntity getBookingDetailById(@PathVariable Long courtId, @RequestParam Date date) {
+        return ResponseEntity.ok(bookingDetailService.getBookingDetailByCourtId(courtId, date));
+    }
 
     @PostMapping("/fixed")
     public ResponseEntity createFixedBooking(@RequestBody FixedBookingDetailRequest fixedBookingDetailRequest) {
