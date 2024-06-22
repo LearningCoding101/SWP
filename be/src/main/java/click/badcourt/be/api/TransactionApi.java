@@ -60,6 +60,9 @@ import java.util.List;
             TransactionResponse transactionResponse =transactionService.getTransactionsByBookingId(bookingId);
             return ResponseEntity.ok(transactionResponse);
         }
+
+
+
         @PutMapping("/{id}")
         public ResponseEntity updateTransactionFullyPaid(@PathVariable Long id) {
             try{

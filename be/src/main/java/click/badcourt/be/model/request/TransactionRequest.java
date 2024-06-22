@@ -9,9 +9,10 @@ import java.util.Date;
 @Data
 public class TransactionRequest {
 
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date paymentDate;
+//    @DateTimeFormat(pattern="yyyy-MM-dd")
+//    private Date paymentDate;
     Long bookingId;
     String status;
+
 
 }
