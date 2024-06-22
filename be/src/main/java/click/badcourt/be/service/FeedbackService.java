@@ -117,6 +117,20 @@ public class FeedbackService {
             }
         }
         return feedbackResponses;
-
+    }
+    public float getFeedbackAverageRating(Long clubId) {
+        List<FeedbackResponse> feedbackResponses=getAllFeedBackByClubId(clubId);
+        float rating= 0;
+        if(!feedbackResponses.isEmpty()) {
+            for (FeedbackResponse feedbackResponse : feedbackResponses) {
+                rating += feedbackResponse.getFeedbackRating();
+            }
+            rating/=feedbackResponses.size();
+        }
+        return rating;
+    }
+    public int getNumberOfFeedback(Long clubId) {
+        List<FeedbackResponse> feedbackResponses=getAllFeedBackByClubId(clubId);
+        return feedbackResponses.size();
     }
 }

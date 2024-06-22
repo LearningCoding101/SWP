@@ -1,9 +1,6 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Account;
 import click.badcourt.be.model.request.RechargeRequestDTO;
-import click.badcourt.be.utils.AccountUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -20,16 +17,14 @@ import java.util.UUID;
 
 @Service
 public class WalletService {
-    @Autowired
-    AccountUtils accountUtils;
     public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createDate = LocalDateTime.now();
         String formattedCreateDate = createDate.format(formatter);
 
-        Account user = accountUtils.getCurrentAccount();
+//        User user = accountUtils.getCurrentUser();
 
-        String orderId = rechargeRequestDTO.getBookingId().toString();
+        String orderId = UUID.randomUUID().toString().substring(0,6);
 
 //        Wallet wallet = walletRepository.findWalletByUser_Id(user.getId());
 //
@@ -45,7 +40,7 @@ public class WalletService {
         String tmnCode = "NI3BAGS1";
         String secretKey = "2AZPVYA4RTHWMOQKDGK3FR0OMSR20SKY";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://badcourts.click:8080/api/proccessTransaction?orderId=" + orderId + "&tmnCode=" + tmnCode;
+        String returnUrl = "http://badcourts.click/transaction";
 
         String currCode = "VND";
         Map<String, String> vnpParams = new TreeMap<>();
@@ -55,9 +50,9 @@ public class WalletService {
         vnpParams.put("vnp_Locale", "vn");
         vnpParams.put("vnp_CurrCode", currCode);
         vnpParams.put("vnp_TxnRef", orderId);
-        vnpParams.put("vnp_OrderInfo",orderId);
+        vnpParams.put("vnp_OrderInfo", "Thanh toan cho ma GD " + orderId);
         vnpParams.put("vnp_OrderType", "other");
-        vnpParams.put("vnp_Amount", rechargeRequestDTO.getAmount());
+        vnpParams.put("vnp_Amount", rechargeRequestDTO.getAmount() +"00");
         vnpParams.put("vnp_ReturnUrl", returnUrl);
         vnpParams.put("vnp_CreateDate", formattedCreateDate);
         vnpParams.put("vnp_IpAddr", "128.199.178.23");
