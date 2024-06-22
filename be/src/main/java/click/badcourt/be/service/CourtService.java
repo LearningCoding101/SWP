@@ -3,17 +3,14 @@ package click.badcourt.be.service;
 import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.model.request.CourtCreateRequest;
-import click.badcourt.be.model.request.CourtCreateRequestCombo;
 import click.badcourt.be.model.request.CourtUpdateRequest;
 import click.badcourt.be.model.response.CourtNameListShowResponse;
 import click.badcourt.be.model.response.CourtShowResponse;
-import click.badcourt.be.model.response.CourtShowResponseCombo;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +26,7 @@ public class CourtService {
 
     @Autowired
     ClubRepository clubRepository;
-    @Autowired
-    private CourtTimeSlotService courtTimeSlotService;
+
 
 
     public List<CourtShowResponse> getCourtsByClubId(Long clubId) {
@@ -96,26 +92,24 @@ public class CourtService {
         }
     }
 
-    public List<CourtShowResponseCombo> createManyCourt(Long clubId, CourtCreateRequestCombo combo) {
+    public List<CourtShowResponse> createManyCourt(Long clubId, int n) {
         Optional<Club> clubOptional = clubRepository.findById(clubId);
         int b = courtRepository.countCourtsByDeletedFalseAndClub_ClubId(clubId);
-
         b++;
         int t = 1;
-        List<CourtShowResponseCombo> response = new ArrayList<>();
+        List<CourtShowResponse> response = new ArrayList<>();
         if (clubOptional.isPresent()&&!clubOptional.get().isDeleted()) {
-            for (int i = b; t <= combo.getNumberofcourt(); i++) {
+            for (int i = b; t <= n; i++) {
                 Court newCourt = new Court();
                 newCourt.setClub(clubOptional.get());
                 newCourt.setCourtname(String.valueOf(i));
                 Court savedCourt = courtRepository.save(newCourt);
-                CourtShowResponseCombo addResponse= new CourtShowResponseCombo();
-                for(Long e : combo.getCourtTSId()) {
-                    courtTimeSlotService.createCourtTimeSlotCombo(savedCourt.getCourtId(), e);
-                }
-                addResponse.setClubId(savedCourt.getClub().getClubId());
-                addResponse.setCId(savedCourt.getCourtId());
+                CourtShowResponse addResponse= new CourtShowResponse();
+                addResponse.setId(savedCourt.getCourtId());
                 addResponse.setCourtName(savedCourt.getCourtname());
+                addResponse.setClubId(savedCourt.getClub().getClubId());
+                addResponse.setClubName(savedCourt.getClub().getName());
+                addResponse.setDeleted(false);
                 response.add(addResponse);
                 t++;
             }

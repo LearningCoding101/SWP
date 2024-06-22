@@ -7,6 +7,7 @@ import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
 import click.badcourt.be.model.request.TransactionRequest;
 import click.badcourt.be.model.response.PreTransactionResponse;
+import click.badcourt.be.model.response.TotalAmountByMonthDTO;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class TransactionService {
@@ -65,7 +68,7 @@ public class TransactionService {
             if(transactionRequest.getStatus().equals("00")) {
                 if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
-                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-(TotalPrice(transactionRequest.getBookingId())%10));
+                    transaction.setDepositAmount(TotalPrice(transactionRequest.getBookingId()) * 50 / 100);
                     }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
@@ -146,4 +149,31 @@ public class TransactionService {
         }
         transactionRepository.save(transaction.get());
     }
+    public List<TotalAmountByMonthDTO> getTotalAmountByMonth(int year) {
+        List<Object[]> result = transactionRepository.getTotalAmountByMonth(year);
+
+        // Initialize array for 12 months with total amount 0
+        List<TotalAmountByMonthDTO> totalAmountByMonthList = IntStream.rangeClosed(1, 12)
+                .mapToObj(month -> new TotalAmountByMonthDTO(month, year, 0.0))
+                .collect(Collectors.toList());
+
+        // Populate actual data for months with transactions
+        for (Object[] row : result) {
+            int month = (int) row[0];
+            double totalAmount = (double) row[1];
+
+            // Find the corresponding DTO and update total amount
+            TotalAmountByMonthDTO dto = totalAmountByMonthList.stream()
+                    .filter(item -> item.getMonth() == month)
+                    .findFirst()
+                    .orElse(null);
+
+            if (dto != null) {
+                dto.setTotalAmount(totalAmount);
+            }
+        }
+
+        return totalAmountByMonthList;
+    }
+
 }

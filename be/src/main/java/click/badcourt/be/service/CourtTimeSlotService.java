@@ -167,24 +167,6 @@ public class CourtTimeSlotService {
             throw new IllegalArgumentException("Court or TimeSlot not found");
         }
     }
-    public CourtTimeSlotRequest createCourtTimeSlotCombo(Long cId, Long tsId) {
-        Optional<TimeSlot> timeSlotCheck = timeSlotRepository.findTimeSlotByDeletedFalseAndTimeslotId(tsId);
-        Optional<Court> courtCheck = courtRepository.findCourtByDeletedFalseAndCourtId(cId);
-
-        if((timeSlotCheck.isPresent()) && (courtCheck.isPresent())) {
-            CourtTimeslot court_timeslot = new CourtTimeslot();
-            court_timeslot.setTimeslot(timeSlotCheck.get());
-            court_timeslot.setCourt(courtCheck.get());
-            court_timeslot.setDeleted(false);
-            courtTimeSlotRepository.save(court_timeslot);
-            CourtTimeSlotRequest courtTimeSlotRequest = new CourtTimeSlotRequest();
-            courtTimeSlotRequest.setCourtId(cId);
-            courtTimeSlotRequest.setTimeSlotId(tsId);
-            return courtTimeSlotRequest;
-        }else {
-            throw new IllegalArgumentException("Court or TimeSlot not found");
-        }
-    }
 
     public void deleteCourtTimeSlot(Long id) {
         CourtTimeslot courtTimeslot = courtTimeSlotRepository.findById(id).orElseThrow(() -> new RuntimeException("CourtTimeSlot not found!"));
