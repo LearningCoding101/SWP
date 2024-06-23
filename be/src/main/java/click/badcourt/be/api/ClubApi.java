@@ -5,6 +5,7 @@ import click.badcourt.be.entity.Club;
 import click.badcourt.be.model.request.ClubComboCreateRequest;
 import click.badcourt.be.model.request.ClubCreateRequest;
 import click.badcourt.be.model.request.ClubUpdateRequest;
+import click.badcourt.be.model.request.ForgotPasswordRequest;
 import click.badcourt.be.model.response.ClubResponse;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.AuthenticationService;
@@ -61,6 +62,9 @@ public class ClubApi {
             HashMap<String, Object> hmap = new HashMap<String, Object>();
             Account account= authenticationService.registerClubOwner(clubComboCreateRequest);
             Club createdClub = clubService.createClubCombo(clubComboCreateRequest);
+            ForgotPasswordRequest setpass = new ForgotPasswordRequest();
+            setpass.setEmail(clubComboCreateRequest.getEmail());
+            authenticationService.setPassword(setpass);
             hmap.put("createdClub", createdClub);
             hmap.put("account", account);
             return new ResponseEntity<HashMap<String, Object>>(hmap, HttpStatus.OK);

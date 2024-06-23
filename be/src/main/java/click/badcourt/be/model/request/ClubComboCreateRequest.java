@@ -3,7 +3,7 @@ package click.badcourt.be.model.request;
 import lombok.Data;
 
 @Data
-public class ClubComboCreateRequest extends RegisterRequest{
+public class ClubComboCreateRequest extends RegisterClubOwnerRequest{
     String name;
     String address;
     double price;
