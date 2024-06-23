@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import uploadFile from '../util/useUpload';
-import './CreateClub.css'
 import { addClubAPICombo } from './AddClubAPICombo';
+import { colors } from '@mui/material';
 
 const AddClubCombo = () => {
     const [fullname, setFullname] = useState('');
-    const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [courtAddress, setCourtAddress] = useState('');
@@ -27,11 +26,11 @@ const AddClubCombo = () => {
         }
         else {
             try {
-                const data = await addClubAPICombo(phone, password, email, fullname, courtName, courtAddress, price, courtStartHour, courtStartMinute, courtEndHour, courtEndMinute, img.toString());
+                const data = await addClubAPICombo(phone, email, fullname, courtName, courtAddress, price, courtStartHour, courtStartMinute, courtEndHour, courtEndMinute, img.toString());
                 console.log('Added successful!', data);
 
                 if (data) {
-                    alert("Added new club!")
+                    alert("Club created, password email is sent to email: "+ data.email)
                 }
 
                 // Handle successful 
@@ -53,6 +52,7 @@ const AddClubCombo = () => {
                                 <label htmlFor="fullname" className="form-label">Full Name</label>
                                 <input
                                     type="text"
+                                    required
                                     placeholder="Your full name"
                                     id="fullname"
                                     value={fullname}
@@ -64,6 +64,7 @@ const AddClubCombo = () => {
                                 <label htmlFor="email" className="form-label">Email</label>
                                 <input
                                     type="email"
+                                    required
                                     placeholder="Enter your email"
                                     id="email"
                                     value={email}
@@ -75,6 +76,7 @@ const AddClubCombo = () => {
                                 <label htmlFor="phone" className="form-label">Phone number</label>
                                 <input
                                     type="text"
+                                    required
                                     placeholder="Enter your phone number"
                                     id="phone"
                                     value={phone}
@@ -83,20 +85,10 @@ const AddClubCombo = () => {
                                 />
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="password" className="form-label">Password</label>
-                                <input
-                                    type="password"
-                                    placeholder="Enter your password"
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="form-control"
-                                />
-                            </div>
-                            <div className="mb-3">
                                 <label htmlFor="price" className="form-label">Price</label>
                                 <input
                                     type="number"
+                                    required
                                     placeholder="Enter your club price"
                                     id="price"
                                     value={price}
@@ -136,7 +128,7 @@ const AddClubCombo = () => {
                                     <input
                                         type="number"
                                         required
-                                        min={7}
+                                        min={0}
                                         max={23}
                                         placeholder="Open hour"
                                         id="openTimeHour"
@@ -165,7 +157,7 @@ const AddClubCombo = () => {
                                     <input
                                         type="number"
                                         required
-                                        min={7}
+                                        min={0}
                                         max={23}
                                         placeholder="Close hour"
                                         id="closeTimeHour"
@@ -214,4 +206,3 @@ const AddClubCombo = () => {
 }
 
 export default AddClubCombo
-
