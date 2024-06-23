@@ -30,7 +30,7 @@ const AddClubCombo = () => {
                 console.log('Added successful!', data);
 
                 if (data) {
-                    alert("Club created, password email is sent to email: "+ data.email)
+                    alert("Club created, password email is sent to email: "+ email)
                 }
 
                 // Handle successful 
