@@ -14,6 +14,7 @@ import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -35,6 +36,7 @@ public class ClubService {
     PasswordEncoder passwordEncoder;
     @Autowired
     private CourtRepository courtRepository;
+    @Autowired
     private FeedbackService feedbackService;
 
     public ClubResponse getClubByCurrentAccount() {
@@ -83,6 +85,8 @@ public class ClubService {
             clubResponse.setClubId(club.getClubId());
             clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
             clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
+//            clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
+//            clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
 //            clubResponse.setCount(courtRepository.countCourtsByClub_ClubId(club.getClubId()));
             clubResponse.setClubId(club.getClubId());
 

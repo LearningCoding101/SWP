@@ -2,6 +2,7 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.model.request.TransactionRequest;
+import click.badcourt.be.model.response.MoneyPredictResponse;
 import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.service.TransactionService;
@@ -61,7 +62,11 @@ import java.util.List;
             return ResponseEntity.ok(transactionResponse);
         }
 
-
+        @GetMapping("/predictedPrice/{clubId}/{bookingTypeId}/{numberOnList}")
+        public ResponseEntity getPredictedPriceByGivenInfo(@PathVariable Long clubId, @PathVariable Long bookingTypeId, @PathVariable Integer numberOnList) {
+            MoneyPredictResponse moneyPredictResponse =transactionService.getPredictedPriceByGivenInfo(clubId, bookingTypeId, numberOnList);
+            return ResponseEntity.ok(moneyPredictResponse);
+        }
 
         @PutMapping("/{id}")
         public ResponseEntity updateTransactionFullyPaid(@PathVariable Long id) {
