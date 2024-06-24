@@ -2,6 +2,7 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.BookingDetail;
+import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
@@ -73,7 +74,7 @@ public class TransactionService {
                 if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
                     booking.get().setStatus(BookingStatusEnum.COMPLETED);
-                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-(TotalPrice(transactionRequest.getBookingId())%10));
+                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-((TotalPrice(transactionRequest.getBookingId())*0.5)%10));
                     }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
@@ -101,11 +102,11 @@ public class TransactionService {
         Double totalPrice= 0.0;
         if(booking.getBookingType().getBookingTypeId() == 1 || booking.getBookingType().getBookingTypeId() == 2){
             for(BookingDetail bookingDetail : bookingDetails) {
-                totalPrice+= booking.getClub().getPrice();
+                totalPrice += booking.getClub().getPrice();
             }
-            totalPrice -= totalPrice*booking.getBookingType().getBookingDiscount();
+            totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount()) - (totalPrice*(1-booking.getBookingType().getBookingDiscount()))%10;
         } else if (booking.getBookingType().getBookingTypeId() == 3) {
-            Double salealready = booking.getClub().getPrice()*(1-booking.getBookingType().getBookingDiscount())*bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId);
+            Double salealready = booking.getClub().getPrice()*(1-booking.getBookingType().getBookingDiscount())*(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)-1);
             salealready -= salealready%10;
             totalPrice = booking.getClub().getPrice() + salealready;
         }
@@ -118,7 +119,7 @@ public class TransactionService {
         Double totalPrice = booking.getClub().getPrice()*n;
         PreTransactionResponse preTransactionResponse= new PreTransactionResponse();
             preTransactionResponse.setFullPrice(totalPrice);
-            preTransactionResponse.setTotalPriceNeedToPay(TotalPrice(bookingId));
+            preTransactionResponse.setTotalPriceNeedToPay(TotalPrice(booking.getBookingId()));
             preTransactionResponse.setSalePrice(preTransactionResponse.getFullPrice()-preTransactionResponse.getTotalPriceNeedToPay());
         return preTransactionResponse;
     }
@@ -138,14 +139,16 @@ public class TransactionService {
 
     public MoneyPredictResponse getPredictedPriceByGivenInfo(Long clubId, Long bookingTypeId, Integer num) {
         MoneyPredictResponse moneyPredictResponse = new MoneyPredictResponse();
-        Double price = clubRepository.findById(clubId).get().getPrice();
+        Club club = clubRepository.findClubByClubId(clubId);
+        Double price = club.getPrice();
+        Double scale = Double.valueOf(1 - bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount());
         Double cal = price * num;
         if (bookingTypeId == 1){
             moneyPredictResponse.setMoneyback(price);
         }else if(bookingTypeId == 2){
-            moneyPredictResponse.setMoneyback(cal*(1-bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount())-cal*(1-bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount())%10);
+            moneyPredictResponse.setMoneyback(cal*scale-(cal*scale)%10);
         }else if(bookingTypeId == 3){
-            moneyPredictResponse.setMoneyback(price + price*(1-bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount())*(num-1) + price*(1-bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount())*(num-1)%10);
+            moneyPredictResponse.setMoneyback(price + price*scale*(num-1) - (price*scale*(num-1))%10);
         }
         return moneyPredictResponse;
     }
