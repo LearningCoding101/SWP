@@ -124,6 +124,10 @@ function App() {
               path="*"
               element={<Navigate to="/" />}
             />
+            <Route
+              path='/AddClubCombo'
+              element={<AddClubCombo/>}
+            />
           </Routes>
         </Router>
 
