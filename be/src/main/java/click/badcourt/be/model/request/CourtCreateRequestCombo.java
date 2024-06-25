@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class CourtCreateRequestCombo {
     int numberofcourt;
-    List<Long> courtTSId;
+    List<Long> TSId;
 }
