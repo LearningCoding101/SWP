@@ -147,6 +147,7 @@ public class CourtTimeSlotService {
             courtTimeSlotManageResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
             courtTimeSlotManageResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
             courtTimeSlotManageResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotManageResponse.setPrice(courtTimeslot.getCourt().getClub().getPrice());
             courtTimeSlotManageResponses.add(courtTimeSlotManageResponse);
         }
         return courtTimeSlotManageResponses;
