@@ -50,17 +50,23 @@ const Login = () => {
             try {
                 const data = await login(email, password);
                 console.log('Login successful!', data);
+                // localStorage.setItem("userName", email)
                 const fullname = data.fullName
                 localStorage.setItem("userName", fullname)
-
+                const userEmail = data.email
+                localStorage.setItem("userEmail", userEmail)
                 const role = data.role
                 localStorage.setItem("userRole", role)
                 const token = data.token
                 // localStorage.setItem("token", token)
                 authen.handleLogin(token)
-                navigate("/")
+                if (role == "STAFF") {
+                    navigate("/staff")
+                }
+                else {
+                    navigate("/")
 
-
+                }
                 // Handle successful login (e.g., store token, redirect)
             } catch (err) {
                 console.error(err);
@@ -81,6 +87,8 @@ const Login = () => {
             const ggData = res.data
             const roleGG = ggData.role
             localStorage.setItem("userRole", roleGG)
+            const userEmail = ggData.email
+            localStorage.setItem("userEmail", userEmail)
             const name = ggData.fullName
             localStorage.setItem("userName", name)
             navigate("/")
@@ -139,6 +147,10 @@ const Login = () => {
                     <button onClick={handleLogin1} type="submit" className="login-button">
                         Login
                     </button>
+                    <div className='footer-content flex-col col text-start-0'>
+                        <p className='col-md-4'> <Link to='/forgotpassword' style={{ color: "#007bff" }}>Forgot password?</Link></p>
+                        <p className='col-md-7'>Dont have an account? <Link to="/signup" style={{ color: "#007bff" }}>Sign up</Link></p>
+                    </div>
                     {/* <div className='google-button'>
                         <button onClick={handleLoginGG}>Google</button>
                     </div> */}
@@ -151,10 +163,7 @@ const Login = () => {
                         />
                     </div>
                 </form>
-                <div className='footer-content flex-col col text-start-0'>
-                    <p className='col-md-5'> <Link to='/forgotpassword'>Forgot password?</Link></p>
-                    <p >Dont have an account? <Link to="/signup">Sign up</Link></p>
-                </div>
+
             </div>
         </div>
     );

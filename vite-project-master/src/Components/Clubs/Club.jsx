@@ -122,7 +122,7 @@ const Club = () => {
           </Space>
         }
       />
-      <Link to={`/booking`}>
+      <Link to={`/booking/${club.clubId}`}>
         <Button type="primary" size="small">
           Book Now
         </Button>
@@ -133,13 +133,13 @@ const Club = () => {
   return (
     <div>
       <NavBar />
-      <div className="container"> {/* Added a container class for better styling */}
+      <div className="container" style={{marginTop: 150}}> {/* Added a container class for better styling */}
         {clubs.length > 0 ? (
           <List
             itemLayout="horizontal"
             dataSource={clubs}
             renderItem={renderClubList}
-            pagination={{ pageSize: 4 }} // Optional pagination configuration
+            pagination={{ pageSize: 5 }} // Optional pagination configuration
           />
         ) : (
           <Empty description="No clubs found." />
