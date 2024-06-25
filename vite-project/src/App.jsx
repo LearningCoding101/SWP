@@ -9,6 +9,15 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+
+
+
+
+
+
+
+
+import ShowBookingList from "./Components/ClubOwnerShowBooking/ShowBookingList";
 import { AuthProvider } from './Components/Login/AuthProvider'
 import Login from './Components/Login/login'
 import SignUp from './Components/Login/SignUp'
@@ -25,27 +34,40 @@ import BookingForm from './Components/BookingForm/BookingForm';
 import Feedback from './Components/Feedback/Feedback'
 import Transaction from './Components/Payment/Transaction'
 import QRScanner from './Components/QRCheckin/StaffPage'
-import ClubOwnerList from './Components/Clubs/ClubOwnerList'
+import ClubOwnerManage from './Components/Clubs/ClubOwnerManage'
 import UpdateClub from './Components/Clubs/UpdateClub'
 import CourtList from './Components/Clubs/CourtList'
 import AddClubCombo from './Components/Admin/AddClubCombo'
 import AddCourt from './Components/Clubs/AddCourt'
 import CourtTimeSlotList from './Components/Clubs/CourtTimeSlotList'
 
+import AddCourtTimeSlot from './Components/Clubs/AddCourtTimeSlot'
+
 
 function App() {
   return (
     <AuthProvider>
       <main>
-
         <Router>
           <Routes>
+            <Route exact path="/" element={<Home />} />
             <Route
               exact
               path="/"
               element={<Home />}
             />
-
+            <Route
+              path='/clubManage/courtList/addCourt/:clubId'
+              element={<AddCourt />}
+            />
+            <Route
+              path='/AddCourtTimeSlot'
+              element={<AddCourtTimeSlot />}
+            />
+            <Route
+              path='/clubManage/courtList/CourtsDetail/:courtId'
+              element={<CourtTimeSlotList />}
+            />
             <Route
               path="/login"
               element={<Login />}
@@ -60,14 +82,14 @@ function App() {
             />
             <Route
               path="/clubManage"
-              element={<ClubOwnerList />}
+              element={<ClubOwnerManage />}
             />
             <Route
-              path="/clubUpdate/:clubId"
+              path="/clubManage/clubUpdate/:clubId"
               element={<UpdateClub />}
             />
             <Route
-              path="/courtList/:clubId"
+              path="/clubManage/courtList/:clubId"
               element={<CourtList />}
             />
             <Route
@@ -107,23 +129,16 @@ function App() {
               element={<Transaction />}
             />
 
-            <Route
-              path='/feedback'
-              element={<Feedback />}
-            />
-            <Route
-              path='/CRUD'
-              element={<CRUD />}
-            />
 
-            <Route
-              path='/adminDashboard'
-              element={<Dashboard />}
-            />
-            <Route
-              path="*"
-              element={<Navigate to="/" />}
-            />
+
+
+
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/CRUD" element={<CRUD />} />
+            <Route path="/adminDashboard" element={<Dashboard />} />
+            <Route path="/AddClubCombo" element={<AddClubCombo />} />
+            <Route path="/showBooking" element={<ShowBookingList />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>
 

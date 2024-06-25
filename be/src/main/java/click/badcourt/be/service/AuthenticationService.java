@@ -55,10 +55,10 @@ public class AuthenticationService implements UserDetailsService {
         return authenticationRepository.save(account);
     }
 
-    public Account registerClubOwner(RegisterRequest reg) {
+    public Account registerClubOwner(RegisterClubOwnerRequest reg) {
         Account account = new Account();
         account.setPhone(reg.getPhone());
-        account.setPassword(passwordEncoder.encode(reg.getPassword()));
+        account.setPassword(null);
         account.setRole(RoleEnum.ClUB_OWNER);
         account.setEmail(reg.getEmail());
         account.setFullName(reg.getFullName());
@@ -158,6 +158,32 @@ public class AuthenticationService implements UserDetailsService {
             @Override
             public void run() {
                 emailService.sendMailTemplate(emailDetail);
+            }
+        };
+        new Thread(r).start();
+    }
+
+    public void setPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        System.out.println(forgotPasswordRequest.getEmail());
+        Account account = authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
+        if (account == null) {
+            try {
+                throw new BadRequestException("Account not found!");
+            }catch (RuntimeException e){
+                throw new RuntimeException(e);
+            }
+        }
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(account.getEmail());
+        emailDetail.setSubject("Set password for account " + forgotPasswordRequest.getEmail() + "!");
+        emailDetail.setMsgBody("");
+        emailDetail.setButtonValue("Set password");
+        emailDetail.setFullName(account.getFullName());
+        emailDetail.setLink("http://badcourts.click/reset-password?token=" + tokenService.generateToken(account));
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                emailService.setPasswordMailTemplate(emailDetail);
             }
         };
         new Thread(r).start();

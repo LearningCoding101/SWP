@@ -36,6 +36,7 @@ public class ClubService {
     PasswordEncoder passwordEncoder;
     @Autowired
     private CourtRepository courtRepository;
+    @Autowired
     private FeedbackService feedbackService;
 
     public ClubResponse getClubByCurrentAccount() {
@@ -84,6 +85,8 @@ public class ClubService {
             clubResponse.setClubId(club.getClubId());
             clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
             clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
+//            clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
+//            clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
 //            clubResponse.setCount(courtRepository.countCourtsByClub_ClubId(club.getClubId()));
             clubResponse.setClubId(club.getClubId());
 

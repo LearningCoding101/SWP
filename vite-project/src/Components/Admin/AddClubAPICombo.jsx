@@ -1,16 +1,15 @@
 import axios from 'axios';
 
-export const addClubAPICombo = async (phone, password, email, fullName, name, address, price, startHour, startMinute, endHour, endMinute, picture_location) => {
+export const addClubAPICombo = async (phone, email, fullName, name, address, price, startHour, startMinute, endHour, endMinute, picture_location) => {
 
     const token = localStorage.getItem("token")
     const url = 'http://152.42.168.144:8080/api/clubCombo';
 
     const payload = {
         phone: phone,
-        password: password,
         email: email,
         fullName: fullName,
-        name: name,
+        name: name, 
         address: address,
         price: price,
         startHour: startHour,

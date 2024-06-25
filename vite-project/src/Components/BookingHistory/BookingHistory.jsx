@@ -69,11 +69,11 @@ const BookingHistory = (props) => {
     updateShowBookingDetail(false);
   };
 
-  const renderBookingDetails = () => (
-    <Collapse.Panel header={`Order ID: ${props.orderID}`}>
-      <BookingDetails booking={props} hideDetail={hideDetail} />
-    </Collapse.Panel>
-  );
+  // const renderBookingDetails = () => (
+  //   <Collapse.Panel header={`Order ID: ${props.orderID}`}>
+  //     <BookingDetails booking={props} hideDetail={hideDetail} />
+  //   </Collapse.Panel>
+  // );
 
   // Generate QR code value based on the format {"bookingId": booking.orderID}
   const qrCodeValue = JSON.stringify({ bookingId: props.orderID });

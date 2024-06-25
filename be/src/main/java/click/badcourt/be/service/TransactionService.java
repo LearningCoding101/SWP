@@ -2,16 +2,16 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.BookingDetail;
+import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
 import click.badcourt.be.model.request.TransactionRequest;
+import click.badcourt.be.model.response.MoneyPredictResponse;
 import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TotalAmountByMonthDTO;
 import click.badcourt.be.model.response.TransactionResponse;
-import click.badcourt.be.repository.BookingDetailRepository;
-import click.badcourt.be.repository.BookingRepository;
-import click.badcourt.be.repository.TransactionRepository;
+import click.badcourt.be.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,10 @@ public class TransactionService {
     private BookingRepository bookingRepository;
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
+    @Autowired
+    private ClubRepository clubRepository;
+    @Autowired
+    private BookingTypeRepository bookingTypeRepository;
 
     public List<TransactionResponse> findAll() {
         List<Transaction> transactions = transactionRepository.findAll();
@@ -69,10 +73,12 @@ public class TransactionService {
             if(transactionRequest.getStatus().equals("00")) {
                 if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
-                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-(TotalPrice(transactionRequest.getBookingId())%10));
+                    booking.get().setStatus(BookingStatusEnum.COMPLETED);
+                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-((TotalPrice(transactionRequest.getBookingId())*0.5)%10));
                     }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
+                    booking.get().setStatus(BookingStatusEnum.COMPLETED);
                     transaction.setDepositAmount(0.0);
                 }
             }
@@ -94,10 +100,17 @@ public class TransactionService {
         Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         List<BookingDetail> bookingDetails= bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
         Double totalPrice= 0.0;
-        for(BookingDetail bookingDetail : bookingDetails) {
-            totalPrice+= booking.getClub().getPrice();
+        if(booking.getBookingType().getBookingTypeId() == 1 || booking.getBookingType().getBookingTypeId() == 2){
+            for(BookingDetail bookingDetail : bookingDetails) {
+                totalPrice += booking.getClub().getPrice();
+            }
+            totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount()) - (totalPrice*(1-booking.getBookingType().getBookingDiscount()))%10;
+        } else if (booking.getBookingType().getBookingTypeId() == 3) {
+            Double salealready = booking.getClub().getPrice()*(1-booking.getBookingType().getBookingDiscount())*(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)-1);
+            salealready -= salealready%10;
+            totalPrice = booking.getClub().getPrice() + salealready;
         }
-        return totalPrice - totalPrice*booking.getBookingType().getBookingDiscount();
+        return totalPrice;
     }
 
     public PreTransactionResponse TotalPriceCombo(Long bookingId){
@@ -106,8 +119,8 @@ public class TransactionService {
         Double totalPrice = booking.getClub().getPrice()*n;
         PreTransactionResponse preTransactionResponse= new PreTransactionResponse();
             preTransactionResponse.setFullPrice(totalPrice);
-            preTransactionResponse.setSalePrice((preTransactionResponse.getFullPrice()*booking.getBookingType().getBookingDiscount())-((preTransactionResponse.getFullPrice()*booking.getBookingType().getBookingDiscount())%10));
-            preTransactionResponse.setTotalPriceNeedToPay(preTransactionResponse.getFullPrice()-preTransactionResponse.getSalePrice());
+            preTransactionResponse.setTotalPriceNeedToPay(TotalPrice(booking.getBookingId()));
+            preTransactionResponse.setSalePrice(preTransactionResponse.getFullPrice()-preTransactionResponse.getTotalPriceNeedToPay());
         return preTransactionResponse;
     }
 
@@ -123,6 +136,24 @@ public class TransactionService {
         transactionResponse.setStatus(transaction.getStatus().toString());
         return transactionResponse;
     }
+
+    public MoneyPredictResponse getPredictedPriceByGivenInfo(Long clubId, Long bookingTypeId, Integer num) {
+        MoneyPredictResponse moneyPredictResponse = new MoneyPredictResponse();
+        Club club = clubRepository.findClubByClubId(clubId);
+        Double price = club.getPrice();
+        Double scale = Double.valueOf(1 - bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount());
+        Double cal = price * num;
+        if (bookingTypeId == 1){
+            moneyPredictResponse.setMoneyback(price);
+        }else if(bookingTypeId == 2){
+            moneyPredictResponse.setMoneyback(cal*scale-(cal*scale)%10);
+        }else if(bookingTypeId == 3){
+            moneyPredictResponse.setMoneyback(price + price*scale*(num-1) - (price*scale*(num-1))%10);
+        }
+        return moneyPredictResponse;
+    }
+
+
     public void updateFullyPaid(Long transactionId){
         Optional<Transaction> transaction = transactionRepository.findById(transactionId);
         if(transaction.isPresent()&&transaction.get().getStatus().equals(TransactionEnum.DEPOSITED)){

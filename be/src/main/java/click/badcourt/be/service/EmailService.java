@@ -45,6 +45,31 @@ public class EmailService {
             messagingException.printStackTrace();
         }
     }
+    public void setPasswordMailTemplate(EmailDetail emailDetail){
+        try{
+            Context context = new Context();
+
+            context.setVariable("link",emailDetail.getLink());
+            context.setVariable("button",emailDetail.getButtonValue());
+            context.setVariable("name", emailDetail.getFullName());
+
+            String text = templateEngine.process("emailsetpasswordtemplate", context);
+
+            // Creating a simple mail message
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+
+            // Setting up necessary details
+            mimeMessageHelper.setFrom("admin@gmail.com");
+            mimeMessageHelper.setTo(emailDetail.getRecipient());
+            mimeMessageHelper.setText(text, true);
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+            javaMailSender.send(mimeMessage);
+        }catch (MessagingException messagingException){
+            messagingException.printStackTrace();
+        }
+    }
+
     public void sendEmailWithAttachment(EmailDetail emailDetail, String attachmentPath) {
         try {
             Context context = new Context();

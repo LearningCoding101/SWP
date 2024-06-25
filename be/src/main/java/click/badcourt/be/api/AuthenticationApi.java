@@ -68,10 +68,18 @@ public class AuthenticationApi {
         authenticationService.forgotPassword(forgotPasswordRequest);
     }
 
+    @PostMapping("/set-password")
+    public void setPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        authenticationService.setPassword(forgotPasswordRequest);
+    }
+
     @PostMapping("/reset-password")
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
+
+
+
     @GetMapping("/account/{email}")
     public ResponseEntity getAccount(@PathVariable String email) {
         Account account= authenticationService.getAccountByEmail(email);

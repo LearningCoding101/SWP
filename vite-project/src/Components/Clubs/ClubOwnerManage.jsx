@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import api from "../../config/axios";
 import { Link } from 'react-router-dom';
 import useGetParams from '../../assets/hooks/useGetParams';
-
-const ClubOwnerList = () => {
+import '../css/ClubOwnerManage.css';
+const ClubOwnerManage = () => {
   const [club, setClubs] = useState([]);
   // const param = useGetParams();
   // const clubId = param("id")
@@ -25,6 +25,26 @@ const ClubOwnerList = () => {
 
   return (
     <div className="club-details-container">
+      <div className="navbar">
+        <Link to={{
+          pathname: `/clubManage/clubUpdate/${club.clubId}`,
+          state: { club }
+        }} className="nav-link">
+          Update Club
+        </Link>
+        <Link to={{
+          pathname: `/clubManage/courtList/${club.clubId}`,
+          state: { club }
+        }} className="nav-link">
+          Show Courts
+        </Link>
+        {/* <Link to={{
+          pathname: `/courtList/${club.clubId}`,
+          state: { club }
+        }} className="nav-link">
+          View Bookings
+        </Link> */}
+      </div>
       {club ? (
         <div className="club-details">
           <img src={club.picture_location} alt={club.name} className="club-image" />
@@ -40,20 +60,8 @@ const ClubOwnerList = () => {
       ) : (
         <p>No club data available.</p>
       )}
-      <Link to={{
-        pathname: `/clubUpdate/${club.clubId}`,
-        state: { club }
-      }} className="btn btn-warning">
-        Update Club
-      </Link>
-      <Link to={{
-        pathname: `/courtList/${club.clubId}`,
-        state: { club }
-      }} className="btn btn-warning">
-        Show Courts
-      </Link>
     </div >
   );
 }
 
-export default ClubOwnerList
+export default ClubOwnerManage

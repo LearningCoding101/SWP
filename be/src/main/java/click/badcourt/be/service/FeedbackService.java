@@ -57,12 +57,12 @@ public class FeedbackService {
         Optional<Booking> booking= bookingRepository.findById(feedbackCreateRequest.getBookingId());
         if(booking.isPresent()) {
 
-                feedback.setFeedbackContent(feedbackCreateRequest.getFeedbackContent());
-                feedback.setFeedbackRating(feedbackCreateRequest.getFeedbackRating());
-                feedback.setAccount(accountUtils.getCurrentAccount());
-                feedback.setBooking(booking.get());
-                feedback.setDeleted(false);
-                feedbackRespository.save(feedback);
+            feedback.setFeedbackContent(feedbackCreateRequest.getFeedbackContent());
+            feedback.setFeedbackRating(feedbackCreateRequest.getFeedbackRating());
+            feedback.setAccount(accountUtils.getCurrentAccount());
+            feedback.setBooking(booking.get());
+            feedback.setDeleted(false);
+            feedbackRespository.save(feedback);
         }
         else{
             throw new IllegalArgumentException("Account or Booking not found");
@@ -109,11 +109,11 @@ public class FeedbackService {
             FeedBack feedBack = feedbackRespository.findByBooking_BookingId(booking.getBookingId());
             if(feedBack != null){
 
-            FeedbackResponse feedbackResponse = new FeedbackResponse();
-            feedbackResponse.setFeedbackRating(feedBack.getFeedbackRating());
-            feedbackResponse.setFeedbackContent(feedBack.getFeedbackContent());
-            feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
-            feedbackResponses.add(feedbackResponse);
+                FeedbackResponse feedbackResponse = new FeedbackResponse();
+                feedbackResponse.setFeedbackRating(feedBack.getFeedbackRating());
+                feedbackResponse.setFeedbackContent(feedBack.getFeedbackContent());
+                feedbackResponse.setBookingId(feedBack.getBooking().getBookingId());
+                feedbackResponses.add(feedbackResponse);
             }
         }
         return feedbackResponses;

@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 
@@ -110,7 +109,7 @@ public class CourtService {
                 newCourt.setCourtname(String.valueOf(i));
                 Court savedCourt = courtRepository.save(newCourt);
                 CourtShowResponseCombo addResponse= new CourtShowResponseCombo();
-                for(Long e : combo.getCourtTSId()) {
+                for(Long e : combo.getTSId()) {
                     courtTimeSlotService.createCourtTimeSlotCombo(savedCourt.getCourtId(), e);
                 }
                 addResponse.setClubId(savedCourt.getClub().getClubId());
