@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import api from "../../config/axios";
 import { useParams } from 'react-router-dom';
@@ -44,15 +43,10 @@ const CourtList = () => {
 
     const paginate = pageNumber => setCurrentPage(pageNumber);
 
-    const clubName = courts[0]?.clubName;
-
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <Link to={{
-                    pathname: `/addCourt/${clubId}`,
-                    state: { clubName }
-                }} className="btn btn-warning">
+                <Link to={`/clubManage/courtList/addCourt/${clubId}`} className="btn btn-warning">
                     Add Courts
                 </Link>
             </div>
@@ -65,7 +59,7 @@ const CourtList = () => {
                                 <Card.Text>
                                     Club: {court.clubName}
                                 </Card.Text>
-                                <Link to={`/CourtsDetail/${court.id}`} className="btn btn-warning">View Court Time Slots</Link>
+                                <Link to={`/clubManage/courtList/CourtsDetail/${court.id}`} className="btn btn-warning">View Court Time Slots</Link>
                                 <Button className="btn btn-warning" onClick={() => deleteCourt(court.id)}>Delete Court</Button>
                             </Card.Body>
                         </Card>

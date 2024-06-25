@@ -2,64 +2,85 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from "../../config/axios";
 import { Button, Form } from 'react-bootstrap';
+import '../css/AddCourt.css'; // Import CSS for styling the tags
 
 const AddCourt = () => {
     const { clubId } = useParams();
-    const [courtName, setCourtName] = useState('');
+    const [numberOfCourts, setNumberOfCourts] = useState(1);
     const [timeSlots, setTimeSlots] = useState([]);
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+    const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
 
     useEffect(() => {
-
         api.get('/timeslots')
             .then(response => {
-                if (response.data.length === 0) {
-                    alert('No time slots available');
+                let data = response.data;
+
+                if (typeof data === 'string') {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (error) {
+                        console.error('Error parsing string response to JSON:', error);
+                    }
+                }
+
+                if (typeof data === 'object') {
+                    setTimeSlots(data);
                 } else {
-                    setTimeSlots(response.data);
+                    console.error('API response is not an object or array:', data);
                 }
             })
-            .catch(error => console.error('Error fetching time slots:', error));
+            .catch(error => {
+                console.error('Error fetching time slots:', error);
+                setTimeSlots([]); // Set to empty array on error
+            });
     }, []);
+
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const courtCreateRequest = { courtName };
-            const response = await api.post(`/court/${clubId}`, courtCreateRequest);
-            alert('Court created successfully');
-
-            // Create a new court time slot with the selected time slot ID
-            const courtTimeSlotRequest = { courtId: response.data.id, timeSlotId: selectedTimeSlot };
-            await api.post('/courtTimeSlot', courtTimeSlotRequest);
-            alert('Court time slot created successfully');
+            const courtCreateRequestCombo = { numberofcourt: numberOfCourts, tsid: selectedTimeSlots };
+            console.log('Request payload:', courtCreateRequestCombo);
+            await api.post(`court/manycourts/${clubId}`, courtCreateRequestCombo);
+            alert('Courts created successfully');
         } catch (error) {
-            console.error('Error creating court or court time slot:', error);
-            alert('Error creating court or court time slot');
+            console.error('Error creating courts:', error);
+            alert('Error creating courts');
         }
+    };
+
+    const handleTimeSlotClick = (timeSlotId) => {
+        setSelectedTimeSlots(prevSelectedTimeSlots => {
+            if (prevSelectedTimeSlots.includes(timeSlotId)) {
+                return prevSelectedTimeSlots.filter(id => id !== timeSlotId);
+            } else {
+                return [...prevSelectedTimeSlots, timeSlotId];
+            }
+        });
     };
 
     return (
         <div>
-            <h1>Add Court</h1>
+            <h1>Add Courts</h1>
             <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formBasicCourtName">
-                    <Form.Label>Court Name</Form.Label>
-                    <Form.Control type="text" value={courtName} onChange={(e) => setCourtName(e.target.value)} />
+                <Form.Group controlId="formBasicNumberOfCourts">
+                    <Form.Label>Number of Courts</Form.Label>
+                    <Form.Control type="number" value={numberOfCourts} onChange={(e) => setNumberOfCourts(e.target.value)} />
                 </Form.Group>
-                <Form.Group controlId="formBasicTimeSlot">
-                    <Form.Label>Time Slot</Form.Label>
-                    <Form.Control as="select" value={selectedTimeSlot} onChange={(e) => setSelectedTimeSlot(e.target.value)}>
-                        {timeSlots.length > 0 ? (
-                            timeSlots.map(timeSlot => (
-                                <option key={timeSlot.timeslotId} value={timeSlot.timeslotId}>
-                                    {`${timeSlot.start_time} - ${timeSlot.end_time}`}
-                                </option>
-                            ))
-                        ) : (
-                            <option>No time slots available</option>
-                        )}
-                    </Form.Control>
+                <Form.Group controlId="formBasicTimeSlots">
+                    <Form.Label>Time Slots</Form.Label>
+                    <div className="time-slot-tags">
+                        {Array.isArray(timeSlots) && timeSlots.map(timeSlot => (
+                            <span
+                                key={timeSlot.timeslotId}
+                                onClick={() => handleTimeSlotClick(timeSlot.timeslotId)}
+                                className={`time-slot-tag ${selectedTimeSlots.includes(timeSlot.timeslotId) ? 'selected' : ''}`}
+                            >
+                                {`${timeSlot.start_time} - ${timeSlot.end_time}`}
+                            </span>
+                        ))}
+                    </div>
                 </Form.Group>
                 <Button variant="warning" type="submit">
                     Submit
