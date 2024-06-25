@@ -2,6 +2,7 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.*;
 import click.badcourt.be.enums.BookingStatusEnum;
+import click.badcourt.be.enums.RoleEnum;
 import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.BookingCreateRequest;
 import click.badcourt.be.model.request.BookingUpdateRequest;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingService {
@@ -45,6 +48,18 @@ public class BookingService {
     private TokenService tokenService;
     @Autowired
     private BookingTypeRepository bookingTypeRepository;
+
+    public long countBookingsByClubOwner() {
+        Account currentAccount = accountUtils.getCurrentAccount();
+        if (currentAccount.getRole() == RoleEnum.ClUB_OWNER) {
+            return bookingRepository.findAll().stream()
+                    .filter(booking -> booking.getClub().getAccount().equals(currentAccount))
+                    .count();
+        } else {
+            throw new SecurityException("Current account does not have permission to view this information.");
+        }
+    }
+
 
 
     public BookingResponse updateBooking (BookingUpdateRequest bookingUpdateRequest, Long id){
@@ -95,6 +110,45 @@ public class BookingService {
         }
         return bookingResponses;
     }
+
+
+    public List<BookingResponse> getAllBookingsByClubId(Long clubId) {
+
+        Optional<Club> clubOptional = clubRepository.findById(clubId);
+        if (clubOptional.isEmpty()) {
+            throw new IllegalArgumentException("Club not found with id: " + clubId);
+        }
+
+
+        List<Booking> allBookings = bookingRepository.findAll();
+
+
+        List<BookingResponse> bookingResponses = new ArrayList<>();
+
+
+        for (Booking booking : allBookings) {
+
+            if (booking.getClub().getClubId().equals(clubId)) {
+
+                BookingResponse response = new BookingResponse();
+                response.setId(booking.getBookingId());
+                response.setBookingDate(booking.getBookingDate());
+                response.setPrice(booking.getClub().getPrice());
+                response.setClub_name(booking.getClub().getName());
+                response.setAccount_email(booking.getAccount().getEmail());
+                response.setAccount_number(booking.getAccount().getPhone());
+                response.setStatus(booking.getStatus());
+                response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
+                response.setAddress(booking.getClub().getAddress());
+
+
+                bookingResponses.add(response);
+            }
+        }
+
+        return bookingResponses;
+    }
+
 
 
     public BookingResponse createBooking(BookingCreateRequest bookingCreateRequest) {
