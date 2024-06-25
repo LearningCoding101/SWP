@@ -35,6 +35,31 @@ public class BookingApi {
         BookingResponse booking = bookingService.createBooking(bookingCreateRequest);
         return ResponseEntity.ok(booking);
     }
+    @GetMapping("/countByClubOwner")
+    public ResponseEntity<?> countBookingsByClubOwner() {
+        try {
+            long bookingCount = bookingService.countBookingsByClubOwner();
+            return ResponseEntity.ok(bookingCount);
+        } catch (SecurityException e) {
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+        } catch (Exception e) {
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/getBookings/{clubId}")
+    public ResponseEntity<?> getBookingsByClubId(@PathVariable Long clubId) {
+        try {
+
+            List<BookingResponse> bookings = bookingService.getAllBookingsByClubId(clubId);
+            return ResponseEntity.ok(bookings);
+        } catch (IllegalArgumentException e) {
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity cancelBooking(@PathVariable Long id) {
