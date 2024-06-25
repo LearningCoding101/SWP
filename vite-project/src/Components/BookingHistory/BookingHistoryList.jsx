@@ -1,35 +1,8 @@
 import React, { useEffect, useState } from "react";
 import BookingHistory from "./BookingHistory";
 import axios from "axios";
-import api from './../../config/axios';
+import api from "./../../config/axios";
 
-
-const bookings = [
-  {
-    id: 1,
-    Club: "Fpt",
-    Address: "kldjaljkda",
-    Time: "12/10/2023 7:00",
-    BookingCreateTime: "10/10/2023 8:00",
-    status: "pending",
-  },
-  {
-    OrderID: 2,
-    Club: "Fpt",
-    Address: "kldjaljkda",
-    Time: "12/10/2023 7:00",
-    BookingCreateTime: "10/10/2023 8:00",
-    status: "pending",
-  },
-  {
-    OrderID: 3,
-    Club: "Fpt",
-    Address: "kldjaljkda",
-    Time: "12/10/2023 7:00",
-    BookingCreateTime: "10/10/2023 8:00",
-    status: "pending",
-  },
-];
 const BookingHistoryList = () => {
   const [customers, setCustomers] = useState([]);
   const [error, setError] = useState(null);
@@ -37,21 +10,22 @@ const BookingHistoryList = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await api.get("/booking/customer", {
-          transformResponse: [
-            (data) => {
-              // Transform the response data to handle empty responses
-              return data ? JSON.parse(data) : [];
-            },
-          ],
-        });
-        // const response = await api.get("/booking/customer");
+        // const response = await api.get("/booking/customer", {
+        //   transformResponse: [
+        //     (data) => {
+        //       // Transform the response data to handle empty responses
+        //       return data ? JSON.parse(data) : [];
+        //     },
+        //   ],
+        // });
+        const response = await api.get("/booking/customer");
         // console.log(response);
+        const sortedBookings = response.data.sort((a, b) => b.id - a.id);
         console.log(response.data);
-        setCustomers(response.data);
-        const data = response.data;
-        const bookingId = data.id
-        localStorage.setItem("Id", bookingId)
+        setCustomers(sortedBookings);
+        // const data = response.data;
+        // const bookingId = data.id;
+        // localStorage.setItem("Id", bookingId);
       } catch (error) {
         setError(error.message);
       }
@@ -77,7 +51,6 @@ const BookingHistoryList = () => {
         );
       })}
     </ul>
-
   );
 };
 

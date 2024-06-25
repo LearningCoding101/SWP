@@ -6,14 +6,13 @@ import Footer from "../layout/Footer";
 const BookingHistoryPage = () => {
   return (
     <div>
-      <NavBar/>
-    <div className="row">
-      <div className="col-lg-8 mx-auto">
-        
-        <BookingHistoryList></BookingHistoryList>
+      <NavBar />
+      <div className="row">
+        <div className="col-lg-8 mx-auto">
+          <BookingHistoryList></BookingHistoryList>
+        </div>
       </div>
-    </div>
-    <Footer/>
+      <Footer />
     </div>
   );
 };
