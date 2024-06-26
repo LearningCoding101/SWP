@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Button, Dropdown, Menu } from "antd";
-import { UserOutlined, DownOutlined, SearchOutlined } from "@ant-design/icons";
+import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import Logout from "../Login/Logout"; // Assuming Logout component handles logout functionality
-import Input from "antd/es/input/Input";
-const { Search } = Input;
 
 const NavBar = () => {
   const [showAccountDropdown, setShowAccountDropdown] = useState(false);
@@ -15,16 +13,7 @@ const NavBar = () => {
 
   const isLoggedIn = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");
-  const navigate = useNavigate();
 
-  // const handleSearch = (value) => {
-
-  //   console.log('Search term:', value);
-  // };
-
-  // const handleIconClick = () => {
-  //   window.location.href = link; 
-  // };
   const accountMenu = (
     <Menu>
       {isLoggedIn ? (
@@ -34,12 +23,6 @@ const NavBar = () => {
           </Menu.Item>
           <Menu.Item>
             <Link to="/feedback" style={{ textDecoration: 'none' }}>Feedback Demo</Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link to="/transactionSuccess" style={{ textDecoration: 'none' }}>Success Demo</Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link to="/transactionFailed" style={{ textDecoration: 'none' }}>Fail Demo</Link>
           </Menu.Item>
           {userRole === "CUSTOMER" && (
             <Menu.Item>
@@ -57,35 +40,49 @@ const NavBar = () => {
 
 
   return (
-    <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center">
+    <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center" >
       <div className="container-fluid" >
         {/* Logo */}
-        <Link to="/" className="navbar-brand text-primary">
+        {/* <Link to="/" className="navbar-brand text-primary">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
             style={{ width: '60px', height: '50px', marginLeft: '30px', display: 'fixed' }}>
           </img>
-        </Link>
+        </Link> */}
+        <Link to="/" className="navbar-brand text-primary">
+      <img
+        src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
+        style={{ width: '100px', height: '70px', marginLeft: '10px' }}
+      />
+    </Link>
 
         {/* Navigation Links (left-aligned) */}
         <ul className="nav mb-2 mb-lg-0">
-          <li className="nav-item">
-            <NavLink
-              to="/clubs"
-              className={({ isActive }) =>
-                isActive ? "nav-link active text-primary" : "nav-link"
-              }
-            >
-              {/* <Input.Search
-                placeholder="Search clubs"
-                allowClear
-                
-              /> */}
-              All clubs
-            </NavLink>
+          {isLoggedIn && userRole === "ClUB_OWNER" && (
+            <li className="nav-item">
+              <NavLink
+                to="/clubManage"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active text-primary" : "nav-link"
+                }
+              >
+                Manage Club
+              </NavLink>
+            </li>
+          )}
 
-
-          </li>
+          
+            <li className="nav-item">
+              <NavLink
+                to="/clubs"
+                className={({ isActive }) =>
+                  isActive ? "nav-link active text-primary" : "nav-link"
+                }
+              >
+                All clubs
+              </NavLink>
+            </li>
+          
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">
               <NavLink
@@ -101,7 +98,7 @@ const NavBar = () => {
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">
               <NavLink
-                to="/CRUD"
+                to="/AddClubCombo"
                 className={({ isActive }) =>
                   isActive ? "nav-link active text-primary" : "nav-link"
                 }
@@ -113,14 +110,22 @@ const NavBar = () => {
         </ul>
 
         {/* Account Dropdown (right-aligned) */}
-        <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
+        {/* <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
           <Button.Group>
             <Button type="ghost" onClick={handleAccountClick}>
               {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
               <DownOutlined />
             </Button>
           </Button.Group>
-        </Dropdown>
+        </Dropdown> */}
+         <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
+      <Button.Group>
+        <Button type="ghost" onClick={handleAccountClick} style={{ fontSize: '24px' }}>
+          {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
+          <DownOutlined />
+        </Button>
+      </Button.Group>
+    </Dropdown>
       </div>
 
       {/* Added a spacer div below the navbar */}

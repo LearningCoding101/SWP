@@ -9,8 +9,8 @@ const SignUp = () => {
   const [fullname, setFullname] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  // const [password2, setPassword2] = useState('');
   const [email, setEmail] = useState('');
+  // const [password2, setPassword2] = useState('');
   const [error, setError] = useState('');
   const togglePasswordVisibility = () => {
     setVisible(!visible);

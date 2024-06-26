@@ -1,69 +1,95 @@
 import React, { useState } from "react";
-import { Form, Select, Radio, InputNumber, Button, DatePicker } from "antd";
-import axios from "axios";
-import moment from "moment";
+import { Form, DatePicker, message, Radio } from "antd";
+import api from "../../config/axios";
 
-const timeSlots = [{ time: "07:00" }, { time: "08:00" }, { time: "09:00" }];
-
-const BookingType1 = () => {
+const BookingType1 = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimes, setAvailableTimes] = useState([]);
+  const [courtTimeSlots, setCourtTimeSlots] = useState([]);
+  const [error, setError] = useState(null);
+  console.log(selectedDate);
 
-  // Static data (for demonstration)
-  const bookingType2 = [
-    { date: "2024-06-16", time: "7:00" },
-    { date: "2024-06-16", time: "8:00" },
-    { date: "2024-06-16", time: "9:00" },
-    { date: "2024-06-15", time: "7:30" },
-    { date: "2024-06-15", time: "8:30" },
-    { date: "2024-06-15", time: "9:30" },
-  ];
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    // Filter times based on selected date
-    const timesForDate = bookingType2.filter(
-      (item) => item.date === date.format("YYYY-MM-DD")
-    );
-    setAvailableTimes(timesForDate);
+  const handleDateChange = async (date) => {
+    setSelectedDate(date.format("YYYY-MM-DD"));
+    await fetchCourtTimeSlots(date.format("YYYY-MM-DD"));
   };
 
-  const handleTimeSelection = (time) => {
-    message.success(`Selected time: ${time}`);
+  const handleTimeSelection = (startTime, endTime) => {
+    message.success(`Selected time: ${startTime} - ${endTime}`);
     // Perform further actions (e.g., submit form with selected time)
   };
+
+  //GET Court Time Slot
+  const fetchCourtTimeSlots = async (date) => {
+    console.log(props.courtId);
+    try {
+      const response = await api.get(`/courtTimeSlot/${props.courtId}/${date}`);
+      const slotFilter = response.data;
+      setCourtTimeSlots(response.data);
+      console.log(response.data);
+      setAvailableTimes(
+        slotFilter.filter((item) => item.status == "AVAILABLE")
+      );
+      console.log(slotFilter.filter((item) => item.status == "AVAILABLE"));
+      // const data = response.data;
+      // const bookingId = data.id;
+      // localStorage.setItem("Id", bookingId);
+    } catch (error) {
+      console.error(error);
+      setError(error.message);
+    }
+  };
+
+  // Prepare bookingDetailRequestCombos
+  const onChange = (values) => {
+    // console.log(values);
+    const bookingTypeDetail = [
+      {
+        courtTSId: values.target.value, // Update with correct value if available
+        bookingDate: selectedDate,
+        durationInMonths: 0, // Update with correct value if available
+        dayOfWeek: null, // Update with correct value if available
+      },
+    ];
+
+    console.log(bookingTypeDetail);
+    props.bookingDetail(bookingTypeDetail);
+  };
+
   return (
-    <div className="row">
-      <div className="col-md-6">
-        <Form.Item
-          name="bookingDate"
-          label="Select Booking Date"
-          rules={[
-            { required: true, message: "Please select the booking date!" },
-          ]}
-        >
-          <DatePicker format="YYYY-MM-DD" onChange={handleDateChange} />
-        </Form.Item>
-      </div>
-      <div className="col-md-6">
-        <Form.Item
-          name="time"
-          label="Select Time"
-          rules={[{ required: true, message: "Please select a time!" }]}
-        >
-          <Radio.Group>
-            {availableTimes.map((item, index) => (
+    <div name="bookingType1Form" layout="vertical">
+      <Form.Item
+        name="Date"
+        label="Select Booking Date"
+        rules={[{ required: true, message: "Please select the booking date!" }]}
+      >
+        <DatePicker format="YYYY-MM-DD" onChange={handleDateChange} />
+      </Form.Item>
+
+      <Form.Item
+        name="time"
+        label="Availble Times"
+        rules={[{ required: true, message: "Please select a time!" }]}
+      >
+        <Radio.Group>
+          {availableTimes[0] != null ? (
+            availableTimes.map((item, index) => (
               <Radio.Button
                 key={index}
-                value={item.time}
-                onClick={() => handleTimeSelection(item.time)}
+                value={item.courtTimeSlotId}
+                onClick={() =>
+                  handleTimeSelection(item.start_time, item.end_time)
+                }
+                onChange={onChange}
               >
-                {item.time}
+                {item.start_time} - {item.end_time}
               </Radio.Button>
-            ))}
-          </Radio.Group>
-        </Form.Item>
-      </div>
+            ))
+          ) : (
+            <h6>No available time</h6>
+          )}
+        </Radio.Group>
+      </Form.Item>
     </div>
   );
 };

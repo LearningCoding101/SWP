@@ -24,16 +24,23 @@ import BookingHistoryPage from './Components/BookingHistory/BookingHistoryPage'
 import BookingForm from './Components/BookingForm/BookingForm';
 import Feedback from './Components/Feedback/Feedback'
 import Transaction from './Components/Payment/Transaction'
-import TransactionSuccess from './Components/Payment/TransactionSuccess'
-import TransactionFailed from './Components/Payment/TransactionFailed'
-import Payment from './Components/Payment/Payment'
+import QRScanner from './Components/QRCheckin/StaffPage'
+// import ClubOwnerList from './Components/Clubs/ClubOwnerList'
+import UpdateClub from './Components/Clubs/UpdateClub'
+import CourtList from './Components/Clubs/CourtList'
+import AddClubCombo from './Components/Admin/AddClubCombo'
+import AddCourt from './Components/Clubs/AddCourt'
+import CourtTimeSlotList from './Components/Clubs/CourtTimeSlotList'
+import ClubOwnerManage from './Components/Clubs/ClubOwnerManage';
+import AddCourtTimeSlot from './Components/Clubs/AddCourtTimeSlot';
+import ShowBookingList from './Components/ClubOwnerShowBooking/ShowBookingList';
 
 
 function App() {
   return (
     <AuthProvider>
       <main>
-        
+
         <Router>
           <Routes>
             <Route
@@ -47,8 +54,24 @@ function App() {
               element={<Login />}
             />
             <Route
+              path="/staff"
+              element={<QRScanner />}
+            />
+            <Route
               path="/profile"
               element={<Logout />}
+            />
+            <Route
+              path="/clubManage"
+              element={<ClubOwnerManage />}
+            />
+            <Route
+              path="/clubManage/clubUpdate/:clubId"
+              element={<UpdateClub />}
+            />
+            <Route
+              path="/clubManage/courtList/:clubId"
+              element={<CourtList />}
             />
             <Route
               path="/signup"
@@ -74,43 +97,50 @@ function App() {
               path='/clubs/:address'
               element={<ClubDetail />}
             />
-             <Route
+            <Route
               path='/bookingHistory'
               element={<BookingHistoryPage />}
             />
-             <Route
-              path='/booking'
+            <Route
+              path='/booking/:id'
               element={<BookingForm />}
             />
             <Route
-              path='/transaction'
+              path="/showBooking/:clubId"
+              element={<ShowBookingList />} />
+            <Route
+              path='/transactions'
               element={<Transaction />}
             />
-           
-           <Route
-              path='/transactionSuccess'
-              element={<TransactionSuccess />}
-            />
+
             <Route
-              path='/transactionFailed'
-              element={<TransactionFailed />}
-            />
-           <Route
               path='/feedback'
               element={<Feedback />}
-            />
-             <Route
-              path='/payment'
-              element={<Payment />}
             />
             <Route
               path='/CRUD'
               element={<CRUD />}
             />
-           
+            <Route
+              path='/AddClubCombo'
+              element={<AddClubCombo />}
+            />
+
             <Route
               path='/adminDashboard'
-              element={<Dashboard/>}
+              element={<Dashboard />}
+            />
+            <Route
+              path='/clubManage/courtList/addCourt/:clubId'
+              element={<AddCourt />}
+            />
+            <Route
+              path='/AddCourtTimeSlot'
+              element={<AddCourtTimeSlot />}
+            />
+            <Route
+              path='/clubManage/courtList/CourtsDetail/:courtId'
+              element={<CourtTimeSlotList />}
             />
             <Route
               path="*"
@@ -118,9 +148,9 @@ function App() {
             />
           </Routes>
         </Router>
-       
+
       </main>
-     </AuthProvider>
+    </AuthProvider>
   )
 }
 

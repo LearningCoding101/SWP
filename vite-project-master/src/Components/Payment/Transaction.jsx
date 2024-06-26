@@ -5,7 +5,7 @@ import useGetParams from '../../assets/hooks/useGetParams';
 import TransactionSuccess from './TransactionSuccess';
 import TransactionFailed from './TransactionFailed';
 
-const Transaction = () => {
+const Transaction = (props) => {
   //   const [transactions, setTransactions] = useState([]);
   //   const [loading, setLoading] = useState(false);
   //   const bookingId = localStorage.getItem("bookingId")
