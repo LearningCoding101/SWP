@@ -28,7 +28,7 @@ import EmailSent from './Components/Login/EmailSent'
 import CRUD from './Components/common/CRUD'
 import Club from './Components/Clubs/Club'
 import ClubDetail from './Components/Clubs/ClubDetail'
-import Dashboard from './Components/Admin/Dashboard'
+// import Dashboard from './Components/Admin/Dashboard'
 import BookingHistoryPage from './Components/BookingHistory/BookingHistoryPage'
 import BookingForm from './Components/BookingForm/BookingForm';
 import Feedback from './Components/Feedback/Feedback'
@@ -37,11 +37,13 @@ import QRScanner from './Components/QRCheckin/StaffPage'
 import ClubOwnerManage from './Components/Clubs/ClubOwnerManage'
 import UpdateClub from './Components/Clubs/UpdateClub'
 import CourtList from './Components/Clubs/CourtList'
-import AddClubCombo from './Components/Admin/AddClubCombo'
+// import AddClubCombo from './Components/Admin/AddClubCombo'
 import AddCourt from './Components/Clubs/AddCourt'
 import CourtTimeSlotList from './Components/Clubs/CourtTimeSlotList'
 
 import AddCourtTimeSlot from './Components/Clubs/AddCourtTimeSlot'
+import BookingReport from './Components/Admin/BarChart'
+import MyResponsiveLine from './Components/Admin/LineGraph'
 
 
 function App() {
@@ -135,10 +137,12 @@ function App() {
 
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/CRUD" element={<CRUD />} />
-            <Route path="/adminDashboard" element={<Dashboard />} />
-            <Route path="/AddClubCombo" element={<AddClubCombo />} />
+            {/* <Route path="/adminDashboard" element={<Dashboard />} />
+            <Route path="/AddClubCombo" element={<AddClubCombo />} /> */}
             <Route path="/showBooking" element={<ShowBookingList />} />
             <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/line" element={<MyResponsiveLine/>} />
+            <Route path="/bar" element={<BookingReport/>} />
           </Routes>
         </Router>
 

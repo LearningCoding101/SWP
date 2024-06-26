@@ -4,7 +4,7 @@ import { ResponsiveLine } from '@nivo/line';
 
 const MyResponsiveLine = () => {
     const [data, setData] = useState([]);
-    const token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJuZ3V5ZW5uaG0ubC4xOTIyQGdtYWlsLmNvbSIsImlhdCI6MTcxODk4MjQ0MywiZXhwIjoxNzE5MDY4ODQzfQ.IizzhxVfLAjrWgcG0rTrNh-SsSaj7FyZL7pTwASjT-ZsnLKj8DISnGfCkAqQ0oyB";
+    const token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MTkzNzQ4NTAsImV4cCI6MTcxOTQ2MTI1MH0.C19An1Q33c6us2aQaY_is0LTvoJFAg1E7gSjAfjp6oqUszbga9grKZgZK_Yz26Gz    ";
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear() - 1); // Initial selected year, can be changed
 
     useEffect(() => {

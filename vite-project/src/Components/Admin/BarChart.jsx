@@ -31,7 +31,7 @@ const BookingReport = () => {
   });
 
   useEffect(() => {
-    const token = 'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MTkxMzcxNDYsImV4cCI6MTcxOTIyMzU0Nn0.PMJ2ihRMSmErRuyImEI4mF_oZmc1et9h7FeThINroRPcvdCbiDE8KpvSoAioB20U';
+    const token = 'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MTkzNzQ4NTAsImV4cCI6MTcxOTQ2MTI1MH0.C19An1Q33c6us2aQaY_is0LTvoJFAg1E7gSjAfjp6oqUszbga9grKZgZK_Yz26Gz';
 
     fetch('http://localhost:8080/api/bookingDetail/report', {
       headers: {
