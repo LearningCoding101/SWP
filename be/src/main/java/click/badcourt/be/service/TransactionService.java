@@ -106,9 +106,8 @@ public class TransactionService {
             }
             totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount()) - (totalPrice*(1-booking.getBookingType().getBookingDiscount()))%10;
         } else if (booking.getBookingType().getBookingTypeId() == 3) {
-            Double salealready = booking.getClub().getPrice()*(1-booking.getBookingType().getBookingDiscount())*(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)-1);
-            salealready -= salealready%10;
-            totalPrice = booking.getClub().getPrice() + salealready;
+            Double salealready = booking.getClub().getPrice()*(1-booking.getBookingType().getBookingDiscount())*(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId));
+            totalPrice = salealready - salealready%10;
         }
         return totalPrice;
     }
@@ -154,7 +153,7 @@ public class TransactionService {
         }else if(bookingTypeId == 2){
             moneyPredictResponse.setMoneyback(cal*scale-(cal*scale)%10);
         }else if(bookingTypeId == 3){
-            moneyPredictResponse.setMoneyback(price + price*scale*(num-1) - (price*scale*(num-1))%10);
+            moneyPredictResponse.setMoneyback(price + cal*scale - (cal*scale)%10);
         }
         return moneyPredictResponse;
     }
