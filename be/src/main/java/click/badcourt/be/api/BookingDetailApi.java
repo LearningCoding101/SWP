@@ -74,7 +74,7 @@ public class BookingDetailApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-    @PostMapping("/checkin/{id}")
+    @PutMapping("/checkin/{id}")
     public ResponseEntity checkinBookingDetail(@PathVariable Long id) {
         try{
             bookingDetailService.checkin(id);

@@ -78,6 +78,7 @@ public class BookingDetailService {
                 bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
                 bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
                 bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
+                bookingDetailResponse.setTimeslotId(bookingDetail.getCourtTimeslot().getTimeslot().getTimeslotId());
                 bookingDetailResponses.add(bookingDetailResponse);
             }
             return bookingDetailResponses;
