@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -96,5 +97,9 @@ public class BookingDetailApi {
     public ResponseEntity deleteBookingDetailById(@PathVariable Long id) {
         bookingDetailService.deleteBookingDetail(id);
         return ResponseEntity.ok( "BookingDetail  :"+id +" is deleted");
+    }
+    @GetMapping("/report")
+    public Map<String, Integer> getBookingsReport() {
+        return bookingDetailService.getBookingsCountByDayOfWeek();
     }
 }

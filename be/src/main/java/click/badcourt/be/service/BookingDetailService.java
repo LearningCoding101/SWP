@@ -61,7 +61,8 @@ public class BookingDetailService {
 
     public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
-        if(bookingOptional.isPresent()){
+        Long ownerId= accountUtils.getCurrentAccount().getAccountId();
+        if(bookingOptional.isPresent() && Objects.equals(bookingOptional.get().getClub().getAccount().getAccountId(), ownerId)){
             List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
 
             List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
@@ -82,7 +83,7 @@ public class BookingDetailService {
             return bookingDetailResponses;
         }
         else {
-            throw new IllegalArgumentException("Booking not found");
+            return null;
         }
     }
 
@@ -391,4 +392,22 @@ public class BookingDetailService {
         bookingDetail.ifPresent(detail -> detail.setDetailStatus(BookingDetailStatusEnum.CHECKED_IN));
         bookingDetailRepository.save(bookingDetail.get());
     }
+    public Map<String, Integer> getBookingsCountByDayOfWeek() {
+        // Use the correct method based on your DB
+        List<Object[]> results = bookingDetailRepository.countBookingsByDayOfWeek();
+        Map<String, Integer> bookingsCountByDayOfWeek = new HashMap<>();
+
+        String[] daysOfWeek = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+        for (Object[] result : results) {
+            int dayOfWeekIndex = ((Number) result[0]).intValue();
+            int count = ((Number) result[1]).intValue();
+            String dayOfWeek = daysOfWeek[dayOfWeekIndex - 1]; // Adjust indexing if necessary
+            bookingsCountByDayOfWeek.put(dayOfWeek, count);
+        }
+
+        return bookingsCountByDayOfWeek;
+    }
+
+
 }

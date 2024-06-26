@@ -12,13 +12,11 @@ import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TotalAmountByMonthDTO;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.*;
+import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -36,6 +34,8 @@ public class TransactionService {
     private ClubRepository clubRepository;
     @Autowired
     private BookingTypeRepository bookingTypeRepository;
+    @Autowired
+    private AccountUtils accountUtils;
 
     public List<TransactionResponse> findAll() {
         List<Transaction> transactions = transactionRepository.findAll();
@@ -127,14 +127,20 @@ public class TransactionService {
 
     public TransactionResponse getTransactionsByBookingId(Long bookingId) {
         Transaction transaction = transactionRepository.findByBooking_BookingId(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
-        TransactionResponse transactionResponse = new TransactionResponse();
-        transactionResponse.setBookingId(transaction.getBooking().getBookingId());
-        transactionResponse.setId(transaction.getTransactionId());
-        transactionResponse.setPaymentDate(transaction.getPaymentDate());
-        transactionResponse.setTotalAmount(transaction.getTotalAmount());
-        transactionResponse.setDepositAmount(transaction.getDepositAmount());
-        transactionResponse.setStatus(transaction.getStatus().toString());
-        return transactionResponse;
+        Long ownerId = accountUtils.getCurrentAccount().getAccountId();
+        if(Objects.equals(transaction.getBooking().getClub().getAccount().getAccountId(), ownerId)) {
+            TransactionResponse transactionResponse = new TransactionResponse();
+            transactionResponse.setBookingId(transaction.getBooking().getBookingId());
+            transactionResponse.setId(transaction.getTransactionId());
+            transactionResponse.setPaymentDate(transaction.getPaymentDate());
+            transactionResponse.setTotalAmount(transaction.getTotalAmount());
+            transactionResponse.setDepositAmount(transaction.getDepositAmount());
+            transactionResponse.setStatus(transaction.getStatus().toString());
+            return transactionResponse;
+        }else{
+            throw new IllegalArgumentException("Transaction not found");
+        }
+
     }
 
     public MoneyPredictResponse getPredictedPriceByGivenInfo(Long clubId, Long bookingTypeId, Integer num) {

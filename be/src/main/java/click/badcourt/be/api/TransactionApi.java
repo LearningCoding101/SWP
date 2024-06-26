@@ -4,6 +4,7 @@ import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.model.request.TransactionRequest;
 import click.badcourt.be.model.response.MoneyPredictResponse;
 import click.badcourt.be.model.response.PreTransactionResponse;
+import click.badcourt.be.model.response.TotalAmountByMonthDTO;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.service.TransactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,6 +23,11 @@ import java.util.List;
 
         @Autowired
         private TransactionService transactionService;
+
+        @GetMapping("/totalAmountByMonth")
+        public List<TotalAmountByMonthDTO> getTotalAmountByMonth(@RequestParam int year) {
+            return transactionService.getTotalAmountByMonth(year);
+        }
 
         @GetMapping
         public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
