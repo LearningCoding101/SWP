@@ -16,4 +16,5 @@ public class BookingDetailResponse extends BookingDetailRequest {
     private LocalTime start_time;
     private LocalTime end_time;
     private BookingDetailStatusEnum status;
+    private Long timeslotId;
 }

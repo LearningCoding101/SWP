@@ -59,7 +59,7 @@ public class BookingDetailService {
         return bookingDetailDeleteResponses;
     }
 
-    public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
+    public List<BookingDetailResponse> getBookingDetailByBookingIdQrCheck(Long bookingId) {
         Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
         Long ownerId= accountUtils.getCurrentAccount().getAccountId();
         if(bookingOptional.isPresent() && Objects.equals(bookingOptional.get().getClub().getAccount().getAccountId(), ownerId)){
@@ -87,6 +87,33 @@ public class BookingDetailService {
         }
     }
 
+    public List<BookingDetailResponse> getBookingDetailByBookingId(Long bookingId) {
+        Optional<Booking> bookingOptional= bookingRepository.findById(bookingId);
+        if(bookingOptional.isPresent()){
+            List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
+
+            List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
+            for(BookingDetail bookingDetail : bookingDetails){
+                BookingDetailResponse bookingDetailResponse= new BookingDetailResponse();
+                bookingDetailResponse.setBookingDate(bookingDetail.getDate());
+                bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
+                bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
+                bookingDetailResponse.setBookingDetailsId(bookingDetail.getBookingDetailsId());
+                bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
+                bookingDetailResponse.setFullnameoforder(bookingDetail.getBooking().getAccount().getFullName());
+                bookingDetailResponse.setPhonenumber(bookingDetail.getBooking().getAccount().getPhone());
+                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
+                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
+                bookingDetailResponses.add(bookingDetailResponse);
+            }
+            return bookingDetailResponses;
+        }
+        else {
+            throw new IllegalArgumentException("Booking not found");
+        }
+    }
+
     public List<BookingDetailResponse> getBookingDetailByCourtId(Long courtId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
             List<BookingDetail> bookingDetails = new ArrayList<>();
         List<BookingDetail> finding = new ArrayList<>();
@@ -110,6 +137,7 @@ public class BookingDetailService {
                     bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
                     bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
                     bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
+                    bookingDetailResponse.setTimeslotId(bookingDetail.getCourtTimeslot().getTimeslot().getTimeslotId());
                     bookingDetailResponses.add(bookingDetailResponse);
                 }
             }

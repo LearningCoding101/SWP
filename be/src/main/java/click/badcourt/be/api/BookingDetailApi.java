@@ -32,6 +32,11 @@ public class BookingDetailApi {
         return ResponseEntity.ok(bookingDetailService.getAllBookingDetails());
     }
 
+    @GetMapping("/qrcheck/{bookingid}")
+    public ResponseEntity getBookingDetailByIdQrCheck(@PathVariable Long bookingid) {
+        return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingIdQrCheck(bookingid));
+    }
+
     @GetMapping("/{bookingid}")
     public ResponseEntity getBookingDetailById(@PathVariable Long bookingid) {
         return ResponseEntity.ok(bookingDetailService.getBookingDetailByBookingId(bookingid));
