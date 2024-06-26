@@ -1,0 +1,42 @@
+body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .feedback-layout {
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  .feedback-content {
+    padding: 50px 20px;
+  }
+  
+  .feedback-row {
+    width: 100%;
+  }
+  
+  .feedback-col {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feedback-form .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  .feedback-submit-button {
+    width: 100%;
+  }
+  
+  @media (max-width: 576px) {
+    .feedback-content {
+      padding: 20px 10px;
+    }
+  
+    .feedback-col {
+      padding: 20px;
+    }
+  }
+  
