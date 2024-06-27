@@ -126,6 +126,7 @@ const BookingForm = () => {
   const [bookingDetailRequestCombos, setBookingDetailRequestCombos] = useState(
     []
   );
+  const [days, setDays] = useState(0);
 
   const isLoggedIn = localStorage.getItem("token");
   const userRole = localStorage.getItem("userRole");
@@ -136,6 +137,9 @@ const BookingForm = () => {
   //     bookingDate: moment(),
   //   });
   // }, [form]);
+  const isEnoughDay = (value) => {
+    setDays(value);
+  };
 
   //post api, create booking
   const bookingDetailRequest = (items) => {
@@ -143,6 +147,10 @@ const BookingForm = () => {
   };
 
   const onFinish = async (values) => {
+    if (bookingType === 3 && days != bookingDetailRequestCombos.length) {
+      message.error("Not Booking enough slots");
+      return;
+    }
     try {
       // Make the POST request
       console.log("check");
@@ -260,7 +268,7 @@ const BookingForm = () => {
                 </Select>
               </Form.Item>
 
-              {userRole === "ClUB_OWNER" ? (
+              {/* {userRole === "ClUB_OWNER" ? (
                 <Form.Item
                   label="Phone Number"
                   name="phonenumber"
@@ -278,7 +286,7 @@ const BookingForm = () => {
                     placeholder="Phone number"
                   />
                 </Form.Item>
-              ) : null}
+              ) : null} */}
 
               <Form.Item
                 name="booking_type_id"
@@ -313,6 +321,7 @@ const BookingForm = () => {
                 <BookingType3
                   courtId={courtId}
                   bookingDetail={bookingDetailRequest}
+                  isEnoughDay={isEnoughDay}
                 ></BookingType3>
               )}
 

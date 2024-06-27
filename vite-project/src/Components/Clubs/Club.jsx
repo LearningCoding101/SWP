@@ -10,11 +10,10 @@
 // import { Empty } from 'antd'
 // function Club() {
 //   const [clubs, setClubs] = useState([]);
- 
+
 //   const accessToken = localStorage.getItem("token");
 //   const navigate = useNavigate();
 
- 
 //   useEffect(() => {
 //     const fetch = async () => {
 //       try {
@@ -29,8 +28,6 @@
 //     fetch()
 //   }, [])
 
-
-
 //   return (
 //     <div>
 //       <NavBar />
@@ -39,7 +36,7 @@
 //           clubs.length > 0 ? (
 //             <div style={{ margin: '50px 120px 20px' }}>
 //               {clubs?.map((club) => (
-               
+
 //                 <Grid container key={club.id} spacing={2} border={"thick"} borderRadius={1} margin>
 //                   <Grid item xs={8}>
 //                     <CardMedia
@@ -61,13 +58,13 @@
 //                         Open time: {club.open_time} - {club.close_time}
 //                       </Typography>
 //                     </CardContent>
-                    
+
 //                       <Link to={`/booking`}>
 //                         <Button variant="contained" size="small">
 //                           Book now
 //                         </Button>
 //                       </Link>
-                    
+
 //                   </Grid>
 //                 </Grid>
 //               ))}
@@ -83,7 +80,16 @@
 // }
 // export default Club
 import React, { useState, useEffect } from "react";
-import { List, Card, Image, Typography, Button, Space, Empty,Rate } from "antd";
+import {
+  List,
+  Card,
+  Image,
+  Typography,
+  Button,
+  Space,
+  Empty,
+  Rate,
+} from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import NavBar from "../layout/NavBar";
@@ -94,6 +100,8 @@ const Club = () => {
   const [clubs, setClubs] = useState([]);
   const accessToken = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -113,31 +121,49 @@ const Club = () => {
   const renderClubList = (club) => (
     <List.Item key={club.id}>
       <List.Item.Meta
-        avatar={<Image width={80} height={80} src={club.picture_location} alt={club.name} />}
+        avatar={
+          <Image
+            width={80}
+            height={80}
+            src={club.picture_location}
+            alt={club.name}
+          />
+        }
         title={<Typography.Title level={4}>{club.name}</Typography.Title>}
         description={
           <Space direction="vertical">
             <Typography.Text>Address: {club.address}</Typography.Text>
-            <Typography.Text>Open: {club.open_time} - {club.close_time}</Typography.Text>
+            <Typography.Text>
+              Open: {club.open_time} - {club.close_time}
+            </Typography.Text>
             <Typography.Text>{club.price}VND/hour</Typography.Text>
             <Rate value={club.rating} />
             <Typography.Text>{club.feedbacks} reviews</Typography.Text>
-
           </Space>
         }
       />
-      <Link to={`/booking/${club.clubId}`}>
-        <Button type="primary" size="small">
-          Book Now
-        </Button>
-      </Link>
+      {userRole === "ClUB_OWNER" ? (
+        <Link to={`/StaffBooking/${club.clubId}`}>
+          <Button type="primary" size="small">
+            Book Now
+          </Button>
+        </Link>
+      ) : (
+        <Link to={`/booking/${club.clubId}`}>
+          <Button type="primary" size="small">
+            Book Now
+          </Button>
+        </Link>
+      )}
     </List.Item>
   );
 
   return (
     <div>
       <NavBar />
-      <div className="container" style={{marginTop: 100}}> {/* Added a container class for better styling */}
+      <div className="container" style={{ marginTop: 100 }}>
+        {" "}
+        {/* Added a container class for better styling */}
         {clubs.length > 0 ? (
           <List
             itemLayout="horizontal"
