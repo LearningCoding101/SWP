@@ -6,10 +6,12 @@ import click.badcourt.be.entity.CourtTimeslot;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.model.request.BookingDetailRequest;
 import click.badcourt.be.model.request.BookingDetailRequestCombo;
+import click.badcourt.be.model.request.ChangeSlotBookingDetailRequestCombo;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;
 import click.badcourt.be.model.response.BookingDetailDeleteResponse;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
+import click.badcourt.be.model.response.ChangeSlotBookingDetailResponseCombo;
 import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.repository.CourtRepository;
@@ -166,10 +168,8 @@ public class BookingDetailService {
                 bookingDetailsCustomerResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
                 bookingDetailsCustomerResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
                 bookingDetailsCustomerResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailsCustomerResponse.setStatus(bookingDetail.getDetailStatus());
                 bookingDetailsCustomerResponses.add(bookingDetailsCustomerResponse);
-
-
-
             }
             return bookingDetailsCustomerResponses;
         } else {
@@ -409,6 +409,45 @@ public class BookingDetailService {
             throw new IllegalArgumentException("BookingDetail Id not found");
         }
     }
+
+
+    public ChangeSlotBookingDetailResponseCombo changeSlotBookingDetail(ChangeSlotBookingDetailRequestCombo requestCombo, Long bookingDetailId) {
+        Optional<BookingDetail> bookingDetail= bookingDetailRepository.findById(bookingDetailId);
+        Booking bookingOptional= bookingDetail.get().getBooking();
+        Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(requestCombo.getNewcourtTSId());
+        if(bookingDetail.isPresent()){
+            ChangeSlotBookingDetailResponseCombo changeSlot = new ChangeSlotBookingDetailResponseCombo();
+            changeSlot.setBookingId(bookingOptional.getBookingId());
+            changeSlot.setCourtName(bookingDetail.get().getCourtTimeslot().getCourt().getCourtname());
+            changeSlot.setBookingDate(bookingDetail.get().getDate());
+            changeSlot.setStart_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getStart_time());
+            changeSlot.setEnd_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEnd_time());
+            changeSlot.setCourtTSId(bookingDetail.get().getCourtTimeslot().getCourtTSlotID());
+            changeSlot.setTimeslotId(bookingDetail.get().getCourtTimeslot().getTimeslot().getTimeslotId());
+            changeSlot.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
+            changeSlot.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
+            if(bookingOptional!=null&&courtTimeslot.isPresent()){
+                bookingDetail.get().setCourtTimeslot(courtTimeslot.get());
+                bookingDetail.get().setDate(requestCombo.getNewbookingDate());
+                bookingDetailRepository.save(bookingDetail.get());
+                changeSlot.setNewcourtName(bookingDetail.get().getCourtTimeslot().getCourt().getCourtname());
+                changeSlot.setNewstart_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getStart_time());
+                changeSlot.setNewend_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEnd_time());
+                changeSlot.setNewtimeslotId(bookingDetail.get().getCourtTimeslot().getTimeslot().getTimeslotId());
+                changeSlot.setNewcourtTSId(bookingDetail.get().getCourtTimeslot().getCourtTSlotID());
+                changeSlot.setBookingDate(bookingDetail.get().getDate());
+                changeSlot.setStatus(BookingDetailStatusEnum.CHANGED);
+                return changeSlot;
+            }
+            else {
+                throw new IllegalArgumentException("Booking or Court_Timeslot not found");
+            }
+        }
+        else{
+            throw new IllegalArgumentException("BookingDetail Id not found");
+        }
+    }
+
 
     public void deleteBookingDetail(Long bookingDetailId) {
         BookingDetail bookingDetail= bookingDetailRepository.findById(bookingDetailId).orElseThrow(() -> new RuntimeException("BookingDetail not found!"));

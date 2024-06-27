@@ -1,5 +1,6 @@
 package click.badcourt.be.model.response;
 
+import click.badcourt.be.enums.BookingDetailStatusEnum;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,4 +17,5 @@ public class BookingDetailsCustomerResponse {
     private String date;
     private LocalTime start_time;
     private LocalTime end_time;
+    private BookingDetailStatusEnum status;
 }

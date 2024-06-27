@@ -2,9 +2,11 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.BookingDetail;
 import click.badcourt.be.model.request.BookingDetailRequest;
+import click.badcourt.be.model.request.ChangeSlotBookingDetailRequestCombo;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
+import click.badcourt.be.model.response.ChangeSlotBookingDetailResponseCombo;
 import click.badcourt.be.service.BookingDetailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +98,12 @@ public class BookingDetailApi {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+    @PutMapping("/slot/{bookingDetailId}")
+    public ChangeSlotBookingDetailResponseCombo changeSlotBookingDetailResponseCombo(@RequestBody ChangeSlotBookingDetailRequestCombo changeSlotBookingDetailRequestCombo, @PathVariable Long bookingDetailId){
+        ChangeSlotBookingDetailResponseCombo changeSlotBookingDetailResponseCombo = bookingDetailService.changeSlotBookingDetail(changeSlotBookingDetailRequestCombo, bookingDetailId);
+        return changeSlotBookingDetailResponseCombo;
+
     }
 
     @DeleteMapping("/{id}")

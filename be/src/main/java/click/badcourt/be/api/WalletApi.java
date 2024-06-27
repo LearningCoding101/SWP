@@ -37,6 +37,7 @@ public class WalletApi {
 
     @Autowired
     BookingDetailRepository bookingDetailRepository;
+
     @Autowired
     private TransactionService transactionService;
 

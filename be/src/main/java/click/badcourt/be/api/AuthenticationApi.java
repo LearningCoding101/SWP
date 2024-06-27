@@ -23,6 +23,7 @@ public class AuthenticationApi {
 
     @Autowired
     private AuthenticationRepository authenticationRepository;
+
     @Autowired
     private AccountService accountService;
 
@@ -72,6 +73,8 @@ public class AuthenticationApi {
     public void setPassword(@RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         authenticationService.setPassword(forgotPasswordRequest);
     }
+
+    
 
     @PostMapping("/reset-password")
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
