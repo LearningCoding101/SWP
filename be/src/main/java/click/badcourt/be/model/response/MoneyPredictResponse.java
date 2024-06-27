@@ -5,4 +5,6 @@ import lombok.Data;
 @Data
 public class MoneyPredictResponse {
     Double moneyback;
+    Double fullMoney;
+    Double saleMoney;
 }

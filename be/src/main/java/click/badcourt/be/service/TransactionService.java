@@ -143,35 +143,19 @@ public class TransactionService {
     }
 
     public Long getPredictedPriceByGivenInfo(Long clubId, Long bookingTypeId, Integer num) {
-        MoneyPredictResponse moneyPredictResponse = new MoneyPredictResponse();
+        Double money = 0.0;
         Club club = clubRepository.findClubByClubId(clubId);
         Double price = club.getPrice();
         Double scale = Double.valueOf(1 - bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount());
         Double cal = price * num;
         if (bookingTypeId == 1){
-            moneyPredictResponse.setMoneyback(price);
+            money = price;
         } else if (bookingTypeId == 2){
-            moneyPredictResponse.setMoneyback(cal * scale - (cal * scale) % 10);
+            money = cal * scale - (cal * scale) % 10;
         } else if (bookingTypeId == 3){
-            moneyPredictResponse.setMoneyback(price + cal * scale - (cal * scale) % 10);
+            money = price + cal * scale - (cal * scale) % 10;
         }
-        return moneyPredictResponse.getMoneyback().longValue();
-    }
-
-    public Long getPredictedPriceByGivenInfoCombo(Long clubId, Long bookingTypeId, Integer num) {
-        MoneyPredictResponse moneyPredictResponse = new MoneyPredictResponse();
-        Club club = clubRepository.findClubByClubId(clubId);
-        Double price = club.getPrice();
-        Double scale = Double.valueOf(1 - bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount());
-        Double cal = price * num;
-        if (bookingTypeId == 1){
-            moneyPredictResponse.setMoneyback((price-price*0.5)-(price-price*0.5)%10);
-        } else if (bookingTypeId == 2){
-            moneyPredictResponse.setMoneyback(cal * scale - (cal * scale) % 10);
-        } else if (bookingTypeId == 3){
-            moneyPredictResponse.setMoneyback(price + cal * scale - (cal * scale) % 10);
-        }
-        return moneyPredictResponse.getMoneyback().longValue();
+        return money.longValue();
     }
 
 

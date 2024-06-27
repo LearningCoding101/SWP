@@ -6,7 +6,9 @@ import click.badcourt.be.model.response.MoneyPredictResponse;
 import click.badcourt.be.model.response.PreTransactionResponse;
 import click.badcourt.be.model.response.TotalAmountByMonthDTO;
 import click.badcourt.be.model.response.TransactionResponse;
+import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.TransactionService;
+import com.google.protobuf.DoubleValue;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,9 @@ import java.util.List;
 
         @Autowired
         private TransactionService transactionService;
+
+        @Autowired
+        private ClubRepository clubRepository;
 
         @GetMapping("/totalAmountByMonth")
         public List<TotalAmountByMonthDTO> getTotalAmountByMonth(@RequestParam int year) {
@@ -71,7 +76,11 @@ import java.util.List;
         @GetMapping("/predictedPrice/{clubId}/{bookingTypeId}/{numberOnList}")
         public ResponseEntity getPredictedPriceByGivenInfo(@PathVariable Long clubId, @PathVariable Long bookingTypeId, @PathVariable Integer numberOnList) {
             Long amount =transactionService.getPredictedPriceByGivenInfo(clubId, bookingTypeId, numberOnList);
-            return ResponseEntity.ok(amount);
+            MoneyPredictResponse response = new MoneyPredictResponse();
+            response.setMoneyback(Double.valueOf(amount));
+            response.setFullMoney(clubRepository.findClubByClubId(clubId).getPrice()*numberOnList);
+            response.setSaleMoney(response.getFullMoney()-response.getMoneyback());
+            return ResponseEntity.ok(response);
         }
 
         @PutMapping("/{id}")
