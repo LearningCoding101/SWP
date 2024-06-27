@@ -158,6 +158,22 @@ public class TransactionService {
         return money.longValue();
     }
 
+    public Long getPredictedPriceByGivenInfoCombo(Long clubId, Long bookingTypeId, Integer num) {
+        Double money = 0.0;
+        Club club = clubRepository.findClubByClubId(clubId);
+        Double price = club.getPrice();
+        Double scale = Double.valueOf(1 - bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount());
+        Double cal = price * num;
+        if (bookingTypeId == 1){
+            money = (price-price*0.5)-(price-price*0.5)%10;
+        } else if (bookingTypeId == 2){
+            money = cal * scale - (cal * scale) % 10;
+        } else if (bookingTypeId == 3){
+            money = price + cal * scale - (cal * scale) % 10;
+        }
+        return money.longValue();
+    }
+
 
     public void updateFullyPaid(Long transactionId){
         Optional<Transaction> transaction = transactionRepository.findById(transactionId);
