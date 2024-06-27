@@ -83,7 +83,7 @@
 // }
 // export default Club
 import React, { useState, useEffect } from "react";
-import { List, Card, Image, Typography, Button, Space, Empty } from "antd";
+import { List, Card, Image, Typography, Button, Space, Empty,Rate } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import NavBar from "../layout/NavBar";
@@ -117,8 +117,12 @@ const Club = () => {
         title={<Typography.Title level={4}>{club.name}</Typography.Title>}
         description={
           <Space direction="vertical">
-            <Typography.Text>{club.address}</Typography.Text>
+            <Typography.Text>Address: {club.address}</Typography.Text>
             <Typography.Text>Open: {club.open_time} - {club.close_time}</Typography.Text>
+            <Typography.Text>{club.price}VND/hour</Typography.Text>
+            <Rate value={club.rating} />
+            <Typography.Text>{club.feedbacks} reviews</Typography.Text>
+
           </Space>
         }
       />
