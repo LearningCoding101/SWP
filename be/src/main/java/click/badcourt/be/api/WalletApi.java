@@ -1,16 +1,25 @@
 package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Account;
-import click.badcourt.be.model.request.RechargeRequestDTO;
-import click.badcourt.be.model.request.RegisterRequest;
+import click.badcourt.be.model.request.*;
+import click.badcourt.be.model.response.BookingComboResponse;
+import click.badcourt.be.model.response.BookingResponse;
+import click.badcourt.be.repository.BookingDetailRepository;
+import click.badcourt.be.service.BookingDetailService;
+import click.badcourt.be.service.BookingService;
+import click.badcourt.be.service.TransactionService;
 import click.badcourt.be.service.WalletService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/pay")
@@ -20,10 +29,56 @@ public class WalletApi {
     @Autowired
     WalletService walletService;
 
+    @Autowired
+    BookingService bookingService;
+
+    @Autowired
+    BookingDetailService bookingDetailService;
+
+    @Autowired
+    BookingDetailRepository bookingDetailRepository;
+    @Autowired
+    private TransactionService transactionService;
+
     @PostMapping()
     public ResponseEntity createUrl(@RequestBody RechargeRequestDTO rechargeRequestDTO) throws Exception {
         String url= walletService.createUrl(rechargeRequestDTO);
         return ResponseEntity.ok(url);
     }
 
+    @PostMapping("/combo")
+    public ResponseEntity createUrlCombo(@RequestBody RechargeRequestDTOCombo rechargeRequestDTOCombo) throws Exception {
+
+        BookingResponse bkcr = bookingService.createBookingNew(rechargeRequestDTOCombo.getClub_id(), rechargeRequestDTOCombo.getBooking_type_id());
+        BookingComboResponse bookingComboResponse = new BookingComboResponse();
+        bookingComboResponse.setBookingResponse(bkcr);
+        List<BookingDetailRequestCombo> bkdtrspl = rechargeRequestDTOCombo.getBookingDetailRequestCombos();
+        List<BookingDetailRequest> returnlist = new ArrayList<>();
+        BookingDetailRequest store;
+        Long id = bkcr.getId();
+        if (bkcr.getBookingTypeId() == 1) {
+            for (BookingDetailRequestCombo bkdtr : bkdtrspl) {
+                store = bookingDetailService.create1stBookingDetailCombo(bkdtr, id);
+                returnlist.add(store);
+            }
+        } else if (bkcr.getBookingTypeId() == 2) {
+            List<BookingDetailRequest> returnlistAdd = new ArrayList<>();
+            for (BookingDetailRequestCombo bkdtr : bkdtrspl) {
+                returnlistAdd = bookingDetailService.createFixedBookingDetailCombos(bkdtr, id);
+                returnlist.addAll(returnlistAdd);
+            }
+        } else if (bkcr.getBookingTypeId() == 3) {
+            for (BookingDetailRequestCombo bkdtr : bkdtrspl) {
+                store = bookingDetailService.create3rdBookingDetailCombo(bkdtr, id);
+                returnlist.add(store);
+            }
+        }
+        bookingComboResponse.setBookingDetailRequestList(returnlist);
+        RechargeRequestDTO requestDTO = new RechargeRequestDTO();
+        requestDTO.setBookingId(bkcr.getId());
+        String ammountt = transactionService.getPredictedPriceByGivenInfoCombo(rechargeRequestDTOCombo.getClub_id(), bkcr.getBookingTypeId(), bookingDetailRepository.countBookingDetailsByBooking_BookingId(bkcr.getId())).toString();
+        requestDTO.setAmount(ammountt);
+        String url = walletService.createUrl(requestDTO);
+        return ResponseEntity.ok(url);
+    }
 }

@@ -70,8 +70,8 @@ import java.util.List;
 
         @GetMapping("/predictedPrice/{clubId}/{bookingTypeId}/{numberOnList}")
         public ResponseEntity getPredictedPriceByGivenInfo(@PathVariable Long clubId, @PathVariable Long bookingTypeId, @PathVariable Integer numberOnList) {
-            MoneyPredictResponse moneyPredictResponse =transactionService.getPredictedPriceByGivenInfo(clubId, bookingTypeId, numberOnList);
-            return ResponseEntity.ok(moneyPredictResponse);
+            Long amount =transactionService.getPredictedPriceByGivenInfo(clubId, bookingTypeId, numberOnList);
+            return ResponseEntity.ok(amount);
         }
 
         @PutMapping("/{id}")
