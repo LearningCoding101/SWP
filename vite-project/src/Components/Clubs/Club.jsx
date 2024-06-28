@@ -89,6 +89,8 @@ import {
   Space,
   Empty,
   Rate,
+  Select,
+  Input,
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -97,7 +99,25 @@ import Footer from "../layout/Footer";
 import api from "../../config/axios";
 
 const Club = () => {
+  const options = [
+    {
+      value: "searchName",
+      label: "Search Name",
+    },
+    {
+      value: "searchStartTime",
+      label: "Search Start Time",
+    },
+    {
+      value: "searchAddress",
+      label: "Search Address",
+    },
+  ];
+
   const [clubs, setClubs] = useState([]);
+  const [search, setSearch] = useState("");
+  const [optionValue, setOptionValue] = useState("");
+  const [searchType, setSearchType] = useState("searchName");
   const accessToken = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -158,16 +178,56 @@ const Club = () => {
     </List.Item>
   );
 
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value.toLowerCase());
+  };
+
+  const handleSearchTypeChange = (value) => {
+    setSearchType(value);
+  };
+
+  const filteredClubs = clubs.filter((club) => {
+    if (searchType === "searchName") {
+      return club.name.toLowerCase().includes(search);
+    } else if (searchType === "searchStartTime") {
+      return club.open_time.toLowerCase().includes(search);
+    } else if (searchType === "searchAddress") {
+      return club.address.toLowerCase().includes(search);
+    }
+    return false;
+  });
+
   return (
     <div>
       <NavBar />
       <div className="container" style={{ marginTop: 100 }}>
-        {" "}
+        <Space direction="vertical" size="middle">
+          <Space.Compact>
+            <Select
+              defaultValue="searchName"
+              style={{ height: 39.9 }}
+              options={options}
+              onChange={handleSearchTypeChange}
+            />
+            {/* <Search
+              placeholder="input search text"
+              enterButton
+              size="large"
+              // onSearch={onSearch}
+              style={{ maxWidth: 400 }}
+            /> */}
+            <Input
+              placeholder="Enter text to search"
+              onChange={handleSearchChange}
+              style={{ maxWidth: 400 }}
+            />
+          </Space.Compact>
+        </Space>{" "}
         {/* Added a container class for better styling */}
-        {clubs.length > 0 ? (
+        {filteredClubs.length > 0 ? (
           <List
             itemLayout="horizontal"
-            dataSource={clubs}
+            dataSource={filteredClubs}
             renderItem={renderClubList}
             pagination={{ pageSize: 4 }} // Optional pagination configuration
           />
