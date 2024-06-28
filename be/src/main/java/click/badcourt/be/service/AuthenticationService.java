@@ -210,4 +210,18 @@ public class AuthenticationService implements UserDetailsService {
         }
         else {return account;}
     }
+    public void sendOTPEmailConfirmation(String email,String otp){
+        System.out.println(email);
+        EmailDetail emailDetail = new EmailDetail();
+        emailDetail.setRecipient(email);
+        emailDetail.setSubject("OTP confirmation");
+        emailDetail.setMsgBody("");
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                emailService.setOTPMailTemplate(emailDetail,otp);
+            }
+        };
+        new Thread(r).start();
+    }
 }

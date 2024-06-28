@@ -12,7 +12,9 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -24,10 +26,9 @@ import java.util.Map;
 public class QRCodeService {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void generateQRCode(QRCodeData data, String filePath) {
+    public static BitMatrix generateQRCode(QRCodeData data) {
         int width = 300;
         int height = 300;
-        String format = "png";
 
         Map<EncodeHintType, Object> hints = new HashMap<>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
@@ -35,23 +36,40 @@ public class QRCodeService {
 
         try {
             // Convert data to JSON string
-            String jsonData = objectMapper.writeValueAsString(data);
+            String jsonData = new ObjectMapper().writeValueAsString(data);
 
             // Generate QR code
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(jsonData, BarcodeFormat.QR_CODE, width, height, hints);
-
-            // Define output file path
-            Path path = FileSystems.getDefault().getPath(filePath);
-            MatrixToImageWriter.writeToPath(bitMatrix, format, path);
-
             System.out.println("QR code generated successfully!");
-        } catch (WriterException e) {
+            return bitMatrix;
+
+        } catch (WriterException | IOException e) {
             System.out.println("Error generating QR code: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error writing QR code to file: " + e.getMessage());
+            return null;
         }
     }
+
+    public static BufferedImage toBufferedImage(BitMatrix matrix) {
+        int width = matrix.getWidth();
+        int height = matrix.getHeight();
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                image.setRGB(x, y, matrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+            }
+        }
+
+        return image;
+    }
+
+    public static byte[] toByteArray(BufferedImage image) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+        return baos.toByteArray();
+    }
+
 
     public QRCodeData decodeQr(byte[] data) throws IOException, NotFoundException{
         Result result = new MultiFormatReader()

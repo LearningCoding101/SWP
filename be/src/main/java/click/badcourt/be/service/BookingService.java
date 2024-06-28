@@ -216,30 +216,16 @@ public class BookingService {
         booking.setStatus(BookingStatusEnum.CANCELED);
         bookingRepository.save(booking);
     }
-    public void sendBookingConfirmation(QRCodeData data) throws WriterException, IOException, MessagingException {
-        String filePath = "D:/Nguyen/qr-code.png";  // Specify the correct path
-        QRCodeService.generateQRCode(data, filePath);
-
-
-        Account account = accountUtils.getCurrentAccount();
-        if (account == null) {
-            try {
-                throw new BadRequestException("Account not found!");
-            }catch (RuntimeException e){
-                throw new RuntimeException(e);
-            }
-        }
-        System.out.println(account.getEmail());
+    public void sendBookingConfirmation(QRCodeData data,String email) throws WriterException, IOException, MessagingException {
+        System.out.println(email);
         EmailDetail emailDetail = new EmailDetail();
-        emailDetail.setRecipient(account.getEmail());
+        emailDetail.setRecipient(email);
         emailDetail.setSubject("Booking successfully" );
         emailDetail.setMsgBody("");
-        emailDetail.setFullName(account.getFullName());
-        emailDetail.setLink("http://badcourts.click/reset-password?token=" + tokenService.generateToken(account));
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                emailService.sendEmailWithAttachment(emailDetail, filePath);
+                emailService.sendEmailWithAttachment(emailDetail, data);
             }
         };
         new Thread(r).start();
@@ -249,6 +235,7 @@ public class BookingService {
         QRCodeData decodedData = qrCodeService.decodeQr(qrCodeData);
         return decodedData != null && decodedData.getBookingId().equals(expectedData.getBookingId());
     }
+
 
 
     //    public List<Booking> getBookingsByCustomerId(Long customerId) {

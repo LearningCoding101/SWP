@@ -6,6 +6,7 @@ import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.service.BookingDetailService;
 import click.badcourt.be.service.BookingService;
+import click.badcourt.be.service.EmailService;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.WriterException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,6 +30,8 @@ public class BookingApi {
     private BookingService bookingService;
     @Autowired
     private BookingDetailService bookingDetailService;
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
@@ -137,9 +140,9 @@ public class BookingApi {
 
 
     @PostMapping("/confirm")
-    public String confirmBooking(@RequestBody QRCodeData data) {
+    public String confirmBooking(@RequestBody QRCodeData data,@RequestParam String email) {
         try {
-            bookingService.sendBookingConfirmation(data);
+            bookingService.sendBookingConfirmation(data,email);
             return "Booking confirmation sent!";
         } catch (WriterException | IOException | MessagingException e) {
             e.printStackTrace();

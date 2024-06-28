@@ -6,6 +6,7 @@ import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.service.AccountService;
 import click.badcourt.be.service.AuthenticationService;
+import click.badcourt.be.service.EmailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,18 @@ public class AuthenticationApi {
 
     @Autowired
     private AccountService accountService;
+    private String generatedOtp;
+
+    @PostMapping("/sendOTP")
+    public String sendOtp(@RequestParam String email) {
+        generatedOtp = EmailService.generateOTP(6);
+        authenticationService .sendOTPEmailConfirmation(email, generatedOtp);
+        return "OTP sent to your email";
+    }
+    @PostMapping("/verifyOTP")
+    public boolean verifyOtp(@RequestParam String otp) {
+        return otp.equals(generatedOtp);
+    }
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {

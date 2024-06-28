@@ -103,7 +103,6 @@ public class BookingDetailApi {
     public ChangeSlotBookingDetailResponseCombo changeSlotBookingDetailResponseCombo(@RequestBody ChangeSlotBookingDetailRequestCombo changeSlotBookingDetailRequestCombo, @PathVariable Long bookingDetailId){
         ChangeSlotBookingDetailResponseCombo changeSlotBookingDetailResponseCombo = bookingDetailService.changeSlotBookingDetail(changeSlotBookingDetailRequestCombo, bookingDetailId);
         return changeSlotBookingDetailResponseCombo;
-
     }
 
     @DeleteMapping("/{id}")
