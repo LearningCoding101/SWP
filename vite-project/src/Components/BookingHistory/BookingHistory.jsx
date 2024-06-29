@@ -96,9 +96,13 @@ const BookingHistory = (props) => {
               <Button type="link" onClick={displayDetail}>
                 Details
               </Button>,
-              <Link to={`/UpdateForCustomer/${booking.orderID}`}>
+              <Link to={`/UpdateForCustomer/${props.orderID}/${props.clubId}`} className="nav-link">
                 Update Booking
               </Link>
+
+
+
+
 
             ]}
           >

@@ -57,10 +57,8 @@ function App() {
               path="/clubManage/courtList/CourtsDetail/:courtId"
               element={<CourtTimeSlotList />}
             />
-            <Route
-              path="/UpdateForCustomer/:bookingid"
-              element={<UpdateForCustomer />}
-            />
+            <Route path="/UpdateForCustomer/:bookingid/:clubid" element={<UpdateForCustomer />} />
+
 
             <Route path="/login" element={<Login />} />
             <Route path="/staff" element={<QRScanner />} />
