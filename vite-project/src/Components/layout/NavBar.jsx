@@ -24,6 +24,7 @@ const NavBar = () => {
           <Menu.Item>
             <Link to="/feedback" style={{ textDecoration: 'none' }}>Feedback Demo</Link>
           </Menu.Item>
+
           {userRole === "CUSTOMER" && (
             <Menu.Item>
               <Link to="/bookingHistory" style={{ textDecoration: 'none' }}>History</Link>
@@ -86,6 +87,7 @@ const NavBar = () => {
               </NavLink>
             </li>
           )}
+
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">
               <NavLink

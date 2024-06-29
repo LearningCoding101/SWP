@@ -55,7 +55,7 @@ import React, { useState } from "react";
 import BookingDetails from "./BookingDetails"; // Assuming BookingDetails is also redesigned for Ant Design
 import { Card, List, Space, Button, Collapse } from "antd";
 import QRCode from "qrcode.react"; // Import QRCode from qrcode.react
-
+import { Link } from "react-router-dom";
 const BookingHistory = (props) => {
   const [showBookingDetail, updateShowBookingDetail] = useState(false);
 
@@ -96,6 +96,10 @@ const BookingHistory = (props) => {
               <Button type="link" onClick={displayDetail}>
                 Details
               </Button>,
+              <Link to={`/UpdateForCustomer/${booking.orderID}`}>
+                Update Booking
+              </Link>
+
             ]}
           >
             <List.Item.Meta
@@ -128,17 +132,17 @@ const BookingHistory = (props) => {
         <div
           className={`alert ${props.showDetail ? "" : "hidden"}`}
           role="alert"
-          // style={{ backgroundColor: "white", maxWidth: "1200px", display: "" }}
-          // style={{
-          //   backgroundColor: "white",
-          //   overflowY: "auto",
-          //   maxHeight: "400px",
-          // }}
+        // style={{ backgroundColor: "white", maxWidth: "1200px", display: "" }}
+        // style={{
+        //   backgroundColor: "white",
+        //   overflowY: "auto",
+        //   maxHeight: "400px",
+        // }}
         >
           <BookingDetails
             showDetail={showBookingDetail}
             showId={props.orderID}
-            // hideDetail={hideDetail}
+          // hideDetail={hideDetail}
           ></BookingDetails>
         </div>
       )}

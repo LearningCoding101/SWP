@@ -38,6 +38,7 @@ import AddCourtTimeSlot from "./Components/Clubs/AddCourtTimeSlot";
 import BookingReport from "./Components/Admin/BarChart";
 import MyResponsiveLine from "./Components/Admin/LineGraph";
 import StaffBookingForm from "./Components/BookingForm/StaffBookingForm";
+import UpdateForCustomer from "./Components/Clubs/UpdateForCustomer";
 
 function App() {
   return (
@@ -56,6 +57,11 @@ function App() {
               path="/clubManage/courtList/CourtsDetail/:courtId"
               element={<CourtTimeSlotList />}
             />
+            <Route
+              path="/UpdateForCustomer/:bookingid"
+              element={<UpdateForCustomer />}
+            />
+
             <Route path="/login" element={<Login />} />
             <Route path="/staff" element={<QRScanner />} />
             <Route path="/profile" element={<Logout />} />
