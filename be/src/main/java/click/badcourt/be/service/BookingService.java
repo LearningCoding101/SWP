@@ -106,6 +106,7 @@ public class BookingService {
                 response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
                 response.setPrice(booking.getClub().getPrice());
                 response.setClubId(booking.getClub().getClubId());
+
                 bookingResponses.add(response);
             }
         }
