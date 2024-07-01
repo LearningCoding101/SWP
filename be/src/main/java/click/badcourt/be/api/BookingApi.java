@@ -51,11 +51,11 @@ public class BookingApi {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/getBookings/{clubId}")
-    public ResponseEntity<?> getBookingsByClubId(@PathVariable Long clubId) {
+    @GetMapping("/getBookings")
+    public ResponseEntity<?> getBookingsByClubId() {
         try {
 
-            List<BookingResponse> bookings = bookingService.getAllBookingsByClubId(clubId);
+            List<BookingResponse> bookings = bookingService.getAllBookingsByClubId();
             return ResponseEntity.ok(bookings);
         } catch (IllegalArgumentException e) {
 

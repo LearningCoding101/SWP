@@ -114,24 +114,28 @@ public class BookingService {
     }
 
 
-    public List<BookingResponse> getAllBookingsByClubId(Long clubId) {
+    public List<BookingResponse> getAllBookingsByClubId() {
+
+        Account currentAccount = accountUtils.getCurrentAccount();
+
+
+        if (!currentAccount.getRole().equals(RoleEnum.ClUB_OWNER)) {
+            throw new IllegalArgumentException("Current account is not a club owner");
+        }
+
+
+        Long clubId = currentAccount.getClub().getClubId();
 
         Optional<Club> clubOptional = clubRepository.findById(clubId);
         if (clubOptional.isEmpty()) {
             throw new IllegalArgumentException("Club not found with id: " + clubId);
         }
 
-
         List<Booking> allBookings = bookingRepository.findAll();
-
-
         List<BookingResponse> bookingResponses = new ArrayList<>();
 
-
         for (Booking booking : allBookings) {
-
             if (booking.getClub().getClubId().equals(clubId)) {
-
                 BookingResponse response = new BookingResponse();
                 response.setId(booking.getBookingId());
                 response.setBookingDate(booking.getBookingDate());
@@ -142,7 +146,7 @@ public class BookingService {
                 response.setStatus(booking.getStatus());
                 response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
                 response.setAddress(booking.getClub().getAddress());
-
+                response.setClubId(booking.getClub().getClubId());
 
                 bookingResponses.add(response);
             }
@@ -150,6 +154,8 @@ public class BookingService {
 
         return bookingResponses;
     }
+
+
 
 
 
