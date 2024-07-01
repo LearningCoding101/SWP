@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button, DatePicker, Form } from "antd";
 import ShowBooking from "./ShowBooking";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import api from "../../config/axios";
 
 const ShowBookingList = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [club, setClubs] = useState([]);
+  const { courtId } = useParams();
   const fetchClubs = async () => {
     try {
       const response = await api.get('/club');
@@ -37,7 +38,7 @@ const ShowBookingList = () => {
   const fetchBookingDetails = async (date) => {
     try {
       setLoading(true);
-      const response = await api.get(`/bookingDetail/${club.clubId}/${date}`);
+      const response = await api.get(`/bookingDetail/${courtId}/${date}`);
       const sortedBookings = response.data.sort(
         (a, b) => b.bookingId - a.bookingId
       );

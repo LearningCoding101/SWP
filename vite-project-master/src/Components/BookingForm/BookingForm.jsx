@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Form, DatePicker, Button, message, Select, InputNumber } from "antd";
+import { Form, DatePicker, Button, message, Select, InputNumber, Flex } from "antd";
 import moment from "moment";
 import { Option } from "antd/es/mentions";
 import NavBar from "../layout/NavBar";
@@ -9,13 +9,14 @@ import api from "../../config/axios";
 import BookingType1 from "./BookingType1";
 import BookingType2 from "./BookingType2";
 import BookingType3 from "./BookingType3";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useGetParams from './../../assets/hooks/useGetParams';
 import TransactionSuccess from "../Payment/TransactionSuccess";
 import Transaction from "../Payment/Transaction";
 import { connect } from 'react-redux';
 const BookingForm = ({ children }) => {
-  // const BookingIdContext = createContext(null);
+  const isLoggedIn = localStorage.getItem("token")
+  const navigate  = useNavigate();
   const handleSetId = (id) => {
     props.setId(id); // Dispatch an action to update state
   };
@@ -38,12 +39,13 @@ const BookingForm = ({ children }) => {
   console.log(bookingDetailRequestCombos);
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
-  // //insert today
-  // useEffect(() => {
-  //   form.setFieldsValue({
-  //     bookingDate: moment(),
-  //   });
-  // }, [form]);
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false)
+  const [days, setDays] = useState(0);
+  const userRole = localStorage.getItem("userRole");
+  const isEnoughDay = (value) => {
+    setDays(value);
+  };
+
 
   //post api, create booking
   const bookingDetailRequest = (items) => {
@@ -52,6 +54,10 @@ const BookingForm = ({ children }) => {
   };
 
   const onFinish = async (values) => {
+    if (bookingType === 3 && days != bookingDetailRequestCombos.length) {
+      message.error("Not Booking enough slots");
+      return;
+    }
     try {
       // Make the POST request
       const response = await api.post("/booking/bookingCombo", {
@@ -65,14 +71,23 @@ const BookingForm = ({ children }) => {
       const bId = response.data.bookingResponse.id
       setBookId(bId)
       setBookingDate(response.data.bookingResponse.bookingDate)
-      const res = await api.get(`/transactions/price/${bId}`) 
+      const res = await api.get(`/transactions/price/${bId}`)
       setTotalPrice(res.data.totalPriceNeedToPay)
       console.log(res.data.totalPriceNeedToPay)
       localStorage.setItem("totalPrice", res.data.totalPriceNeedToPay)
       setBookingConfirm(res.data)
       console.log(res.data)
+
+      form.setFields([
+          { name: "name", readonly: true },
+          { name: "booking_type_id", readonly: true },
+          { name: "submitButton", readonly: true }
+  
+          // ... add other form fields
+        ]);
+        setIsBookingConfirmed(true);
       console.log("Booking created:", response.data);
-      message.success("Booking successful!");
+      message.success("Booking confirmed!");
     } catch (error) {
       // Handle error here
       console.error("Error creating booking:", error);
@@ -83,7 +98,6 @@ const BookingForm = ({ children }) => {
   //call for court name
   const [courts, setCourts] = useState([]);
   const [error, setError] = useState(null);
-  // const accessToken = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchCourts = async () => {
@@ -92,9 +106,6 @@ const BookingForm = ({ children }) => {
 
         console.log(response.data);
         setCourts(response.data);
-        // const data = response.data;
-        // const bookingId = data.id;
-        // localStorage.setItem("Id", bookingId);
       } catch (error) {
         setError(error.message);
       }
@@ -109,7 +120,7 @@ const BookingForm = ({ children }) => {
       amount: totalPrice
     }
 
-   
+
 
     try {
       const paymentResponse = await api.post("/pay", payment)
@@ -119,16 +130,16 @@ const BookingForm = ({ children }) => {
       } else {
         console.error("No paymentURL found in response");
       }
-      
+
     } catch (error) {
       setError(error.message);
     }
   }
 
   return (
-    
+
     <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
-  
+
       <NavBar /> {/* Render NavBar at the top */}
       <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 150 }}>
         {" "}
@@ -142,86 +153,82 @@ const BookingForm = ({ children }) => {
             border: "1px solid #ccc",
           }}
         >
-          <Form
-            form={form}
-            name="bookingForm"
-            layout="vertical"
-            onFinish={onFinish}
-          // initialValues={{
-          //   bookingDate: moment(),
-          // }}
-          >
-            {/* <Form.Item
-              name="bookingDate"
-              label="Booking Date"
-              rules={[
-                { required: true, message: "Please select the booking date!" },
-              ]}
-              style={{ display: "none" }} // Hide the field
+          {isLoggedIn ? (
+            <Form
+              form={form}
+              name="bookingForm"
+              layout="vertical"
+              onFinish={onFinish}
             >
-              <DatePicker showTime format="YYYY-MM-DD" />
-            </Form.Item> */}
 
-            <Form.Item
-              name="name"
-              label="Court Name"
-              rules={[
-                { required: true, message: "Please select the court name!" },
-              ]}
-            >
-              <Select
-                placeholder="Select a Court Name"
-                onChange={(key) => setCourtID(key)}
+              <Form.Item
+                name="name"
+                label="Court Name"
+                rules={[
+                  { required: true, message: "Please select the court name!" },
+                ]}
               >
-                {courts.map((court) => (
-                  <Option key={court.id} value={court.id}>
-                    {court.courtName}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
+                <Select
+                  placeholder="Select a Court Name"
+                  onChange={(key) => setCourtID(key)}
+                >
+                  {courts.map((court) => (
+                    <Option key={court.id} value={court.id}>
+                      {court.courtName}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
 
-            <Form.Item
-              name="booking_type_id"
-              label="Booking Type"
-              rules={[
-                { required: true, message: "Please select the booking type!" },
-              ]}
-            >
-              <Select onChange={(value) => setBookingType(value)}>
-                <Option value={1}>Lịch ngày</Option>
-                <Option value={2}>Lịch cố định</Option>
-                <Option value={3}>Lịch linh hoạt</Option>
-              </Select>
-            </Form.Item>
+              <Form.Item
+                name="booking_type_id"
+                label="Booking Type"
+                rules={[
+                  { required: true, message: "Please select the booking type!" },
+                ]}
+              >
+                <Select onChange={(value) => setBookingType(value)}>
+                  <Option value={1}>Lịch ngày</Option>
+                  <Option value={2}>Lịch cố định</Option>
+                  <Option value={3}>Lịch linh hoạt</Option>
+                </Select>
+              </Form.Item>
 
-            {bookingType === 1 && (
-              <BookingType1
-                courtId={courtId}
-                bookingDetail={bookingDetailRequest}
-              ></BookingType1>
-            )}
-            {bookingType === 2 && (
-              <BookingType2
-                courtId={courtId}
-                bookingDetail={bookingDetailRequest}
-              ></BookingType2>
-            )}
-            {bookingType === 3 && (
-              <BookingType3
-                courtId={courtId}
-                bookingDetail={bookingDetailRequest}
-              ></BookingType3>
-            )}
+              {bookingType === 1 && (
+                <BookingType1
+                  courtId={courtId}
+                  bookingDetail={bookingDetailRequest}
+                ></BookingType1>
+              )}
+              {bookingType === 2 && (
+                <BookingType2
+                  courtId={courtId}
+                  bookingDetail={bookingDetailRequest}
+                ></BookingType2>
+              )}
+              {bookingType === 3 && (
+                <BookingType3
+                  courtId={courtId}
+                  bookingDetail={bookingDetailRequest}
+                  isEnoughDay={isEnoughDay}
+                ></BookingType3>
+              )}
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Confirm Booking
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item
+               name="submitButton"
+               >
+                <Button type="primary" htmlType="submit" disabled={isBookingConfirmed}>
+                  Confirm Booking
+                </Button>
+              </Form.Item>
+            </Form>
+          ) : (
+            navigate("/login")
+
+          )}
         </div>
       </div>
+
 
 
       {/* Right form */}
@@ -258,10 +265,11 @@ const BookingForm = ({ children }) => {
         </div>
       </div>
       <Footer />
-      
+
     </div>
-    
+
   );
 };
 
 export default BookingForm;
+

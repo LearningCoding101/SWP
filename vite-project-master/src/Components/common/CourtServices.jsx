@@ -1,19 +1,68 @@
+
+
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import api from "../../config/axios";
+// import { Carousel, Card, Empty } from 'antd'; // Import Ant Design components
+
+// const CourtServices = () => {
+//   const [clubs, setClubs] = useState([]);
+//   const accessToken = localStorage.getItem("token");
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchClubs = async () => {
+//       try {
+//         const response = await api.get("/clubs", {
+//           headers: { Authorization: `Bearer ${accessToken}` },
+//         });
+//         setClubs(response.data); // Display 4 cards at once
+//       } catch (error) {
+//         console.error(error);
+//       }
+//     };
+
+//     fetchClubs();
+//   }, [accessToken]);
+
+//   return (
+//     <div className="court-services-container">
+//       <Carousel autoplay={true} slidesToShow={4} dots={false}>
+//         {clubs.length > 0 ? (
+//           clubs.map((club) => (
+//             <div key={club.id} className="club-card" style={{ margin: '10px'}}> {/* Added margin for spacing */}
+//               <Card
+//                 cover={<img alt={club.name} src={club.picture_location} />}
+//                 className="custom-card"
+//                 style={{gap: '20px'}}
+//               >
+//                 <Card.Meta title={club.name} description={`Open: ${club.open_time} - ${club.close_time}`} />
+//               </Card>
+//             </div>
+//           ))
+//         ) : (
+//           <Empty description="No clubs found." />
+//         )}
+//       </Carousel>
+//     </div>
+//   );
+// };
+
+// export default CourtServices;
+
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from "../../config/axios";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
-import 'bootstrap/dist/css/bootstrap.css';
-import Header from './Header';
-import { FaClock, FaWifi, FaUtensils, FaTshirt } from 'react-icons/fa';
-import { Image, Typography, Space, Empty } from 'antd';
+import { Carousel, Card, Empty } from 'antd';
+import { Row, Col } from 'antd'; // Import Row and Col for responsive layout
 
 const CourtServices = () => {
   const [clubs, setClubs] = useState([]);
   const accessToken = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const MAX_CARDS_PER_ROW = 3; // Adjust this value to control responsiveness
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -21,8 +70,7 @@ const CourtServices = () => {
         const response = await api.get("/clubs", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        const shuffled = response.data.sort(() => 0.5 - Math.random());
-        setClubs(shuffled.slice(0, 3));
+        setClubs(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -32,41 +80,33 @@ const CourtServices = () => {
   }, [accessToken]);
 
   return (
-    <>
-      <Container className='mb-2'>
-        <Header title={'Our services'} />
-
-        <Row>
-          <h4 className='text-center'>
-            Services at <span className='court-color'>BadCourts</span>
-            <span className='gap-2'>
-              <FaClock /> - 24-Hour Front Desk
-            </span>
-          </h4>
-        </Row>
-        <Row className="justify-content-md-center">
-          {clubs.length > 0 ? (
-            clubs.map((club) => (
-              <Col key={club.id} xs={12} md={4} className="d-flex justify-content-center">
-                <Card style={{ width: '18rem' }}>
-                  <Card.Img variant="top" src={club.picture_location} style={{ height: '200px', objectFit: 'cover' }} />
-                  <Card.Body>
-                    <Card.Title>{club.name}</Card.Title>
-                    <Card.Text>
-                      Open: {club.open_time} - {club.close_time}
-                    </Card.Text>
-                  </Card.Body>
+    <div className="court-services-container">
+      <Carousel autoplay={true}  slidesToShow={4} dots={false}>
+        {clubs.length > 0 ? (
+          clubs.map((club, index) => (
+            <Row justify="center" key={club.clubId}> {/* Center cards horizontally */}
+              <Col
+              // xs={24} sm={12} md={8} lg={6} key={club.clubId}
+                span={24 / MAX_CARDS_PER_ROW} // Adjust span based on desired cards per row
+                style={{ padding: '10px' }} // Add padding for spacing
+              >
+                <Card
+                //  size="large"
+                  cover={<img alt={club.name} src={club.picture_location} style={{ width: '100%', height: '200px' }} />} // Ensure consistent image size
+                  className="custom-card"
+                  style={{ marginBottom: '20px' , width: 300, height: 400}} // Add spacing between cards
+                >
+                  <Card.Meta title={club.name} description={`Open: ${club.open_time} - ${club.close_time}`} />
                 </Card>
               </Col>
-            ))
-          ) : (
-            <Empty description="No clubs found." />
-          )}
-        </Row>
-        <hr />
-      </Container>
-    </>
-  )
-}
+            </Row>
+          ))
+        ) : (
+          <Empty description="No clubs found." />
+        )}
+      </Carousel>
+    </div>
+  );
+};
 
-export default CourtServices
+export default CourtServices;

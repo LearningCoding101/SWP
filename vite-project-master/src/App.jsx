@@ -34,6 +34,10 @@ import CourtTimeSlotList from './Components/Clubs/CourtTimeSlotList'
 import ClubOwnerManage from './Components/Clubs/ClubOwnerManage';
 import AddCourtTimeSlot from './Components/Clubs/AddCourtTimeSlot';
 import ShowBookingList from './Components/ClubOwnerShowBooking/ShowBookingList';
+import StaffBookingForm from './Components/BookingForm/StaffBookingForm';
+import BookingReport from "./Components/Admin/BarChart";
+import MyResponsiveLine from "./Components/Admin/LineGraph";
+import UpdateForCustomer from './Components/Clubs/UpdateForCustomer'
 
 
 function App() {
@@ -85,6 +89,10 @@ function App() {
               path='/emailsent'
               element={<EmailSent />}
             />
+             <Route
+              path="/UpdateForCustomer/:bookingid"
+              element={<UpdateForCustomer />}
+            />
             <Route
               path='/reset-password'
               element={<ForgotPassConfirm />}
@@ -106,7 +114,7 @@ function App() {
               element={<BookingForm />}
             />
             <Route
-              path="/showBooking/:clubId"
+              path="/showBooking/:courtId"
               element={<ShowBookingList />} />
             <Route
               path='/transactions'
@@ -114,7 +122,7 @@ function App() {
             />
 
             <Route
-              path='/feedback'
+              path='/feedback/:bookingId'
               element={<Feedback />}
             />
             <Route
@@ -143,9 +151,18 @@ function App() {
               element={<CourtTimeSlotList />}
             />
             <Route
+              path="/StaffBooking/:id"
+              element={<StaffBookingForm />} />
+            <Route
               path="*"
               element={<Navigate to="/" />}
             />
+            <Route
+              path="/line"
+              element={<MyResponsiveLine />} />
+            <Route
+              path="/bar"
+              element={<BookingReport />} />
           </Routes>
         </Router>
 

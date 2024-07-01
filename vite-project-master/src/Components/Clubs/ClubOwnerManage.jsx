@@ -30,11 +30,17 @@ const ClubOwnerManage = () => {
         }} className="nav-link">
           Update Club
         </Link>
-        <Link to={{
+        {/* <Link to={{
           pathname: `/showBooking/${club.clubId}`,
           state: { club }
         }} className="nav-link">
           Show Booking
+        </Link> */}
+        <Link to={{
+          pathname: `/staff`,
+          state: { club }
+        }} className="nav-link">
+          Check-in
         </Link>
         <Link to={{
           pathname: `/clubManage/courtList/${club.clubId}`,
