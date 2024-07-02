@@ -1,3 +1,6 @@
 
 /node_modules
 /vite-project/node_modules
+be/.mvn/wrapper/maven-wrapper.properties
+be/mvnw
+be/mvnw.cmd
