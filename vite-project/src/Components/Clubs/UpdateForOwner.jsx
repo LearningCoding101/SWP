@@ -109,7 +109,7 @@ const UpdateForCustomer = () => {
 
     return (
         <div>
-            <NavBar />
+
             <div style={{ marginTop: 130, marginBottom: 30 }}>
                 <h3 style={{ textAlign: 'center' }}>Booking ID: {bookingid}</h3>
 
@@ -151,6 +151,9 @@ const UpdateForCustomer = () => {
                                                 disabledDate={(current) => current && current < moment().startOf('day')}
                                             />
                                         </Form.Item>
+
+
+
                                         <Form.Item name="courtTimeSlotId">
                                             {courtTimeSlots.filter(timeSlot => timeSlot.status === 'AVAILABLE').map((timeSlot) => (
                                                 <Tag
@@ -171,7 +174,7 @@ const UpdateForCustomer = () => {
                     })}
                 </Row>
             </div>
-            <Footer />
+
         </div>
     );
 };
