@@ -85,6 +85,7 @@ public class ClubService {
             clubResponse.setClubId(club.getClubId());
             clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
             clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
+            clubResponse.setActive(!club.isDeleted());
 //            clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
 //            clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
 //            clubResponse.setCount(courtRepository.countCourtsByClub_ClubId(club.getClubId()));
