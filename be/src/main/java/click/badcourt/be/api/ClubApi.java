@@ -2,10 +2,7 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.entity.Club;
-import click.badcourt.be.model.request.ClubComboCreateRequest;
-import click.badcourt.be.model.request.ClubCreateRequest;
-import click.badcourt.be.model.request.ClubUpdateRequest;
-import click.badcourt.be.model.request.ForgotPasswordRequest;
+import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.ClubResponse;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.AuthenticationService;
@@ -27,6 +24,8 @@ public class ClubApi {
     ClubService clubService;
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private ClubRepository clubRepository;
 
     @GetMapping("clubs")
     public ResponseEntity getAll(){
@@ -92,5 +91,19 @@ public class ClubApi {
     public ResponseEntity deleteClub(@PathVariable Long id){
         clubService.deleteClub(id);
         return ResponseEntity.ok( "courtID :"+id +" is deleted");
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{ClubId}/{status}")
+    public String updateClub(@RequestParam Long ClubId, @RequestParam boolean status) {
+        Club club = clubRepository.findById(ClubId).orElseThrow(()-> new RuntimeException("Club not found"));
+        if (status){
+            club.setDeleted(true);
+            clubRepository.save(club);
+            return "Club " + club.getName() + " temporarily stop!";
+        } else {
+            club.setDeleted(false);
+            clubRepository.save(club);
+            return "Club " + club.getName() + " work again!";
+        }
     }
 }
