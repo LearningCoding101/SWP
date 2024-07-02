@@ -147,12 +147,12 @@
 
 // export default BookingType3;
 
-
-
 import React, { useState } from "react";
 import { Form, DatePicker, Button, List, message, Radio, Select } from "antd";
 import moment from "moment";
 import api from "../../config/axios";
+
+const { Option } = Select;
 
 const BookingType3 = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
@@ -163,14 +163,21 @@ const BookingType3 = (props) => {
   const [error, setError] = useState(null);
   const [numberOfDays, setNumberOfDays] = useState();
 
-  let isDisabled = typeDetailList.length != numberOfDays ? false : true;
+  const isDisabled = typeDetailList.length !== numberOfDays;
+
+  // Validate date
+  const disabledDate = (current) => {
+    const today = moment().startOf("day");
+    const maxDate = moment().add(182, "days").endOf("day");
+    return current && (current < today || current > maxDate);
+  };
 
   const handleDateChange = async (date) => {
     setSelectedDate(date.format("YYYY-MM-DD"));
     await fetchCourtTimeSlots(date.format("YYYY-MM-DD"));
   };
 
-  //GET Court Time Slot
+  // GET Court Time Slot
   const fetchCourtTimeSlots = async (date) => {
     try {
       const response = await api.get(`/courtTimeSlot/${props.courtId}/${date}`);
@@ -178,26 +185,22 @@ const BookingType3 = (props) => {
       setCourtTimeSlots(response.data);
       console.log(response.data);
       setAvailableTimes(
-        slotFilter.filter((item) => item.status == "AVAILABLE")
+        slotFilter.filter((item) => item.status === "AVAILABLE")
       );
-      console.log(slotFilter.filter((item) => item.status == "AVAILABLE"));
-      // const data = response.data;
-      // const bookingId = data.id;
-      // localStorage.setItem("Id", bookingId);
+      console.log(slotFilter.filter((item) => item.status === "AVAILABLE"));
     } catch (error) {
       setError(error.message);
     }
   };
 
-  // Check dublicate for date && Prepare + Check dublicate bookingDetailRequestCombos
+  // Check for duplicate dates and prepare bookingDetailRequestCombos
   const handleAddToSchedule = (id, startTime, endTime) => {
-    // const newEntry = { date: selectedDate.format("YYYY-MM-DD"), time };
     const newEntry = { id, date: selectedDate, startTime, endTime };
     const bookingTypeDetail = {
-      courtTSId: id, // Update with correct value if available
+      courtTSId: id,
       bookingDate: selectedDate,
-      durationInMonths: 0, // Update with correct value if available
-      dayOfWeek: null, // Update with correct value if available
+      durationInMonths: 0,
+      dayOfWeek: null,
     };
 
     const isDateDuplicate = selectedSchedule.some(
@@ -212,6 +215,18 @@ const BookingType3 = (props) => {
         entry.courtTSId === bookingTypeDetail.courtTSId &&
         entry.bookingDate === bookingTypeDetail.bookingDate
     );
+
+    if (selectedSchedule.length > 0) {
+      const firstEntryMonth = moment(selectedSchedule[0].date).month();
+      const selectedMonth = moment(selectedDate).month();
+
+      if (firstEntryMonth !== selectedMonth) {
+        message.error(
+          "Selected date must be in the same month as the first selected date."
+        );
+        return;
+      }
+    }
 
     if (isDateDuplicate) {
       message.warning("This schedule is already added");
@@ -244,21 +259,6 @@ const BookingType3 = (props) => {
     message.success("Schedule entry deleted");
   };
 
-  // Prepare bookingDetailRequestCombos
-  // const onChange = (values) => {
-  //   const bookingTypeDetail = {
-  //     courtTSId: values.target.value, // Update with correct value if available
-  //     bookingDate: selectedDate,
-  //     durationInMonths: 0, // Update with correct value if available
-  //     dayOfWeek: null, // Update with correct value if available
-  //   };
-
-  //   setTypeDetailList([...typeDetailList, bookingTypeDetail]);
-  //   console.log(typeDetailList);
-
-  //   props.bookingDetail([...typeDetailList, bookingTypeDetail]);
-  // };
-
   return (
     <div name="bookingType3Form" layout="vertical">
       <div className="row">
@@ -273,7 +273,11 @@ const BookingType3 = (props) => {
               },
             ]}
           >
-            <DatePicker onChange={handleDateChange} />
+            <DatePicker
+              format="YYYY-MM-DD"
+              onChange={handleDateChange}
+              disabledDate={disabledDate}
+            />
           </Form.Item>
         </div>
         <div className="col-md-6">
@@ -300,17 +304,13 @@ const BookingType3 = (props) => {
       </div>
 
       {numberOfDays && (
-        <Form.Item
-          name="time"
-          label="Available Times"
-          // rules={[{ required: true, message: "Please select a time!" }]}
-        >
+        <Form.Item name="time" label="Available Times">
           <Radio.Group>
             {availableTimes.map((item, index) => (
               <Radio.Button
                 key={index}
                 value={item.courtTimeSlotId}
-                disabled={isDisabled}
+                disabled={!isDisabled}
                 onClick={() =>
                   handleAddToSchedule(
                     item.courtTimeSlotId,
@@ -318,17 +318,11 @@ const BookingType3 = (props) => {
                     item.end_time
                   )
                 }
-                // onChange={onChange}
               >
                 {item.start_time} - {item.end_time}
               </Radio.Button>
             ))}
           </Radio.Group>
-          {/* {availableTimes.map((item, index) => (
-            <Button key={index} onClick={() => handleAddToSchedule(item.time)}>
-              {item.time}
-            </Button>
-          ))} */}
         </Form.Item>
       )}
 
