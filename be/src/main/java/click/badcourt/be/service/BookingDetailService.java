@@ -19,17 +19,22 @@ import click.badcourt.be.repository.CourtTimeSlotRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class BookingDetailService {
@@ -46,6 +51,28 @@ public class BookingDetailService {
     private AccountUtils accountUtils;
     @Autowired
     private CourtRepository courtRepository;
+    private static final Logger logger = LoggerFactory.getLogger(BookingDetailService.class);
+
+    @Transactional
+    @Scheduled(fixedRate = 60000) // Run the method every 30 minutes
+    public void updatePassedBookingDetails() {
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+        Date currentDateAsDate = Date.from(currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        // Fetch booking details with date before the current date or with the current date but time before the current time
+        List<BookingDetail> bookingDetails = bookingDetailRepository.findByDetailStatusAndDateBeforeAndCourtTimeslot_Timeslot_EndTimeBefore(BookingDetailStatusEnum.NOTYET, currentDateAsDate, currentTime);
+
+        for (BookingDetail bookingDetail : bookingDetails) {
+            logger.info("Updating BookingDetail with ID: {}", bookingDetail.getBookingDetailsId());
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.PASSED);
+            bookingDetailRepository.save(bookingDetail);
+        }
+        logger.info("Background job for updating passed booking details has completed.");
+    }
+
+
+
 
     public List<BookingDetailDeleteResponse> getAllBookingDetails() {
         List<BookingDetail> bookingDeleteDetails= bookingDetailRepository.findAll();
@@ -77,8 +104,8 @@ public class BookingDetailService {
                 bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
                 bookingDetailResponse.setFullnameoforder(bookingDetail.getBooking().getAccount().getFullName());
                 bookingDetailResponse.setPhonenumber(bookingDetail.getBooking().getAccount().getPhone());
-                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
-                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStartTime());
+                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEndTime());
                 bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
                 bookingDetailResponse.setTimeslotId(bookingDetail.getCourtTimeslot().getTimeslot().getTimeslotId());
                 bookingDetailResponses.add(bookingDetailResponse);
@@ -105,8 +132,8 @@ public class BookingDetailService {
                 bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
                 bookingDetailResponse.setFullnameoforder(bookingDetail.getBooking().getAccount().getFullName());
                 bookingDetailResponse.setPhonenumber(bookingDetail.getBooking().getAccount().getPhone());
-                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
-                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStartTime());
+                bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEndTime());
                 bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
                 bookingDetailResponses.add(bookingDetailResponse);
             }
@@ -137,8 +164,8 @@ public class BookingDetailService {
                     bookingDetailResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
                     bookingDetailResponse.setFullnameoforder(bookingDetail.getBooking().getAccount().getFullName());
                     bookingDetailResponse.setPhonenumber(bookingDetail.getBooking().getAccount().getPhone());
-                    bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
-                    bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                    bookingDetailResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStartTime());
+                    bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEndTime());
                     bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
                     bookingDetailResponse.setTimeslotId(bookingDetail.getCourtTimeslot().getTimeslot().getTimeslotId());
                     bookingDetailResponses.add(bookingDetailResponse);
@@ -166,8 +193,8 @@ public class BookingDetailService {
                 DayOfWeek dayOfWeek = DayOfWeek.of(adjustedDayOfWeekNumeric);
                 bookingDetailsCustomerResponse.setDayOfWeek(dayOfWeek);
                 bookingDetailsCustomerResponse.setCourtName(bookingDetail.getCourtTimeslot().getCourt().getCourtname());
-                bookingDetailsCustomerResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
-                bookingDetailsCustomerResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+                bookingDetailsCustomerResponse.setStart_time(bookingDetail.getCourtTimeslot().getTimeslot().getStartTime());
+                bookingDetailsCustomerResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEndTime());
                 bookingDetailsCustomerResponse.setStatus(bookingDetail.getDetailStatus());
                 bookingDetailsCustomerResponses.add(bookingDetailsCustomerResponse);
             }
@@ -233,8 +260,8 @@ public class BookingDetailService {
             response.setCourtName(savedBookingDetail.getCourtTimeslot().getCourt().getCourtname());
             response.setFullnameoforder(savedBookingDetail.getBooking().getAccount().getFullName());
             response.setPhonenumber(savedBookingDetail.getBooking().getAccount().getPhone());
-            response.setStart_time(savedBookingDetail.getCourtTimeslot().getTimeslot().getStart_time());
-            response.setEnd_time(savedBookingDetail.getCourtTimeslot().getTimeslot().getEnd_time());
+            response.setStart_time(savedBookingDetail.getCourtTimeslot().getTimeslot().getStartTime());
+            response.setEnd_time(savedBookingDetail.getCourtTimeslot().getTimeslot().getEndTime());
 
             bookingDetailsResponses.add(response);
         }
@@ -317,7 +344,7 @@ public class BookingDetailService {
             bookingDetail.setCourtTimeslot(courtTimeslot.get());
             bookingDetail.setDate(bookingDetailRequest.getBookingDate());
             bookingDetail.setDeleted(false);
-            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOTYET);
             bookingDetailRepository.save(bookingDetail);
             return bookingDetailRequest;
         }
@@ -341,7 +368,7 @@ public class BookingDetailService {
             bookingDetail.setCourtTimeslot(courtTimeslot.get());
             bookingDetail.setDate(datee);
             bookingDetail.setDeleted(false);
-            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOTYET);
             bookingDetailRepository.save(bookingDetail);
             returnBookingDetailRequest.setBookingId(id);
             returnBookingDetailRequest.setBookingDate(datee);
@@ -368,7 +395,7 @@ public class BookingDetailService {
             bookingDetail.setCourtTimeslot(courtTimeslot.get());
             bookingDetail.setDate(datee);
             bookingDetail.setDeleted(false);
-            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOT_YET);
+            bookingDetail.setDetailStatus(BookingDetailStatusEnum.NOTYET);
             bookingDetailRepository.save(bookingDetail);
             returnBookingDetailRequest.setBookingId(id);
             returnBookingDetailRequest.setBookingDate(datee);
@@ -409,12 +436,12 @@ public class BookingDetailService {
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(requestCombo.getNewcourtTSId());
         ChangeSlotBookingDetailResponseCombo changeSlot = new ChangeSlotBookingDetailResponseCombo();
         if(bookingDetail.isPresent()) {
-            if(bookingDetail.get().getDetailStatus().equals(BookingDetailStatusEnum.NOT_YET)){
+            if(bookingDetail.get().getDetailStatus().equals(BookingDetailStatusEnum.NOTYET)){
             changeSlot.setBookingId(bookingOptional.getBookingId());
             changeSlot.setCourtName(bookingDetail.get().getCourtTimeslot().getCourt().getCourtname());
             changeSlot.setBookingDate(bookingDetail.get().getDate());
-            changeSlot.setStart_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getStart_time());
-            changeSlot.setEnd_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEnd_time());
+            changeSlot.setStart_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getStartTime());
+            changeSlot.setEnd_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEndTime());
             changeSlot.setCourtTSId(bookingDetail.get().getCourtTimeslot().getCourtTSlotID());
             changeSlot.setTimeslotId(bookingDetail.get().getCourtTimeslot().getTimeslot().getTimeslotId());
             changeSlot.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
@@ -425,8 +452,8 @@ public class BookingDetailService {
                 bookingDetail.get().setDetailStatus(BookingDetailStatusEnum.CHANGED);
                 bookingDetailRepository.save(bookingDetail.get());
                 changeSlot.setNewcourtName(bookingDetail.get().getCourtTimeslot().getCourt().getCourtname());
-                changeSlot.setNewstart_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getStart_time());
-                changeSlot.setNewend_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEnd_time());
+                changeSlot.setNewstart_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getStartTime());
+                changeSlot.setNewend_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEndTime());
                 changeSlot.setNewtimeslotId(bookingDetail.get().getCourtTimeslot().getTimeslot().getTimeslotId());
                 changeSlot.setNewcourtTSId(bookingDetail.get().getCourtTimeslot().getCourtTSlotID());
                 changeSlot.setBookingDate(bookingDetail.get().getDate());
@@ -453,7 +480,7 @@ public class BookingDetailService {
     }
     public void checkin(Long id){
         Optional<BookingDetail> bookingDetail= bookingDetailRepository.findById(id);
-        bookingDetail.ifPresent(detail -> detail.setDetailStatus(BookingDetailStatusEnum.CHECKED_IN));
+        bookingDetail.ifPresent(detail -> detail.setDetailStatus(BookingDetailStatusEnum.CHECKEDIN));
         bookingDetailRepository.save(bookingDetail.get());
     }
     public Map<String, Integer> getBookingsCountByDayOfWeek() {

@@ -43,8 +43,8 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
             courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
 
-            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
-            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStartTime());
+            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEndTime());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
             for (BookingDetail booking : bookingDTList) {
                 if ((booking.getDate().getDate()==date.getDate() && booking.getDate().getMonth()==date.getMonth() && booking.getDate().getYear()==date.getYear()) && booking.getCourtTimeslot().getCourtTSlotID() == courtTimeslot.getCourtTSlotID()) {
@@ -77,8 +77,8 @@ public class CourtTimeSlotService {
             courtTimeSlotResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
             courtTimeSlotResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
             courtTimeSlotResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
-            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
-            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotResponse.setStart_time(courtTimeslot.getTimeslot().getStartTime());
+            courtTimeSlotResponse.setEnd_time(courtTimeslot.getTimeslot().getEndTime());
             courtTimeSlotResponse.setStatus(CourtTSStatusEnum.AVAILABLE);
 
             // Check each date within the range
@@ -145,8 +145,8 @@ public class CourtTimeSlotService {
             courtTimeSlotManageResponse.setCourtTimeSlotId(courtTimeslot.getCourtTSlotID());
             courtTimeSlotManageResponse.setCourtId(courtTimeslot.getCourt().getCourtId());
             courtTimeSlotManageResponse.setTimeSlotId(courtTimeslot.getTimeslot().getTimeslotId());
-            courtTimeSlotManageResponse.setStart_time(courtTimeslot.getTimeslot().getStart_time());
-            courtTimeSlotManageResponse.setEnd_time(courtTimeslot.getTimeslot().getEnd_time());
+            courtTimeSlotManageResponse.setStart_time(courtTimeslot.getTimeslot().getStartTime());
+            courtTimeSlotManageResponse.setEnd_time(courtTimeslot.getTimeslot().getEndTime());
             courtTimeSlotManageResponse.setPrice(courtTimeslot.getCourt().getClub().getPrice());
             courtTimeSlotManageResponses.add(courtTimeSlotManageResponse);
         }

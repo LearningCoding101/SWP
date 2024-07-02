@@ -17,8 +17,8 @@ public class TimeSlot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long timeslotId;
 
-    private LocalTime start_time;
-    private LocalTime end_time;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
     @Column(nullable = false)
     boolean deleted;

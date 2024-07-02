@@ -21,16 +21,16 @@ public class TimeSlotService {
 
     public TimeSlot addTimeSlot(TimeSlotRequest timeSlotRequest) {
         TimeSlot slot = new TimeSlot();
-        slot.setStart_time(LocalTime.of(timeSlotRequest.getStartHour(), timeSlotRequest.getStartMinute()));
-        slot.setEnd_time(LocalTime.of(timeSlotRequest.getEndHour(), timeSlotRequest.getEndMinute()));
+        slot.setStartTime(LocalTime.of(timeSlotRequest.getStartHour(), timeSlotRequest.getStartMinute()));
+        slot.setEndTime(LocalTime.of(timeSlotRequest.getEndHour(), timeSlotRequest.getEndMinute()));
         slot.setDeleted(false);
         return timeSlotRepository.save(slot);
     }
 
     public TimeSlot updateTimeSlot(TimeSlotRequest timeSlotRequest,Long id) {
         TimeSlot slot = timeSlotRepository.findById(id).orElseThrow(() -> new RuntimeException("Timeslot not found"));
-        slot.setStart_time(LocalTime.of(timeSlotRequest.getStartHour(), timeSlotRequest.getStartMinute()));
-        slot.setEnd_time(LocalTime.of(timeSlotRequest.getEndHour(), timeSlotRequest.getEndMinute()));
+        slot.setStartTime(LocalTime.of(timeSlotRequest.getStartHour(), timeSlotRequest.getStartMinute()));
+        slot.setEndTime(LocalTime.of(timeSlotRequest.getEndHour(), timeSlotRequest.getEndMinute()));
         return timeSlotRepository.save(slot);
     }
 

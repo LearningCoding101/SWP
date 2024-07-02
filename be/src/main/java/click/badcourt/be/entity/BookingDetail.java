@@ -32,5 +32,5 @@ public class BookingDetail {
     @Column(nullable = false)
     boolean deleted;
     @Enumerated(EnumType.STRING)
-    BookingDetailStatusEnum detailStatus=BookingDetailStatusEnum.NOT_YET;
+    BookingDetailStatusEnum detailStatus=BookingDetailStatusEnum.NOTYET;
 }
