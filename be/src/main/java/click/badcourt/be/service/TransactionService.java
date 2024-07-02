@@ -150,10 +150,8 @@ public class TransactionService {
         Double cal = price * num;
         if (bookingTypeId == 1){
             money = price;
-        } else if (bookingTypeId == 2){
-            money = cal * scale - (cal * scale) % 10;
-        } else if (bookingTypeId == 3){
-            money = price + cal * scale - (cal * scale) % 10;
+        } else if (bookingTypeId == 2 || bookingTypeId == 3){
+            money = (cal * scale) - (cal * scale) % 10;
         }
         return money.longValue();
     }
@@ -166,10 +164,8 @@ public class TransactionService {
         Double cal = price * num;
         if (bookingTypeId == 1){
             money = (price-price*0.5)-(price-price*0.5)%10;
-        } else if (bookingTypeId == 2){
-            money = cal * scale - (cal * scale) % 10;
-        } else if (bookingTypeId == 3){
-            money = price + cal * scale - (cal * scale) % 10;
+        } else if (bookingTypeId == 2 || bookingTypeId == 3){
+            money = (cal * scale) - (cal * scale) % 10;
         }
         return money.longValue();
     }
