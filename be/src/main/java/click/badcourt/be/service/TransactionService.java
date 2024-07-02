@@ -40,6 +40,7 @@ public class TransactionService {
     private BookingTypeRepository bookingTypeRepository;
     @Autowired
     private AccountUtils accountUtils;
+    @Autowired
     private BookingService bookingService;
 
     public List<TransactionResponse> findAll() {
