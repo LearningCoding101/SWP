@@ -85,6 +85,9 @@ public class TransactionService {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
                     booking.get().setStatus(BookingStatusEnum.COMPLETED);
                     transaction.setDepositAmount(0.0);
+                    QRCodeData qrCodeData = new QRCodeData();
+                    qrCodeData.setBookingId(booking.get().getBookingId());
+                    bookingService.sendBookingConfirmation(qrCodeData,booking.get().getAccount().getEmail());
                 }
             }
             else {
@@ -94,9 +97,6 @@ public class TransactionService {
             transaction.setTotalAmount(TotalPrice(transactionRequest.getBookingId()));
             transaction.setPaymentDate(new Date());
             transaction.setBooking(booking.get());
-            QRCodeData qrCodeData = new QRCodeData();
-            qrCodeData.setBookingId(booking.get().getBookingId());
-            bookingService.sendBookingConfirmation(qrCodeData,booking.get().getAccount().getEmail());
             return transactionRepository.save(transaction);
         }
         else{
