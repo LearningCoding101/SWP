@@ -1,61 +1,11 @@
-// import React, { useState } from "react";
-// import BookingDetails from "./BookingDetails";
-// import { useNavigate } from "react-router-dom";
 
-// const BookingHistory = (props) => {
-
-//   let [showBookingDetail, updateShowBookingDetail] = useState(false);
-//   function displayDetail() {
-//     updateShowBookingDetail(true);
-//   }
-//   function hideDetail() {
-//     updateShowBookingDetail(false);
-//   }
-//   return (
-//     <li
-//       className="list-group-item"
-//       style={{ margin: 7, backgroundColor: "ivory" }}
-//     >
-//       <div className="container media align-items-lg-center flex-column flex-lg-row p-3 d-flex">
-//         <div className="media-body col-8">
-//           <h5 className="mt-0 font-weight-bold mb-2">
-//             Order ID: {props.orderID}
-//           </h5>
-//           <p className="font-italic text-muted mb-0 small text-secondary">
-//             Club: {props.club} - {props.address}
-//           </p>
-//           <p className="text-muted mb-0 small text-secondary padding-right-50">
-//             Time: {props.time}
-//           </p>
-//           <p className="text-muted mb-0 small text-secondary">
-//             Booking Create Time: {props.bookingCreateTime}
-//           </p>
-//         </div>
-//         <div className="col-2 ">
-//           <span className="text-center badge bg-success">{props.status}</span>
-//         </div>
-//         <div className="col-2 ">
-//           <button className="bg-primary bg-opacity-50" onClick={displayDetail}>
-//             Details
-//           </button>
-//         </div>
-//         <BookingDetails
-//           showDetail={showBookingDetail}
-//           showId={props}
-//           hideDetail={hideDetail}
-//         ></BookingDetails>
-//       </div>
-//     </li>
-//   );
-// };
-
-// export default BookingHistory;
 
 import React, { useState } from "react";
 import BookingDetails from "./BookingDetails"; // Assuming BookingDetails is also redesigned for Ant Design
 import { Card, List, Space, Button, Collapse } from "antd";
 import QRCode from "qrcode.react"; // Import QRCode from qrcode.react
 import { Link } from "react-router-dom";
+
 const BookingHistory = (props) => {
   const [showBookingDetail, updateShowBookingDetail] = useState(false);
 
@@ -79,78 +29,78 @@ const BookingHistory = (props) => {
   const qrCodeValue = JSON.stringify({ bookingId: props.orderID });
 
   return (
-    <Card
-      bordered={false}
-      style={{
-        margin: "16px 24px",
-        padding: "16px",
-        backgroundColor: "#f5f5f5", // Light grey background
-      }}
-    >
-      <List
-        itemLayout="horizontal"
-        dataSource={[props]} // Assuming data is passed as a single object
-        renderItem={(booking) => (
-          <List.Item
-            actions={[
-              <Button type="link" onClick={displayDetail}>
-                Details
-              </Button>,
-              <Link to={`/UpdateForCustomer/${props.orderID}/${props.clubId}`} className="nav-link">
-                Update Booking
-              </Link>
-
-
-
-
-
-            ]}
+    <div>
+      <Card
+        bordered={false}
+        style={{
+          margin: "16px 24px",
+          padding: "16px",
+          backgroundColor: "#f5f5f5", // Light grey background
+        }}
+      >
+        <List
+          itemLayout="horizontal"
+          dataSource={[props]} // Assuming data is passed as a single object
+          renderItem={(booking) => (
+            <List.Item
+              actions={[
+                <Button type="primary" onClick={displayDetail}>
+                  Details
+                </Button>,
+                <Link to={`/feedback/${props.orderID}`}>
+                  Feedback
+                </Link>,
+                <Link to={`/UpdateForCustomer/${booking.orderID}/${props.clubId}`}>
+                  Update Booking
+                </Link>
+              ]}
+            >
+              <List.Item.Meta
+                avatar={<div className="status-badge">{booking.status}</div>}
+                title={`Order ID: ${booking.orderID}`}
+                description={
+                  <Space direction="vertical">
+                    <p>
+                      Club: {booking.club} - {booking.address}
+                    </p>
+                    <p>
+                      Booking Create Time:{" "}
+                      {new Date(booking.bookingCreateTime).toLocaleDateString(
+                        "en-GB",
+                        { year: "numeric", month: "2-digit", day: "2-digit" }
+                      )}
+                    </p>
+                    {/* Display QR Code */}
+                    <div style={{ textAlign: "left" }}>
+                      <QRCode value={qrCodeValue} />
+                    </div>
+                  </Space>
+                }
+              />
+              {/* {showBookingDetail && renderBookingDetails()} */}
+            </List.Item>
+          )}
+        />
+        {showBookingDetail && (
+          <div
+            className={`alert ${props.showDetail ? "" : "hidden"}`}
+            role="alert"
+          // style={{ backgroundColor: "white", maxWidth: "1200px", display: "" }}
+          // style={{
+          //   backgroundColor: "white",
+          //   overflowY: "auto",
+          //   maxHeight: "400px",
+          // }}
           >
-            <List.Item.Meta
-              avatar={<div className="status-badge">{booking.status}</div>}
-              title={`Order ID: ${booking.orderID}`}
-              description={
-                <Space direction="vertical">
-                  <p>
-                    Club: {booking.club} - {booking.address}
-                  </p>
-                  <p>
-                    Booking Create Time:{" "}
-                    {new Date(booking.bookingCreateTime).toLocaleDateString(
-                      "en-GB",
-                      { year: "numeric", month: "2-digit", day: "2-digit" }
-                    )}
-                  </p>
-                  {/* Display QR Code */}
-                  <div style={{ textAlign: "left" }}>
-                    <QRCode value={qrCodeValue} />
-                  </div>
-                </Space>
-              }
-            />
-            {/* {showBookingDetail && renderBookingDetails()} */}
-          </List.Item>
+            <BookingDetails
+              showDetail={showBookingDetail}
+              showId={props.orderID}
+            // hideDetail={hideDetail}
+            ></BookingDetails>
+          </div>
         )}
-      />
-      {showBookingDetail && (
-        <div
-          className={`alert ${props.showDetail ? "" : "hidden"}`}
-          role="alert"
-        // style={{ backgroundColor: "white", maxWidth: "1200px", display: "" }}
-        // style={{
-        //   backgroundColor: "white",
-        //   overflowY: "auto",
-        //   maxHeight: "400px",
-        // }}
-        >
-          <BookingDetails
-            showDetail={showBookingDetail}
-            showId={props.orderID}
-          // hideDetail={hideDetail}
-          ></BookingDetails>
-        </div>
-      )}
-    </Card>
+      </Card>
+    </div>
   );
 };
 

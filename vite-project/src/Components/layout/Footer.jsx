@@ -4,9 +4,9 @@ import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/esm/Row'
 
 const Footer = () => {
-	let today = new Date()
+	const today = new Date()
 	return (
-		<footer className="bg-dark text-light py-3 footer mt-lg-5">
+		<div className="bg-dark text-light py-3 mt-lg-5">
 			<Container>
 				<Row>
 					<Col xs={12} md={12} className="text-center">
@@ -14,7 +14,7 @@ const Footer = () => {
 					</Col>
 				</Row>
 			</Container>
-		</footer>
+		</div>
 	)
 }
 

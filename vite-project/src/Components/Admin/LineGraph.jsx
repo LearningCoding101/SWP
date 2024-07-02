@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ResponsiveLine } from '@nivo/line';
+import api from '../../config/axios';
 
 const MyResponsiveLine = () => {
     const [data, setData] = useState([]);
@@ -14,7 +15,7 @@ const MyResponsiveLine = () => {
     const fetchData = async (year) => {
         try {
 
-            const response = await axios.get(`http://localhost:8080/api/transactions/totalAmountByMonth?year=${year}`, {
+            const response = await api.get(`/transactions/totalAmountByMonth?year=${year}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

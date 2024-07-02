@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
+import axios from 'axios';
+import api from '../../config/axios';
 
 const BookingReport = () => {
   const [data, setData] = useState({
@@ -33,7 +35,7 @@ const BookingReport = () => {
   useEffect(() => {
     const token = 'eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJzdHJpbmciLCJpYXQiOjE3MTkzNzQ4NTAsImV4cCI6MTcxOTQ2MTI1MH0.C19An1Q33c6us2aQaY_is0LTvoJFAg1E7gSjAfjp6oqUszbga9grKZgZK_Yz26Gz';
 
-    fetch('http://localhost:8080/api/bookingDetail/report', {
+    api.get('/bookingDetail/report', {
       headers: {
         'Authorization': `Bearer ${token}`
       }

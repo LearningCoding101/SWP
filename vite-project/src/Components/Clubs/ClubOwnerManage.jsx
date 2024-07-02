@@ -68,7 +68,7 @@ const ClubOwnerManage = () => {
             className="club-image"
           />
           <h2 className="club-name">{club.name}</h2>
-          <p className="club-price">Price: ${club.price}</p>
+          <p className="club-price">Price: {club.price} VND/hr</p>
           <p className="club-address">Address: {club.address}</p>
           <p className="club-time">
             Open Time: {club.open_time} - Close Time: {club.close_time}

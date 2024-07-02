@@ -42,7 +42,7 @@ const ShowBooking = (props) => {
                   <Descriptions.Item label="Court Name">
                     {booking.courtName}
                   </Descriptions.Item>
-                  <Descriptions.Item label="Full Name of Order">
+                  <Descriptions.Item label="Full Name of Customer">
                     {booking.fullnameoforder}
                   </Descriptions.Item>
                   <Descriptions.Item label="Phone Number">

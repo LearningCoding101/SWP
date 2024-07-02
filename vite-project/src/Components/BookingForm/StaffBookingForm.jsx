@@ -181,7 +181,7 @@ const StaffBookingForm = () => {
     <div style={{ display: "flex", flexDirection: "column" }}>
       <NavBar /> {/* Render NavBar at the top */}
       <div
-        style={{ display: "flex", justifyContent: "center", marginTop: 100 }}
+        style={{ display: "flex", justifyContent: "center", marginTop: 100, marginBottom: 100 }}
       >
         {" "}
         {/* Added margin-top for space */}

@@ -36,11 +36,12 @@ const BookingHistoryList = () => {
   // console.log(customers);
   return (
     <ul className="list-group shadow-sm">
-      <h1>History</h1>
+      {/* <h1>History</h1> */}
       {customers.map((booking) => {
         return (
           <BookingHistory
             orderID={booking?.id}
+            clubId={booking?.clubId}
             club={booking?.club_name}
             address={booking?.address}
             time={booking?.Time}

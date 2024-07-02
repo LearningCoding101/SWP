@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Layout, Menu, theme } from 'antd';
+import MyResponsiveLine from './LineGraph';
 import {
   DesktopOutlined,
   FileOutlined,
@@ -6,8 +8,12 @@ import {
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import AddClubCombo from './AddClubCombo';
+import BookingReport from './BarChart';
+import UserManage from './UserManage';
+
 const { Header, Content, Footer, Sider } = Layout;
+
 function getItem(label, key, icon, children) {
   return {
     key,
@@ -17,71 +23,61 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem('Option 1', '1', <PieChartOutlined />),
+  // Existing menu items (key '1')
+  // ...
+  getItem('Income Analysis', '1', <PieChartOutlined />),
   getItem('Option 2', '2', <DesktopOutlined />),
   getItem('User', 'sub1', <UserOutlined />, [
     getItem('Tom', '3'),
     getItem('Bill', '4'),
     getItem('Alex', '5'),
   ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-  getItem('Files', '9', <FileOutlined />),
-];
+  // New menu items
+   getItem('Manage Users', '12', <UserOutlined />),
+  getItem('Add club', '10', <DesktopOutlined />),
+  getItem('Bar Chart Demo', '11', <UserOutlined />),
+ ];
+
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedKey, setSelectedKey] = useState('1');
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer },
   } = theme.useToken();
+
+  const filteredItems = items.filter((item) => item.key === '1' || item.key === '10' || item.key === '11'  || item.key === '12');
+
   return (
-    <Layout
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+        {/* Your Sider content */}
+     
+        <Menu
+          theme="dark"
+          selectedKeys={[selectedKey]} // Highlight the selected item
+          mode="inline"
+          onClick={({ key }) => setSelectedKey(key)} // Update selectedKey on menu item click
+          items={filteredItems}
+        />
       </Sider>
       <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        />
-        <Content
-          style={{
-            margin: '0 16px',
-          }}
-        >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            Bill is a cat.
-          </div>
+        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Content style={{ margin: '0 16px' }}>
+          {/* Render relevant content based on selectedKey */}
+          {/* Example: */}
+          {selectedKey === '1' && <MyResponsiveLine />}
+          {selectedKey === '10' && <AddClubCombo />}
+          {selectedKey === '11' && <BookingReport />}
+          {selectedKey === '12' && <UserManage />}
         </Content>
-        <Footer
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+        <Footer style={{ textAlign: 'center' }}>
+          Badcourts ©{new Date().getFullYear()}. All rights reserved
         </Footer>
       </Layout>
     </Layout>
   );
 };
+
 export default Dashboard;
+
+

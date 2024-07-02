@@ -1,109 +1,6 @@
-// import React, { useEffect } from "react";
-// import { Form, DatePicker, Button, message, Select, InputNumber } from "antd";
-// import axios from "axios";
-// import moment from "moment";
-// import { Option } from "antd/es/mentions";
-// import NavBar from "../layout/NavBar";
-// import Footer from "../layout/Footer";
-// import api from "../../config/axios";
 
-// // const { Option } = Select;
-
-// const BookingForm = () => {
-//   const [form] = Form.useForm();
-
-//   useEffect(() => {
-//     form.setFieldsValue({
-//       bookingDate: moment(),
-//     });
-//   }, [form]);
-
-//   const onFinish = async (values) => {
-//     const payload = {
-//       bookingDate: values.bookingDate.toISOString(),
-//       club_id: values.club_id,
-//       booking_type_id: values.booking_type_id,
-//     };
-
-//      const data = await api.post("/booking", payload)
-//       .then((response) => {
-//         message.success("Booking successful!");
-//         form.resetFields();
-//         form.setFieldsValue({
-//           bookingDate: moment(),
-//         });
-//       })
-//       .catch((error) => {
-//         message.error("Booking failed, please try again.");
-//       });
-//     console.log(data);
-//   };
-
-//   return (
-//     <div>
-//     <NavBar/>
-//     <Form
-//       form={form}
-//       name="bookingForm"
-//       layout="vertical"
-//       onFinish={onFinish}
-//       initialValues={{
-//         bookingDate: moment(),
-//       }}
-//     >
-//       <Form.Item
-//         name="bookingDate"
-//         label="Booking Date"
-//         rules={[{ required: true, message: "Please select the booking date!" }]}
-//         style={{ display: "none" }} // Hide the field
-//       >
-//         {/* <DatePicker showTime format="YYYY-MM-DDTHH:mm:ss.SSSZ" /> */}
-//         <DatePicker showTime format="YYYY-MM-DD" />
-//       </Form.Item>
-
-//       <Form.Item
-//         name="club_id"
-//         label="Club ID"
-//         rules={[{ required: true, message: "Please input the club ID!" }]}
-//       >
-//         <InputNumber min={0} style={{ width: "100%" }} />
-//       </Form.Item>
-
-//       <Form.Item
-//         name="booking_type_id"
-//         label="Booking Type"
-//         rules={[{ required: true, message: "Please select the booking type!" }]}
-//       >
-//         <Select>
-//           <Option value={1}>Theo giờ</Option>
-//           <Option value={2}>Theo tuần</Option>
-//           <Option value={3}>Theo tháng</Option>
-//         </Select>
-//       </Form.Item>
-
-//       <Form.Item>
-//         <Button type="primary" htmlType="submit">
-//           Submit
-//         </Button>
-//       </Form.Item>
-//     </Form>
-//     <Footer/>
-//     </div>
-//   );
-// };
-
-// export default BookingForm;
-import React, { useContext, useEffect, useState } from "react";
-import {
-  Form,
-  DatePicker,
-  Button,
-  message,
-  Select,
-  InputNumber,
-  Flex,
-  Input,
-} from "antd";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { Form, DatePicker, Button, message, Select, InputNumber, Flex } from "antd";
 import moment from "moment";
 import { Option } from "antd/es/mentions";
 import NavBar from "../layout/NavBar";
@@ -112,37 +9,47 @@ import api from "../../config/axios";
 import BookingType1 from "./BookingType1";
 import BookingType2 from "./BookingType2";
 import BookingType3 from "./BookingType3";
-import { Link, useParams } from "react-router-dom";
-
-const BookingForm = () => {
+import { Link, useNavigate, useParams } from "react-router-dom";
+import useGetParams from './../../assets/hooks/useGetParams';
+import TransactionSuccess from "../Payment/TransactionSuccess";
+import Transaction from "../Payment/Transaction";
+import { connect } from 'react-redux';
+const BookingForm = ({ children }) => {
+  const isLoggedIn = localStorage.getItem("token")
+  const navigate  = useNavigate();
+  const handleSetId = (id) => {
+    props.setId(id); // Dispatch an action to update state
+  };
+  const param = useGetParams();
   const { id } = useParams();
   console.log(id);
 
   const [bookingType, setBookingType] = useState(null);
   const [bookingId, setBookingId] = useState();
   const [courtId, setCourtID] = useState();
-  const [sum, setSum] = useState(0);
-  const [clickCount, setClickCount] = useState(0);
+  const [bookingConfirm, setBookingConfirm] = useState([]);
+  const [bookingData, setBookingData] = useState([]);
+  const [totalPrice, setTotalPrice] = useState("");
+  const [bookId, setBookId] = useState("");
+  const [bookingDate, setBookingDate] = useState("");
+  const [parentId, setParentId] = useState(null);
   const [bookingDetailRequestCombos, setBookingDetailRequestCombos] = useState(
     []
   );
-  const [days, setDays] = useState(0);
-
-  const isLoggedIn = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
+  console.log(bookingDetailRequestCombos);
   const [form] = Form.useForm();
-  // //insert today
-  // useEffect(() => {
-  //   form.setFieldsValue({
-  //     bookingDate: moment(),
-  //   });
-  // }, [form]);
+  const [form2] = Form.useForm();
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false)
+  const [days, setDays] = useState(0);
+  const userRole = localStorage.getItem("userRole");
   const isEnoughDay = (value) => {
     setDays(value);
   };
 
+
   //post api, create booking
   const bookingDetailRequest = (items) => {
+    console.log(items);
     setBookingDetailRequestCombos(items);
   };
 
@@ -153,16 +60,34 @@ const BookingForm = () => {
     }
     try {
       // Make the POST request
-      console.log("check");
-      console.log(bookingDetailRequestCombos);
       const response = await api.post("/booking/bookingCombo", {
         club_id: +id,
         booking_type_id: values.booking_type_id,
         bookingDetailRequestCombos: bookingDetailRequestCombos,
       });
+      console.log(response)
       // Handle response here
+
+      const bId = response.data.bookingResponse.id
+      setBookId(bId)
+      setBookingDate(response.data.bookingResponse.bookingDate)
+      const res = await api.get(`/transactions/price/${bId}`)
+      setTotalPrice(res.data.totalPriceNeedToPay)
+      console.log(res.data.totalPriceNeedToPay)
+      localStorage.setItem("totalPrice", res.data.totalPriceNeedToPay)
+      setBookingConfirm(res.data)
+      console.log(res.data)
+
+      form.setFields([
+          { name: "name", readonly: true },
+          { name: "booking_type_id", readonly: true },
+          { name: "submitButton", readonly: true }
+  
+          // ... add other form fields
+        ]);
+        setIsBookingConfirmed(true);
       console.log("Booking created:", response.data);
-      message.success("Booking successful!");
+      message.success("Booking confirmed!");
     } catch (error) {
       // Handle error here
       console.error("Error creating booking:", error);
@@ -175,16 +100,12 @@ const BookingForm = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    //GET Court
     const fetchCourts = async () => {
       try {
         const response = await api.get(`/court/${id}`);
 
         console.log(response.data);
         setCourts(response.data);
-        // const data = response.data;
-        // const bookingId = data.id;
-        // localStorage.setItem("Id", bookingId);
       } catch (error) {
         setError(error.message);
       }
@@ -193,30 +114,34 @@ const BookingForm = () => {
     fetchCourts();
   }, []);
 
-  //GET Summary
-  const fetchSum = async () => {
-    try {
-      const sumResponse = await api.get(
-        `/transactions/predictedPrice/${id}/${bookingType}/${bookingDetailRequestCombos.length}`
-      );
+  const handlePayament = async () => {
+    const payment = {
+      bookingId: bookId,
+      amount: totalPrice
+    }
 
-      console.log(sumResponse.data);
-      setSum(sumResponse.data);
+
+
+    try {
+      const paymentResponse = await api.post("/pay", payment)
+      const paymentURL = paymentResponse.data; // Assuming the entire response is the URL
+      if (paymentURL) {
+        window.location.href = paymentURL;
+      } else {
+        console.error("No paymentURL found in response");
+      }
+
     } catch (error) {
       setError(error.message);
     }
-  };
+  }
 
-  const handleClick = () => {
-    setClickCount(clickCount + 1);
-    fetchSum();
-  };
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+
+    <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
+
       <NavBar /> {/* Render NavBar at the top */}
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: 100 }}
-      >
+      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
         {" "}
         {/* Added margin-top for space */}
         <div
@@ -234,20 +159,7 @@ const BookingForm = () => {
               name="bookingForm"
               layout="vertical"
               onFinish={onFinish}
-              // initialValues={{
-              //   bookingDate: moment(),
-              // }}
             >
-              {/* <Form.Item
-              name="bookingDate"
-              label="Booking Date"
-              rules={[
-                { required: true, message: "Please select the booking date!" },
-              ]}
-              style={{ display: "none" }} // Hide the field
-            >
-              <DatePicker showTime format="YYYY-MM-DD" />
-            </Form.Item> */}
 
               <Form.Item
                 name="name"
@@ -268,34 +180,11 @@ const BookingForm = () => {
                 </Select>
               </Form.Item>
 
-              {/* {userRole === "ClUB_OWNER" ? (
-                <Form.Item
-                  label="Phone Number"
-                  name="phonenumber"
-                  rules={[
-                    { required: true, message: "Please enter a phone number" },
-                    {
-                      pattern: /^\d+$/,
-                      message: "Phone number must be numeric and non-negative",
-                    },
-                  ]}
-                >
-                  <Input
-                    // value={phoneNumber}
-                    // onChange={handlePhoneNumberChange}
-                    placeholder="Phone number"
-                  />
-                </Form.Item>
-              ) : null} */}
-
               <Form.Item
                 name="booking_type_id"
                 label="Booking Type"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please select the booking type!",
-                  },
+                  { required: true, message: "Please select the booking type!" },
                 ]}
               >
                 <Select onChange={(value) => setBookingType(value)}>
@@ -325,34 +214,62 @@ const BookingForm = () => {
                 ></BookingType3>
               )}
 
-              <Form.Item>
-                <Button type="link" onClick={handleClick}>
-                  Total: {clickCount > 0 && `${sum.moneyback}`}₫
-                </Button>
-                <Button type="primary" htmlType="submit">
+              <Form.Item
+               name="submitButton"
+               >
+                <Button type="primary" htmlType="submit" disabled={isBookingConfirmed}>
                   Confirm Booking
                 </Button>
               </Form.Item>
             </Form>
           ) : (
-            <Form>
-              <h1>You need to log in before booking a court</h1>
-              <Form.Item form={form} name="bookingForm" layout="vertical">
-                <Link to={"/login"}>
-                  <Flex vertical gap="small" style={{ width: "100%" }}>
-                    <Button type="primary" htmlType="submit">
-                      Log in
-                    </Button>
-                  </Flex>
-                </Link>
-              </Form.Item>
-            </Form>
+            navigate("/login")
+
           )}
         </div>
       </div>
+
+
+
+      {/* Right form */}
+      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 150 }}>
+        {" "}
+        {/* Added margin-top for space */}
+        <div
+          style={{
+            width: "511px",
+            padding: 20,
+            backgroundColor: "#fff",
+            borderRadius: 10,
+            border: "1px solid #ccc",
+          }}
+        >
+          <Form
+            form={form2}
+            name="bookingForm"
+            layout="vertical"
+            onFinish={handlePayament}
+          >
+            <div>
+              <h3>Booking summary</h3>
+              <p>Price: {bookingConfirm?.fullPrice}</p>
+              <p>Discount: {bookingConfirm?.salePrice}</p>
+              <p>Total: {bookingConfirm?.totalPriceNeedToPay}</p>
+            </div>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Checkout
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
       <Footer />
+
     </div>
+
   );
 };
 
 export default BookingForm;
+

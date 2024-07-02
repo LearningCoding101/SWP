@@ -59,6 +59,7 @@ const CourtList = () => {
                                 <Card.Text>
                                     Club: {court.clubName}
                                 </Card.Text>
+                                <Link to={`/showBooking/${court.id}`} className="btn btn-warning">View Booking</Link>
                                 <Link to={`/clubManage/courtList/CourtsDetail/${court.id}`} className="btn btn-warning">View Court Time Slots</Link>
                                 <Button className="btn btn-warning" onClick={() => deleteCourt(court.id)}>Delete Court</Button>
                             </Card.Body>

@@ -19,48 +19,32 @@ const NavBar = () => {
       {isLoggedIn ? (
         <>
           <Menu.Item>
-            <Link to="/profile" style={{ textDecoration: "none" }}>
-              Profile
-            </Link>
+            <Link to="/profile" style={{ textDecoration: 'none' }}>Profile</Link>
           </Menu.Item>
-          <Menu.Item>
-            <Link to="/feedback" style={{ textDecoration: "none" }}>
-              Feedback Demo
-            </Link>
-          </Menu.Item>
-
           {userRole === "CUSTOMER" && (
             <Menu.Item>
-              <Link to="/bookingHistory" style={{ textDecoration: "none" }}>
-                History
-              </Link>
+              <Link to="/bookingHistory" style={{ textDecoration: 'none' }}>History</Link>
             </Menu.Item>
           )}
         </>
       ) : (
         <Menu.Item>
-          <Link to="/login" style={{ textDecoration: "none" }}>
-            Login
-          </Link>
+          <Link to="/login" style={{ textDecoration: 'none' }}>Login</Link>
         </Menu.Item>
       )}
     </Menu>
   );
 
+
   return (
-    <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center">
-      <div className="container-fluid">
+    <nav className="navbar border-0 bg-white fixed-top d-flex justify-content-between align-items-center" style={{ height: 80 }}>
+      <div className="container-fluid" >
         {/* Logo */}
         <Link to="/" className="navbar-brand text-primary">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
-            style={{
-              width: "60px",
-              height: "50px",
-              marginLeft: "30px",
-              display: "fixed",
-            }}
-          ></img>
+            style={{ width: '100px', height: '70px', marginLeft: '10px' }}
+          />
         </Link>
 
         {/* Navigation Links (left-aligned) */}
@@ -77,6 +61,7 @@ const NavBar = () => {
               </NavLink>
             </li>
           )}
+
           {userRole != "ClUB_OWNER" && (
             <li className="nav-item">
               <NavLink
@@ -89,6 +74,7 @@ const NavBar = () => {
               </NavLink>
             </li>
           )}
+
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">
               <NavLink
@@ -101,7 +87,6 @@ const NavBar = () => {
               </NavLink>
             </li>
           )}
-
           {isLoggedIn && userRole === "ADMIN" && (
             <li className="nav-item">
               <NavLink
@@ -110,16 +95,16 @@ const NavBar = () => {
                   isActive ? "nav-link active text-primary" : "nav-link"
                 }
               >
-                CRUD Demo hahaha
+                CRUD Demo
               </NavLink>
             </li>
           )}
         </ul>
 
-        {/* Account Dropdown (right-aligned) */}
+
         <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
           <Button.Group>
-            <Button type="ghost" onClick={handleAccountClick}>
+            <Button type="ghost" onClick={handleAccountClick} style={{ fontSize: '24px' }}>
               {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
               <DownOutlined />
             </Button>
