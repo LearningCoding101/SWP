@@ -407,8 +407,9 @@ public class BookingDetailService {
         Optional<BookingDetail> bookingDetail= bookingDetailRepository.findById(bookingDetailId);
         Booking bookingOptional= bookingDetail.get().getBooking();
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(requestCombo.getNewcourtTSId());
-        if(bookingDetail.isPresent()){
-            ChangeSlotBookingDetailResponseCombo changeSlot = new ChangeSlotBookingDetailResponseCombo();
+        ChangeSlotBookingDetailResponseCombo changeSlot = new ChangeSlotBookingDetailResponseCombo();
+        if(bookingDetail.isPresent()) {
+            if(bookingDetail.get().getDetailStatus().equals(BookingDetailStatusEnum.NOT_YET)){
             changeSlot.setBookingId(bookingOptional.getBookingId());
             changeSlot.setCourtName(bookingDetail.get().getCourtTimeslot().getCourt().getCourtname());
             changeSlot.setBookingDate(bookingDetail.get().getDate());
@@ -418,7 +419,7 @@ public class BookingDetailService {
             changeSlot.setTimeslotId(bookingDetail.get().getCourtTimeslot().getTimeslot().getTimeslotId());
             changeSlot.setFullnameoforder(accountUtils.getCurrentAccount().getFullName());
             changeSlot.setPhonenumber(accountUtils.getCurrentAccount().getPhone());
-            if(bookingOptional!=null&&courtTimeslot.isPresent()){
+            if (bookingOptional != null && courtTimeslot.isPresent()) {
                 bookingDetail.get().setCourtTimeslot(courtTimeslot.get());
                 bookingDetail.get().setDate(requestCombo.getNewbookingDate());
                 bookingDetail.get().setDetailStatus(BookingDetailStatusEnum.CHANGED);
@@ -431,9 +432,11 @@ public class BookingDetailService {
                 changeSlot.setBookingDate(bookingDetail.get().getDate());
                 changeSlot.setStatus(bookingDetail.get().getDetailStatus());
                 return changeSlot;
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Booking or Court_Timeslot not found");
+            }
+        }else {
+                throw new IllegalArgumentException("This booking detail has changed once already!");
             }
         }
         else{
