@@ -8,7 +8,7 @@ const BookingHistoryPage = () => {
     <div>
       <NavBar />
       <div className="row">
-        <div className="col-lg-8 mx-auto" style={{marginTop: 150, marginBottom: 50}}>
+        <div className="col-lg-8 mx-auto" style={{marginTop: 100, marginBottom: 50}}>
           <BookingHistoryList></BookingHistoryList>
         </div>
       </div>

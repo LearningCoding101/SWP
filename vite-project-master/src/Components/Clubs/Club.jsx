@@ -121,7 +121,7 @@ const Club = () => {
   return (
     <div>
       <NavBar />
-      <div className="container" style={{ marginTop: 100 , marginBottom: 30}}>
+      <div className="container" style={{ marginTop: 100}}>
         <Space direction="vertical" size="middle">
           <Space.Compact>
             <Select

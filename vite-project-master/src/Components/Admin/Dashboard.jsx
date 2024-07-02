@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import AddClubCombo from './AddClubCombo';
 import BookingReport from './BarChart';
+import UserManage from './UserManage';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -32,9 +33,10 @@ const items = [
     getItem('Alex', '5'),
   ]),
   // New menu items
+   getItem('Manage Users', '12', <UserOutlined />),
   getItem('Add club', '10', <DesktopOutlined />),
   getItem('Bar Chart Demo', '11', <UserOutlined />),
-];
+ ];
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -43,7 +45,7 @@ const Dashboard = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const filteredItems = items.filter((item) => item.key === '1' || item.key === '10' || item.key === '11');
+  const filteredItems = items.filter((item) => item.key === '1' || item.key === '10' || item.key === '11'  || item.key === '12');
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -66,6 +68,7 @@ const Dashboard = () => {
           {selectedKey === '1' && <MyResponsiveLine />}
           {selectedKey === '10' && <AddClubCombo />}
           {selectedKey === '11' && <BookingReport />}
+          {selectedKey === '12' && <UserManage />}
         </Content>
         <Footer style={{ textAlign: 'center' }}>
           Badcourts ©{new Date().getFullYear()}. All rights reserved

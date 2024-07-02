@@ -38,6 +38,8 @@ import StaffBookingForm from './Components/BookingForm/StaffBookingForm';
 import BookingReport from "./Components/Admin/BarChart";
 import MyResponsiveLine from "./Components/Admin/LineGraph";
 import UpdateForCustomer from './Components/Clubs/UpdateForCustomer'
+import UpdateForOwner from "./Components/Clubs/UpdateForOwner";
+import ShowBookingsOfAClub from "./Components/Clubs/ShowBookingsOfAClub";
 
 
 function App() {
@@ -89,9 +91,17 @@ function App() {
               path='/emailsent'
               element={<EmailSent />}
             />
-             <Route
-              path="/UpdateForCustomer/:bookingid"
+            <Route
+              path="/UpdateForCustomer/:bookingid/:clubid"
               element={<UpdateForCustomer />}
+            />
+            <Route
+              path="/clubManage/ShowBookingsOfAClub"
+              element={<ShowBookingsOfAClub />}
+            />
+            <Route
+              path="/clubManage/ShowBookingsOfAClub/UpdateForOwner/:bookingid/:clubid"
+              element={<UpdateForOwner />}
             />
             <Route
               path='/reset-password'

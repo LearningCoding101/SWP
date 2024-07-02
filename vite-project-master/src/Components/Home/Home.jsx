@@ -5,22 +5,25 @@ import Parallax from '../common/Parallax.jsx'
 import NavBar from '../layout/NavBar.jsx';
 import Footer from '../layout/Footer.jsx';
 import CourtServices from './../common/CourtServices';
+import SearchNavBar from './../layout/SearchNavBar';
 
 const Home = () => {
   const location = useLocation()
   return (
     <>
-    <div>
-      <NavBar/>
-      <section>
-        <HeaderMain />
-        <div className='container-fluid' style={{margin: "40px 0"}}>
-          <CourtServices/>      
-        </div> 
-      </section>
-    
-    </div>
-    {/* <Footer /> */}
+      <div>
+        <NavBar />
+        <section>
+          <HeaderMain />
+          <div className='container-fluid' style={{ margin: "40px 0" }}>
+            <CourtServices />
+          </div>
+        </section>
+        <footer>
+          <Footer />
+        </footer>
+      </div>
+
     </>
   )
 }

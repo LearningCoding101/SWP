@@ -41,6 +41,7 @@ const BookingHistoryList = () => {
         return (
           <BookingHistory
             orderID={booking?.id}
+            clubId={booking?.clubId}
             club={booking?.club_name}
             address={booking?.address}
             time={booking?.Time}

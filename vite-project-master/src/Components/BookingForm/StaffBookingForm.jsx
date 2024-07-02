@@ -8,6 +8,8 @@ import {
   InputNumber,
   Flex,
   Input,
+  Radio,
+  List,
 } from "antd";
 import moment from "moment";
 import { Option } from "antd/es/mentions";
@@ -23,30 +25,23 @@ const StaffBookingForm = () => {
   const { id } = useParams();
   console.log(id);
 
-  const [bookingType, setBookingType] = useState(null);
-  const [bookingId, setBookingId] = useState();
   const [courtId, setCourtID] = useState();
   const [sum, setSum] = useState(0);
   const [clickCount, setClickCount] = useState(0);
   const [bookingDetailRequestCombos, setBookingDetailRequestCombos] = useState(
     []
   );
-  const [days, setDays] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [availableTimes, setAvailableTimes] = useState([]);
+  const [selectedSchedule, setSelectedSchedule] = useState([]);
+  const [courtTimeSlots, setCourtTimeSlots] = useState([]);
 
-  const isLoggedIn = localStorage.getItem("token");
-  const userRole = localStorage.getItem("userRole");
+  console.log(bookingDetailRequestCombos);
   const [form] = Form.useForm();
-  const isEnoughDay = (value) => {
-    setDays(value);
-  };
 
   //post api, create booking
-  const bookingDetailRequest = (items) => {
-    setBookingDetailRequestCombos(items);
-  };
-
   const onFinish = async (values) => {
-    if (bookingType === 3 && days != bookingDetailRequestCombos.length) {
+    if (numberOfDays != bookingDetailRequestCombos.length) {
       message.error("Not Booking enough slots");
       return;
     }
@@ -81,9 +76,6 @@ const StaffBookingForm = () => {
 
         console.log(response.data);
         setCourts(response.data);
-        // const data = response.data;
-        // const bookingId = data.id;
-        // localStorage.setItem("Id", bookingId);
       } catch (error) {
         setError(error.message);
       }
@@ -96,7 +88,7 @@ const StaffBookingForm = () => {
   const fetchSum = async () => {
     try {
       const sumResponse = await api.get(
-        `/transactions/predictedPrice/${id}/${bookingType}/${bookingDetailRequestCombos.length}`
+        `/transactions/predictedPrice/${id}/3/${bookingDetailRequestCombos.length}`
       );
 
       console.log(sumResponse.data);
@@ -110,17 +102,6 @@ const StaffBookingForm = () => {
     setClickCount(clickCount + 1);
     fetchSum();
   };
-  //--------------------------------------------------------------------------------------------------------------------------------
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [availableTimes, setAvailableTimes] = useState([]);
-  const [selectedSchedule, setSelectedSchedule] = useState([]);
-  const [courtTimeSlots, setCourtTimeSlots] = useState([]);
-  const [typeDetailList, setTypeDetailList] = useState([]);
-  const [numberOfDays, setNumberOfDays] = useState();
-
-  console.log(typeDetailList);
-  let isDisabled = typeDetailList.length != numberOfDays ? false : true;
-  console.log(isDisabled);
 
   const handleDateChange = async (date) => {
     setSelectedDate(date.format("YYYY-MM-DD"));
@@ -130,7 +111,7 @@ const StaffBookingForm = () => {
   //GET Court Time Slot
   const fetchCourtTimeSlots = async (date) => {
     try {
-      const response = await api.get(`/courtTimeSlot/${props.courtId}/${date}`);
+      const response = await api.get(`/courtTimeSlot/${courtId}/${date}`);
       const slotFilter = response.data;
       setCourtTimeSlots(response.data);
       console.log(response.data);
@@ -138,9 +119,6 @@ const StaffBookingForm = () => {
         slotFilter.filter((item) => item.status == "AVAILABLE")
       );
       console.log(slotFilter.filter((item) => item.status == "AVAILABLE"));
-      // const data = response.data;
-      // const bookingId = data.id;
-      // localStorage.setItem("Id", bookingId);
     } catch (error) {
       setError(error.message);
     }
@@ -164,7 +142,7 @@ const StaffBookingForm = () => {
         entry.startTime === newEntry.startTime &&
         entry.endTime === newEntry.endTime
     );
-    const isBookingDuplicate = typeDetailList.some(
+    const isBookingDuplicate = bookingDetailRequestCombos.some(
       (entry) =>
         entry.courtTSId === bookingTypeDetail.courtTSId &&
         entry.bookingDate === bookingTypeDetail.bookingDate
@@ -179,49 +157,22 @@ const StaffBookingForm = () => {
       );
     }
     if (!isBookingDuplicate) {
-      setTypeDetailList([...typeDetailList, bookingTypeDetail]);
-      console.log(typeDetailList);
-
-      props.bookingDetail([...typeDetailList, bookingTypeDetail]);
+      setBookingDetailRequestCombos([
+        ...bookingDetailRequestCombos,
+        bookingTypeDetail,
+      ]);
     }
-
-    props.isEnoughDay(numberOfDays);
   };
-
-  // Prepare bookingDetailRequestCombos
-  // const onChange = (values) => {
-  //   const bookingTypeDetail = {
-  //     courtTSId: values.target.value, // Update with correct value if available
-  //     bookingDate: selectedDate,
-  //     durationInMonths: 0, // Update with correct value if available
-  //     dayOfWeek: null, // Update with correct value if available
-  //   };
-
-  //   const isDuplicate = typeDetailList.some(
-  //     (entry) =>
-  //       entry.courtTSId === bookingTypeDetail.courtTSId &&
-  //       entry.bookingDate === bookingTypeDetail.bookingDate
-  //   );
-
-  //   if (!isDuplicate) {
-  //     setTypeDetailList([...typeDetailList, bookingTypeDetail]);
-  //     console.log(typeDetailList);
-
-  //     props.bookingDetail([...typeDetailList, bookingTypeDetail]);
-  //   }
-
-  //   props.isEnoughDay(numberOfDays);
-  // };
 
   const handleDeleteFromSchedule = (index) => {
     const newSchedule = [...selectedSchedule];
     newSchedule.splice(index, 1);
     setSelectedSchedule(newSchedule);
 
-    const selectedBooking = [...typeDetailList];
+    const selectedBooking = [...bookingDetailRequestCombos];
     selectedBooking.splice(index, 1);
-    setTypeDetailList(selectedBooking);
-    props.bookingDetail(selectedBooking);
+    setBookingDetailRequestCombos(selectedBooking);
+    // props.bookingDetail(selectedBooking);
 
     message.success("Schedule entry deleted");
   };
@@ -230,7 +181,7 @@ const StaffBookingForm = () => {
     <div style={{ display: "flex", flexDirection: "column" }}>
       <NavBar /> {/* Render NavBar at the top */}
       <div
-        style={{ display: "flex", justifyContent: "center", marginTop: 100 }}
+        style={{ display: "flex", justifyContent: "center", marginTop: 100, marginBottom: 100 }}
       >
         {" "}
         {/* Added margin-top for space */}
@@ -243,33 +194,32 @@ const StaffBookingForm = () => {
             border: "1px solid #ccc",
           }}
         >
-          {isLoggedIn ? (
-            <Form
-              form={form}
-              name="bookingForm"
-              layout="vertical"
-              onFinish={onFinish}
+          <Form
+            form={form}
+            name="bookingForm"
+            layout="vertical"
+            onFinish={onFinish}
+          >
+            <Form.Item
+              name="name"
+              label="Court Name"
+              rules={[
+                { required: true, message: "Please select the court name!" },
+              ]}
             >
-              <Form.Item
-                name="name"
-                label="Court Name"
-                rules={[
-                  { required: true, message: "Please select the court name!" },
-                ]}
+              <Select
+                placeholder="Select a Court Name"
+                onChange={(key) => setCourtID(key)}
               >
-                <Select
-                  placeholder="Select a Court Name"
-                  onChange={(key) => setCourtID(key)}
-                >
-                  {courts.map((court) => (
-                    <Option key={court.id} value={court.id}>
-                      {court.courtName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
+                {courts.map((court) => (
+                  <Option key={court.id} value={court.id}>
+                    {court.courtName}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
 
-              {/* {userRole === "ClUB_OWNER" ? (
+            {/* {userRole === "ClUB_OWNER" ? (
                 <Form.Item
                   label="Phone Number"
                   name="phonenumber"
@@ -289,127 +239,87 @@ const StaffBookingForm = () => {
                 </Form.Item>
               ) : null} */}
 
-              <div name="bookingType3Form" layout="vertical">
-                <div className="row">
-                  <div className="col-md-6">
-                    <Form.Item
-                      label="Select Booking Date"
-                      name="bookingDate"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please select the date you want to book!",
-                        },
-                      ]}
-                    >
-                      <DatePicker onChange={handleDateChange} />
-                    </Form.Item>
-                  </div>
-                  {/* <div className="col-md-6">
-                    <Form.Item
-                      name="numberOfDays"
-                      label="Number of slots"
-                      rules={[
-                        {
-                          required: true,
-                          message:
-                            "Please select the number of days you want to assign!",
-                        },
-                      ]}
-                    >
-                      <Select onChange={(value) => setNumberOfDays(value)}>
-                        <Option value={10}>10 slots</Option>
-                        <Option value={20}>20 slots</Option>
-                        <Option value={30}>30 slots</Option>
-                        <Option value={40}>40 slots</Option>
-                        <Option value={45}>45 slots</Option>
-                        <Option value={50}>50 slots</Option>
-                      </Select>
-                    </Form.Item>
-                  </div> */}
+            <div name="bookingType3Form" layout="vertical">
+              <div className="row">
+                <div className="col-md-6">
+                  <Form.Item
+                    label="Select Booking Date"
+                    name="bookingDate"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please select the date you want to book!",
+                      },
+                    ]}
+                  >
+                    <DatePicker onChange={handleDateChange} />
+                  </Form.Item>
                 </div>
-                {/* {numberOfDays && ( */}
-                <Form.Item
-                  name="time"
-                  label="Available Times"
-                  // rules={[{ required: true, message: "Please select a time!" }]}
-                >
-                  <Radio.Group>
-                    {availableTimes.map((item, index) => (
-                      <Radio.Button
-                        key={index}
-                        value={item.courtTimeSlotId}
-                        disabled={isDisabled}
-                        onClick={() =>
-                          handleAddToSchedule(
-                            item.courtTimeSlotId,
-                            item.start_time,
-                            item.end_time
-                          )
-                        }
-                        // onChange={onChange}
-                      >
-                        {item.start_time} - {item.end_time}
-                      </Radio.Button>
-                    ))}
-                  </Radio.Group>
-                  {/* {availableTimes.map((item, index) => (
+              </div>
+              {/* {numberOfDays && ( */}
+              <Form.Item
+                name="time"
+                label="Available Times"
+                // rules={[{ required: true, message: "Please select a time!" }]}
+              >
+                <Radio.Group>
+                  {availableTimes.map((item, index) => (
+                    <Radio.Button
+                      key={index}
+                      value={item.courtTimeSlotId}
+                      // disabled={isDisabled}
+                      onClick={() =>
+                        handleAddToSchedule(
+                          item.courtTimeSlotId,
+                          item.start_time,
+                          item.end_time
+                        )
+                      }
+                      // onChange={onChange}
+                    >
+                      {item.start_time} - {item.end_time}
+                    </Radio.Button>
+                  ))}
+                </Radio.Group>
+                {/* {availableTimes.map((item, index) => (
             <Button key={index} onClick={() => handleAddToSchedule(item.time)}>
               {item.time}
             </Button>
           ))} */}
-                </Form.Item>
-                {/* )} */}
-
-                <Form.Item label="Selected Schedule">
-                  <List
-                    bordered
-                    dataSource={selectedSchedule}
-                    renderItem={(item, index) => (
-                      <List.Item>
-                        <div>
-                          {index + 1}. {item.date} at {item.startTime} -{" "}
-                          {item.endTime}
-                          <Button
-                            type="link"
-                            onClick={() => handleDeleteFromSchedule(index)}
-                          >
-                            Delete
-                          </Button>
-                        </div>
-                      </List.Item>
-                    )}
-                  />
-                </Form.Item>
-              </div>
-
-              <Form.Item>
-                <Button type="link" onClick={handleClick}>
-                  Total: {clickCount > 0 && `${sum.moneyback}`}₫
-                </Button>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  // disabled={!isDisabled}
-                >
-                  Confirm Booking
-                </Button>
               </Form.Item>
-            </Form>
-          ) : (
-            <Form>
-              <h1>You need to log in before booking a court</h1>
-              <Form.Item form={form} name="bookingForm" layout="vertical">
-                <Link to={"/login"}>
-                  <Flex vertical gap="small" style={{ width: "100%" }}>
-                    <Button type="primary" htmlType="submit">
-                      Log in
-                    </Button>
-                  </Flex>
-                </Link>
+              {/* )} */}
+
+              <Form.Item label="Selected Schedule">
+                <List
+                  bordered
+                  dataSource={selectedSchedule}
+                  renderItem={(item, index) => (
+                    <List.Item>
+                      <div>
+                        {index + 1}. {item.date} at {item.startTime} -{" "}
+                        {item.endTime}
+                        <Button
+                          type="link"
+                          onClick={() => handleDeleteFromSchedule(index)}
+                        >
+                          Delete
+                        </Button>
+                      </div>
+                    </List.Item>
+                  )}
+                />
               </Form.Item>
-            </Form>
-          )}
+            </div>
+
+            <Form.Item>
+              <Button type="link" onClick={handleClick}>
+                Total: {clickCount > 0 && `${sum.moneyback}`}₫
+              </Button>
+              <Button type="primary" htmlType="submit">
+                Confirm Booking
+              </Button>
+            </Form.Item>
+          </Form>
         </div>
       </div>
       <Footer />

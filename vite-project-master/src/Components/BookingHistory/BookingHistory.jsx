@@ -50,9 +50,9 @@ const BookingHistory = (props) => {
                 <Link to={`/feedback/${props.orderID}`}>
                   Feedback
                 </Link>,
-                <Link to={`/UpdateForCustomer/${booking.orderID}`}>
-                Update Booking
-              </Link>
+                <Link to={`/UpdateForCustomer/${booking.orderID}/${props.clubId}`}>
+                  Update Booking
+                </Link>
               ]}
             >
               <List.Item.Meta

@@ -141,7 +141,7 @@ const BookingForm = ({ children }) => {
     <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
 
       <NavBar /> {/* Render NavBar at the top */}
-      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 150 }}>
+      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
         {" "}
         {/* Added margin-top for space */}
         <div
