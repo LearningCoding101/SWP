@@ -8,6 +8,6 @@ Cách chạy project: <br/>
 
 Đơn giản hơn: tải vite-project về => vào terminal => nhập lần lượt từng dòng code
  {
- npm i
- npm i axios bootstrap antd react-qr-scanner @nivo/line react-chartjs-2
+ npm i | 
+ npm i axios bootstrap antd react-qr-scanner @nivo/line react-chartjs-2 qrcode.react
  }
