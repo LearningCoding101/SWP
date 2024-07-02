@@ -103,6 +103,11 @@ public class AuthenticationApi {
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
+    @PutMapping("/setAccountStatus/{accId}/{ban}")
+    public void setAccountStatusByID(@PathVariable Long accId, @PathVariable boolean ban) {
+        authenticationService.setAccountStatus(accId, ban);
+    }
+
 
 
 

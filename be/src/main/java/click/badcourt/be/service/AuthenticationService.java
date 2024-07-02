@@ -147,6 +147,9 @@ public class AuthenticationService implements UserDetailsService {
         // => account chuẩn
 
         Account account = authenticationRepository.findAccountByEmail(loginRequest.getEmail());
+        if (account.isDeleted()) {
+            throw new IllegalArgumentException("This account does not exist anymore.");
+        }
         String token = tokenService.generateToken(account);
 
         AccountResponse accountResponse = new AccountResponse();
@@ -215,6 +218,12 @@ public class AuthenticationService implements UserDetailsService {
             }
         };
         new Thread(r).start();
+    }
+
+    public void setAccountStatus(Long accountId, boolean ban) {
+        Account account = authenticationRepository.findById(accountId).orElseThrow(() -> new IllegalArgumentException("Account not found"));
+        account.setDeleted(ban);
+        authenticationRepository.save(account);
     }
 
     public void setPassword(ForgotPasswordRequest forgotPasswordRequest) {
