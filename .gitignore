@@ -4,3 +4,4 @@
 be/.mvn/wrapper/maven-wrapper.properties
 be/mvnw
 be/mvnw.cmd
+*.properties
