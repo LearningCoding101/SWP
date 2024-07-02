@@ -68,7 +68,7 @@ public class BookingService {
             bookingRepository.save(booking);
             logger.info("Booking with ID {} has been cancelled.", booking.getBookingId());
         }
-        logger.info("Scheduled task completed.");
+        logger.info("Scheduled task completed at {}.", oneHourAgo);
     }
 
 
