@@ -8,7 +8,6 @@ import click.badcourt.be.service.AccountService;
 import click.badcourt.be.service.AuthenticationService;
 import click.badcourt.be.service.EmailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -119,5 +118,20 @@ public class AuthenticationApi {
     @GetMapping("/accounts")
     public ResponseEntity getAccounts() {
         return ResponseEntity.ok(accountService.getAllAccount());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/{accountId}")
+    public String updateAccount(@RequestParam Long accountId, @RequestBody BanUnbanAccountRequest banUnbanAccountRequest) {
+        Account account = authenticationRepository.findById(accountId).orElseThrow(()-> new RuntimeException("Account not found"));
+        if (banUnbanAccountRequest.isStatus()){
+            account.setDeleted(true);
+            authenticationRepository.save(account);
+            return "Account of " + account.getEmail() + " banned!";
+        } else {
+            account.setDeleted(false);
+            authenticationRepository.save(account);
+            return "Account of " + account.getEmail() + " unbaned!";
+        }
     }
 }
