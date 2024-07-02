@@ -6,6 +6,7 @@ import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
+import click.badcourt.be.model.request.QRCodeData;
 import click.badcourt.be.model.request.TransactionRequest;
 import click.badcourt.be.model.response.MoneyPredictResponse;
 import click.badcourt.be.model.response.PreTransactionResponse;
@@ -13,9 +14,12 @@ import click.badcourt.be.model.response.TotalAmountByMonthDTO;
 import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
+import com.google.zxing.WriterException;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -36,6 +40,7 @@ public class TransactionService {
     private BookingTypeRepository bookingTypeRepository;
     @Autowired
     private AccountUtils accountUtils;
+    private BookingService bookingService;
 
     public List<TransactionResponse> findAll() {
         List<Transaction> transactions = transactionRepository.findAll();
@@ -66,7 +71,7 @@ public class TransactionService {
             throw new IllegalArgumentException("PaymentMethod or Booking not found");
         }
     }
-    public Transaction addTransaction(TransactionRequest transactionRequest) {
+    public Transaction addTransaction(TransactionRequest transactionRequest) throws MessagingException, IOException, WriterException {
         Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
         if(booking.isPresent()) {
             Transaction transaction = new Transaction();
@@ -89,6 +94,9 @@ public class TransactionService {
             transaction.setTotalAmount(TotalPrice(transactionRequest.getBookingId()));
             transaction.setPaymentDate(new Date());
             transaction.setBooking(booking.get());
+            QRCodeData qrCodeData = new QRCodeData();
+            qrCodeData.setBookingId(booking.get().getBookingId());
+            bookingService.sendBookingConfirmation(qrCodeData,booking.get().getAccount().getEmail());
             return transactionRepository.save(transaction);
         }
         else{
