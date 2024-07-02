@@ -46,7 +46,7 @@ public class EmailService {
             context.setVariable("button",emailDetail.getButtonValue());
             context.setVariable("name", emailDetail.getFullName());
 
-            String text = templateEngine.process("emailtemplate", context);
+            String text = templateEngine.process("emailresetpasswordtemplate", context);
 
             // Creating a simple mail message
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
