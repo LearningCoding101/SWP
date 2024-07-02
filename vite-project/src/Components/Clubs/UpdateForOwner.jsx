@@ -130,7 +130,16 @@ const UpdateForCustomer = () => {
                                         <Typography.Text strong>Time: Start: {booking.start_time} - End: {booking.end_time}</Typography.Text>
                                         <Typography.Text strong>Date: {month}/{day}/{year} ({dayOfWeek})</Typography.Text>
                                         <Typography.Text>Status: {booking.status}</Typography.Text>
-                                        <Button onClick={() => showModal(booking)} disabled={moment().isAfter(moment(booking.bookingDate).add(1, 'days').set({ hour: 12, minute: 0, second: 0, millisecond: 0 })) || booking.status === 'CHECKED_IN'}>Update</Button>
+                                        <Button
+                                            onClick={() => showModal(booking)}
+                                            disabled={
+                                                moment().isAfter(moment(booking.bookingDate).subtract(24, 'hours'))
+                                                || booking.status !== 'NOTYET'
+                                            }
+                                        >
+                                            Update
+                                        </Button>
+
 
                                     </Space>
                                 </Card>
@@ -151,6 +160,8 @@ const UpdateForCustomer = () => {
                                                 disabledDate={(current) => current && current < moment().startOf('day')}
                                             />
                                         </Form.Item>
+
+
 
 
 
