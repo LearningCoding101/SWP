@@ -218,8 +218,9 @@ public class BookingService {
         Optional<Club> club= clubRepository.findById(clubid);
         Optional<BookingType> bookingType= bookingTypeRepository.findById(bookingTypeId);
         if(club.isPresent()&& !club.get().isDeleted()) {
-
-            booking.setBookingDate(new Date());
+            Date bookingDate = new Date();
+            bookingDate.setHours(bookingDate.getHours()+7);
+            booking.setBookingDate(bookingDate);
             booking.setAccount(accountUtils.getCurrentAccount());
             booking.setClub(club.get());
 

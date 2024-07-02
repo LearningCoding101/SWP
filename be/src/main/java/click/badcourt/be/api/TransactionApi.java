@@ -9,13 +9,16 @@ import click.badcourt.be.model.response.TransactionResponse;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.TransactionService;
 import com.google.protobuf.DoubleValue;
+import com.google.zxing.WriterException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
     @RestController
@@ -57,7 +60,7 @@ import java.util.List;
                 transactionResponse.setBookingId(createdTransaction.getBooking().getBookingId());
                 transactionResponse.setStatus(createdTransaction.getStatus().toString());
                 return ResponseEntity.ok(transactionResponse);
-            }catch (IllegalArgumentException e) {
+            }catch (IllegalArgumentException | MessagingException | IOException | WriterException e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
             }
         }
