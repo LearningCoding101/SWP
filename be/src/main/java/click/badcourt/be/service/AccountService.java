@@ -23,6 +23,7 @@ public class AccountService {
             accountManageResponse.setEmail(account.getEmail());
             accountManageResponse.setFullName(account.getFullName());
             accountManageResponse.setStatus(account.isDeleted() ? "Deactivate":"Active");
+            accountManageResponse.setRole(account.getRole());
             accountManageResponses.add(accountManageResponse);
         }
         return accountManageResponses;

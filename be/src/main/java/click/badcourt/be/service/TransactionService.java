@@ -40,6 +40,7 @@ public class TransactionService {
     private BookingTypeRepository bookingTypeRepository;
     @Autowired
     private AccountUtils accountUtils;
+    @Autowired
     private BookingService bookingService;
 
     public List<TransactionResponse> findAll() {
@@ -114,8 +115,11 @@ public class TransactionService {
             }
             totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount()) - (totalPrice*(1-booking.getBookingType().getBookingDiscount()))%10;
         } else if (booking.getBookingType().getBookingTypeId() == 3) {
-            Double salealready = booking.getClub().getPrice()*(1-booking.getBookingType().getBookingDiscount())*(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId));
-            totalPrice = salealready - salealready%10;
+            if(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)<10) {
+                Double salealready = booking.getClub().getPrice() * (1 - booking.getBookingType().getBookingDiscount()) * (bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId));
+                totalPrice = salealready - salealready % 10;
+            }
+            else totalPrice = (booking.getClub().getPrice() * bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)) - (booking.getClub().getPrice() * bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId))%10;
         }
         return totalPrice;
     }
