@@ -96,6 +96,33 @@ public class ClubService {
         }
         return clubCreateResponse;
     }
+    public List<ClubResponse> getAllClubsAdmin() {
+        List<Club> clubs = clubRepository.findAll();
+        List<ClubResponse> clubCreateResponse = new ArrayList<>();
+        for(Club club : clubs) {
+
+            ClubResponse clubResponse = new ClubResponse();
+            clubResponse.setName(club.getName());
+            clubResponse.setAddress(club.getAddress());
+            clubResponse.setOpen_time(club.getOpen_time());
+            clubResponse.setClose_time(club.getClose_time());
+            clubResponse.setOwnerName(club.getAccount().getFullName());
+            clubResponse.setPicture_location(club.getPicture_location());
+            clubResponse.setPrice(club.getPrice());
+            clubResponse.setClubId(club.getClubId());
+            clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
+            clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
+            clubResponse.setActive(!club.isDeleted());
+//            clubResponse.setRating(feedbackService.getFeedbackAverageRating(club.getClubId()));
+//            clubResponse.setFeedbacks(feedbackService.getNumberOfFeedback(club.getClubId()));
+//            clubResponse.setCount(courtRepository.countCourtsByClub_ClubId(club.getClubId()));
+            clubResponse.setClubId(club.getClubId());
+
+            clubCreateResponse.add(clubResponse);
+
+        }
+        return clubCreateResponse;
+    }
 
     public Club createClub(ClubCreateRequest clubCreateRequest) {
         Club club = new Club();

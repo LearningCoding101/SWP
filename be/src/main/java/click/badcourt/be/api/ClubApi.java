@@ -31,6 +31,10 @@ public class ClubApi {
     public ResponseEntity getAll(){
         return ResponseEntity.ok(clubService.getAllClubs());
     }
+    @GetMapping("clubs/admin")
+    public ResponseEntity getAllAdmin(){
+        return ResponseEntity.ok(clubService.getAllClubsAdmin());
+    }
     @GetMapping("club")
     public ResponseEntity<?> getClubOnClubOwnerPage(){
         try{

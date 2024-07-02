@@ -59,7 +59,7 @@ public class BookingService {
         logger.info("Scheduled task started to check and cancel pending bookings.");
 
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.HOUR, -1);
+        cal.add(Calendar.HOUR, +6);
         Date oneHourAgo = cal.getTime();
 
         List<Booking> bookings = bookingRepository.findByStatusAndBookingDateBefore(BookingStatusEnum.PENDING, oneHourAgo);
