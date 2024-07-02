@@ -39,7 +39,8 @@ import BookingReport from "./Components/Admin/BarChart";
 import MyResponsiveLine from "./Components/Admin/LineGraph";
 import StaffBookingForm from "./Components/BookingForm/StaffBookingForm";
 import UpdateForCustomer from "./Components/Clubs/UpdateForCustomer";
-
+import UpdateForOwner from "./Components/Clubs/UpdateForOwner";
+import ShowBookingsOfAClub from "./Components/Clubs/ShowBookingsOfAClub";
 function App() {
   return (
     <AuthProvider>
@@ -57,10 +58,9 @@ function App() {
               path="/clubManage/courtList/CourtsDetail/:courtId"
               element={<CourtTimeSlotList />}
             />
-            <Route
-              path="/UpdateForCustomer/:bookingid/:clubid"
-              element={<UpdateForCustomer />}
-            />
+            <Route path="/UpdateForCustomer/:bookingid/:clubid" element={<UpdateForCustomer />} />
+            <Route path="/clubManage/ShowBookingsOfAClub" element={<ShowBookingsOfAClub />} />
+            <Route path="/clubManage/ShowBookingsOfAClub/UpdateForOwner/:bookingid/:clubid" element={<UpdateForOwner />} />
             <Route path="/login" element={<Login />} />
             <Route path="/staff" element={<QRScanner />} />
             <Route path="/profile" element={<Logout />} />
