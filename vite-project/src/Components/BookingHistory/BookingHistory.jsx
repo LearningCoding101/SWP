@@ -47,12 +47,20 @@ const BookingHistory = (props) => {
                 <Button type="primary" onClick={displayDetail}>
                   Details
                 </Button>,
+                booking.status === "COMPLETED" && (
                 <Link to={`/feedback/${props.orderID}`}>
+                  <Button type="primary">
                   Feedback
-                </Link>,
-                <Link to={`/UpdateForCustomer/${booking.orderID}/${props.clubId}`}>
-                  Update Booking
+                  </Button>
                 </Link>
+                ),
+                booking.status === "PENDING" && (
+                  <Link to={`/UpdateForCustomer/${booking.orderID}/${props.clubId}`}>
+                    <Button type="primary">
+                    Update Booking
+                    </Button>
+                  </Link>
+                ),
               ]}
             >
               <List.Item.Meta
