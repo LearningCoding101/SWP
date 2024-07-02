@@ -1,5 +1,5 @@
 
 /node_modules
-/be/.mvn/wrapper/maven-wrapper.properties
-/be/mvnw
-/be/mvnw.cmd
+be/.mvn/wrapper/maven-wrapper.properties
+be/mvnw
+be/mvnw.cmd
