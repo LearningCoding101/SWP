@@ -13,9 +13,13 @@ import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
 import com.google.zxing.NotFoundException;
 import jakarta.mail.MessagingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.google.zxing.WriterException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 
@@ -43,11 +47,31 @@ public class BookingService {
 
     @Autowired
     private EmailService emailService;
-    private QRCodeService qrCodeService;
-    @Autowired
-    private TokenService tokenService;
+
     @Autowired
     private BookingTypeRepository bookingTypeRepository;
+    private QRCodeService qrCodeService;
+    private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
+
+    @Transactional
+    @Scheduled(fixedRate = 60000) // Run the method every 60 seconds
+    public void cancelPendingBookings() {
+        logger.info("Scheduled task started to check and cancel pending bookings.");
+
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR, -1);
+        Date oneHourAgo = cal.getTime();
+
+        List<Booking> bookings = bookingRepository.findByStatusAndBookingDateBefore(BookingStatusEnum.PENDING, oneHourAgo);
+        for (Booking booking : bookings) {
+            booking.setStatus(BookingStatusEnum.CANCELED);
+            bookingRepository.save(booking);
+            logger.info("Booking with ID {} has been cancelled.", booking.getBookingId());
+        }
+        logger.info("Scheduled task completed.");
+    }
+
+
 
     public long countBookingsByClubOwner() {
         Account currentAccount = accountUtils.getCurrentAccount();

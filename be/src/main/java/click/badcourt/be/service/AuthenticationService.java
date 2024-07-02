@@ -18,8 +18,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 public class AuthenticationService implements UserDetailsService {
@@ -38,6 +44,54 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+    private static final Map<String, OtpStore> otpStore = new HashMap<>();
+    private static final int OTP_EXPIRATION_MINUTES = 5;
+
+    // Validate email format
+    public static boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        return pattern.matcher(email).matches();
+    }
+
+    // Validate phone number format (basic example, adjust regex for specific requirements)
+    public static boolean isValidPhone(String phone) {
+        String phoneRegex = "^\\+?[0-9. ()-]{7,25}$";
+        Pattern pattern = Pattern.compile(phoneRegex);
+        return pattern.matcher(phone).matches();
+    }
+
+    // Hash OTP using BCrypt
+    public static String hashOtp(String otp) {
+        return BCrypt.hashpw(otp, BCrypt.gensalt());
+    }
+
+    // Save OTP hash with expiration
+    public static void saveOtpHash(String email, String otpHash) {
+        otpStore.put(email, new OtpStore(otpHash, LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES)));
+    }
+
+    // Validate OTP
+    public static boolean isOtpValid(String email, String otp) {
+        OtpStore otpData = otpStore.get(email);
+        if (otpData != null && LocalDateTime.now().isBefore(otpData.expiration)) {
+            return BCrypt.checkpw(otp, otpData.otpHash);
+        }
+        return false;
+    }
+
+
+    // Store OTP and its expiration time
+    private static class OtpStore {
+        String otpHash;
+        LocalDateTime expiration;
+
+        OtpStore(String otpHash, LocalDateTime expiration) {
+            this.otpHash = otpHash;
+            this.expiration = expiration;
+        }
+    }
+
 
     public Account register(RegisterRequest reg) {
         Account account = new Account();

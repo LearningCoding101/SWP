@@ -30,20 +30,30 @@ public class AuthenticationApi {
     private String generatedOtp;
 
     @PostMapping("/sendOTP")
-    public String sendOtp(@RequestParam String email) {
-        generatedOtp = EmailService.generateOTP(6);
-        authenticationService .sendOTPEmailConfirmation(email, generatedOtp);
-        return "OTP sent to your email";
-    }
-    @PostMapping("/verifyOTP")
-    public boolean verifyOtp(@RequestParam String otp) {
-        return otp.equals(generatedOtp);
+    public ResponseEntity sendOtp(@RequestBody RegisterRequest registerRequest) {
+        if (!AuthenticationService.isValidEmail(registerRequest.getEmail()) || !AuthenticationService.isValidPhone(registerRequest.getPhone())) {
+            return ResponseEntity.badRequest().body("Invalid input data");
+        }
+
+        String generatedOtp = EmailService.generateOTP(6);
+        AuthenticationService.saveOtpHash(registerRequest.getEmail(), AuthenticationService.hashOtp(generatedOtp));
+
+        authenticationService.sendOTPEmailConfirmation(registerRequest.getEmail(), generatedOtp);
+        return ResponseEntity.ok("OTP sent to your email");
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
-        Account account= authenticationService.register(registerRequest);
-        return ResponseEntity.ok(account);
+    public ResponseEntity register(@RequestParam String otp, @RequestBody RegisterRequest registerRequest) {
+        if (!AuthenticationService.isOtpValid(registerRequest.getEmail(),otp) || !AuthenticationService.isValidEmail(registerRequest.getEmail())) {
+            return ResponseEntity.badRequest().body("Invalid input data");
+        }
+
+        if (AuthenticationService.isOtpValid(registerRequest.getEmail(), otp)) {
+            Account account = authenticationService.register(registerRequest);
+            return ResponseEntity.ok(account);
+        } else {
+            return ResponseEntity.badRequest().body("Invalid OTP");
+        }
     }
 
     @PostMapping("/registeradmin")
