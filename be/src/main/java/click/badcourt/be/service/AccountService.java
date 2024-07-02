@@ -22,7 +22,7 @@ public class AccountService {
             accountManageResponse.setPassword("******");
             accountManageResponse.setEmail(account.getEmail());
             accountManageResponse.setFullName(account.getFullName());
-            accountManageResponse.setStatus(account.isDeleted() ? "Active":"Deactivate");
+            accountManageResponse.setStatus(account.isDeleted() ? "Deactivate":"Active");
             accountManageResponses.add(accountManageResponse);
         }
         return accountManageResponses;
