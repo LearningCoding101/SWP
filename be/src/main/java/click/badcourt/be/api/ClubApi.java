@@ -98,7 +98,7 @@ public class ClubApi {
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/{ClubId}/{status}")
-    public String updateClub(@RequestParam Long ClubId, @RequestParam boolean status) {
+    public String updateClub(@PathVariable Long ClubId, @PathVariable boolean status) {
         Club club = clubRepository.findById(ClubId).orElseThrow(()-> new RuntimeException("Club not found"));
         if (status){
             club.setDeleted(true);
