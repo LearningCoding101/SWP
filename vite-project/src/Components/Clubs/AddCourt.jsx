@@ -13,6 +13,8 @@ const AddCourt = () => {
     useEffect(() => {
         api.get('/timeslots')
             .then(response => {
+                console.log('Raw response:', response); // Log the raw response
+
                 let data = response.data;
 
                 if (typeof data === 'string') {
@@ -23,8 +25,11 @@ const AddCourt = () => {
                     }
                 }
 
+                console.log('Parsed data:', data); // Log the parsed data
+
                 if (typeof data === 'object') {
                     setTimeSlots(data);
+                    console.log('Fetched time slots:', data); // Log the fetched time slots
                 } else {
                     console.error('API response is not an object or array:', data);
                 }
@@ -34,6 +39,8 @@ const AddCourt = () => {
                 setTimeSlots([]); // Set to empty array on error
             });
     }, []);
+
+
 
 
 
@@ -77,7 +84,7 @@ const AddCourt = () => {
                                 onClick={() => handleTimeSlotClick(timeSlot.timeslotId)}
                                 className={`time-slot-tag ${selectedTimeSlots.includes(timeSlot.timeslotId) ? 'selected' : ''}`}
                             >
-                                {`${timeSlot.start_time} - ${timeSlot.end_time}`}
+                                {`${timeSlot.startTime} - ${timeSlot.endTime}`}
                             </span>
                         ))}
                     </div>
