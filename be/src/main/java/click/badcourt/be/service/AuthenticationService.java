@@ -1,12 +1,14 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
+import click.badcourt.be.entity.Club;
 import click.badcourt.be.entity.EmailDetail;
 import click.badcourt.be.enums.RoleEnum;
 import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
+import click.badcourt.be.repository.ClubRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -46,6 +48,8 @@ public class AuthenticationService implements UserDetailsService {
     private AuthenticationManager authenticationManager;
     private static final Map<String, OtpStore> otpStore = new HashMap<>();
     private static final int OTP_EXPIRATION_MINUTES = 5;
+    @Autowired
+    private ClubRepository clubRepository;
 
     // Validate email format
     public static boolean isValidEmail(String email) {
@@ -226,6 +230,7 @@ public class AuthenticationService implements UserDetailsService {
         authenticationRepository.save(account);
     }
 
+    //Gửi mail to reset password
     public void setPassword(ForgotPasswordRequest forgotPasswordRequest) {
         System.out.println(forgotPasswordRequest.getEmail());
         Account account = authenticationRepository.findAccountByEmail(forgotPasswordRequest.getEmail());
@@ -250,6 +255,15 @@ public class AuthenticationService implements UserDetailsService {
             }
         };
         new Thread(r).start();
+    }
+
+    //Set password cho tài khoản clubowner rồi active club
+    public void setPasswordActiveClub(ResetPasswordRequest resetPasswordRequest) {
+        Account account = getCurrentAccount();
+        account.setPassword(passwordEncoder.encode(resetPasswordRequest.getPassword()));
+        authenticationRepository.save(account);
+        Club club = clubRepository.findClubByAccount_AccountId(account.getAccountId());
+        club.setDeleted(false);
     }
 
     public Account getCurrentAccount(){

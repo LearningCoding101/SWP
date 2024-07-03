@@ -96,7 +96,10 @@ public class AuthenticationApi {
         authenticationService.setPassword(forgotPasswordRequest);
     }
 
-    
+    @PostMapping("/setPasswordActiveClub")
+    public void setPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        authenticationService.setPasswordActiveClub(resetPasswordRequest);
+    }
 
     @PostMapping("/reset-password")
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {

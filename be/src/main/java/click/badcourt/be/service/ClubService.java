@@ -11,6 +11,8 @@ import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.utils.AccountUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,16 +43,20 @@ public class ClubService {
     @Autowired
     private FeedbackService feedbackService;
 
-    @Transactional
-    @Scheduled(fixedRate = 300000)
-    public void verifyClub(){
-        List<Club> club = clubRepository.findAll();
-        for (Club clubcheck : club) {
-            if(clubcheck.isDeleted() && clubcheck.getAccount().getPassword() == null){
-                clubcheck.setDeleted(false);
-            }
-        }
-    }
+    private static final Logger logger = LoggerFactory.getLogger(ClubService.class);
+
+//    @Transactional
+//    @Scheduled(fixedRate = 30000)
+//    public void verifyClub(){
+//        List<Club> club = clubRepository.findAll();
+//        for (Club clubcheck : club) {
+//            if(clubcheck.isDeleted() && clubcheck.getAccount().getPassword() == null){
+//                clubcheck.setDeleted(false);
+//                logger.info("Club" + clubcheck.getClubId() + "activated");
+//            }
+//        }
+//
+//    }
 
     public ClubResponse getClubByCurrentAccount() {
         Account currentAccount = accountUtils.getCurrentAccount();
