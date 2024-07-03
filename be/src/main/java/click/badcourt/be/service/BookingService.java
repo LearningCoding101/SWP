@@ -1,6 +1,7 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.*;
+import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.RoleEnum;
 import click.badcourt.be.exception.BadRequestException;
@@ -9,6 +10,7 @@ import click.badcourt.be.model.request.BookingUpdateRequest;
 import click.badcourt.be.model.request.QRCodeData;
 import click.badcourt.be.model.request.BookingComboRequest;
 import click.badcourt.be.model.response.BookingResponse;
+import click.badcourt.be.model.response.BookingResponseFeedbackYN;
 import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
 import com.google.zxing.NotFoundException;
@@ -52,6 +54,8 @@ public class BookingService {
     private BookingTypeRepository bookingTypeRepository;
     private QRCodeService qrCodeService;
     private static final Logger logger = LoggerFactory.getLogger(BookingService.class);
+    @Autowired
+    private BookingDetailRepository bookingDetailRepository;
 
     @Transactional
     @Scheduled(fixedRate = 60000) // Run the method every 60 seconds
@@ -109,17 +113,17 @@ public class BookingService {
 
         return bookingResponse;
     }
-    public List<BookingResponse> getCustomerBookingsWithOptionalFilter(Long bookingTypeId) {
+    public List<BookingResponseFeedbackYN> getCustomerBookingsWithOptionalFilter(Long bookingTypeId) {
         Long currentCustomerId = accountUtils.getCurrentAccount().getAccountId();
         if (!authenticationRepository.existsById(currentCustomerId)) {
             throw new IllegalArgumentException("Account not found with id: " + currentCustomerId);
         }
         List<Booking> allBookings = bookingRepository.findAll();
-        List<BookingResponse> bookingResponses = new ArrayList<>();
+        List<BookingResponseFeedbackYN> bookingResponses = new ArrayList<>();
         for (Booking booking : allBookings) {
             if (booking.getAccount().getAccountId().equals(currentCustomerId) &&
                     (bookingTypeId == null || booking.getBookingType().getBookingTypeId().equals(bookingTypeId))) {
-                BookingResponse response = new BookingResponse();
+                BookingResponseFeedbackYN response = new BookingResponseFeedbackYN();
                 response.setBookingDate(booking.getBookingDate());
                 response.setAddress(booking.getClub().getAddress());
                 response.setId(booking.getBookingId());
@@ -130,7 +134,11 @@ public class BookingService {
                 response.setBookingTypeId(booking.getBookingType().getBookingTypeId());
                 response.setPrice(booking.getClub().getPrice());
                 response.setClubId(booking.getClub().getClubId());
-
+                if(bookingDetailRepository.countBookingDetailsByDetailStatus_AndBooking_BookingId(BookingDetailStatusEnum.CHECKEDIN, booking.getBookingId()) > 0) {
+                    response.setDisplay(true);
+                }else{
+                    response.setDisplay(false);
+                }
                 bookingResponses.add(response);
             }
         }

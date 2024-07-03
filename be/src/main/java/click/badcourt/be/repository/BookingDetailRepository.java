@@ -21,6 +21,7 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail,Lon
     List<BookingDetail> findBookingDetailsByBooking_BookingId(Long bookingId);
     List<BookingDetail> findBookingDetailsByDeletedFalse();
     int countBookingDetailsByBooking_BookingId(Long bookingId);
+    int countBookingDetailsByDetailStatus_AndBooking_BookingId(BookingDetailStatusEnum bookingDetailStatusEnum, Long bookingId);
     List<BookingDetail> findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(Long courtTSlotID);
     List<BookingDetail> findBookingDetailsByCourtTimeslot_CourtTSlotID(Long courtTSlotID);
     @Query(value = "SELECT DAYOFWEEK(date) AS dayOfWeek, COUNT(*) FROM booking_detail WHERE deleted = false GROUP BY dayOfWeek", nativeQuery = true)

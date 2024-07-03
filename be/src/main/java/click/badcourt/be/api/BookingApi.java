@@ -4,6 +4,7 @@ import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingResponse;
+import click.badcourt.be.model.response.BookingResponseFeedbackYN;
 import click.badcourt.be.service.BookingDetailService;
 import click.badcourt.be.service.BookingService;
 import click.badcourt.be.service.EmailService;
@@ -127,7 +128,8 @@ public class BookingApi {
     @GetMapping("/customer")
     public ResponseEntity<?> getCustomerBookingsWithOptionalFilter(@RequestParam(required = false) Long bookingTypeId) {
         try {
-            List<BookingResponse> bookingResponses = bookingService.getCustomerBookingsWithOptionalFilter(bookingTypeId);
+            List<BookingResponseFeedbackYN> bookingResponses = bookingService.getCustomerBookingsWithOptionalFilter(bookingTypeId);
+
             return ResponseEntity.ok(bookingResponses);
         } catch (IllegalArgumentException e) {
             // Log the exception details

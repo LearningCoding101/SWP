@@ -265,6 +265,7 @@ public class AuthenticationService implements UserDetailsService {
         authenticationRepository.save(account);
         Club club = clubRepository.findClubByAccount_AccountId(account.getAccountId());
         club.setDeleted(false);
+        clubRepository.save(club);
     }
 
     public Account getCurrentAccount(){
