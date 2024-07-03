@@ -1,159 +1,154 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Alert } from "antd";
+import { Form, Input, Button, TimePicker, message, InputNumber, Upload } from 'antd';
+import moment from 'moment';
+import { UploadOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-
 import uploadFile from '../util/useUpload';
 import { updateClubAPI } from '../API/UpdateClubAPI';
+import api from '../../config/axios';
+
 const UpdateClub = () => {
-    const { clubId } = useParams();
-    const [clubAddress, setClubAddress] = useState('');
-    const [clubName, setClubName] = useState('');
-    const [clubStartHour, setClubStartHour] = useState('');
-    const [clubStartMinute, setClubStartMinute] = useState('');
-    const [clubEndHour, setClubEndHour] = useState('');
-    const [clubEndMinute, setClubEndMinute] = useState('');
-    const [clubPrice, setClubPrice] = useState('');
-    const [uploadImage, setUploadImage] = useState(null);
-    const [error, setError] = useState('');
+  const { clubId } = useParams();
+  const [form] = Form.useForm();
+  const [initialPicture, setInitialPicture] = useState(null);
+  const [uploadList, setUploadList] = useState([]);
 
-    const handleUpdate = async (e) => {
-        e.preventDefault();
-        if (clubName.trim() === '' || clubAddress.trim() === '') {
-            setError('Please enter all fields');
-        } else {
-            try {
-                const img = await uploadFile(uploadImage);
-                console.log(img);
+  useEffect(() => {
+    const fetchClubData = async () => {
+      try {
+        const response = await api.get('/club');
+        const club = response.data;
+        form.setFieldsValue({
+          name: club.name,
+          address: club.address,
+          price: club.price,
+          open_time: moment(club.open_time, 'HH:mm:ss'),
+          close_time: moment(club.close_time, 'HH:mm:ss'),
+          picture_location: club.picture_location,
+        });
+        setInitialPicture(club.picture_location);
+      } catch (err) {
+        console.error(err);
+        message.error('Failed to fetch club data');
+      }
+    };
+    fetchClubData();
+  }, [form, clubId]);
 
-                const data = await updateClubAPI(clubId, clubName, clubAddress, clubPrice, clubStartHour, clubStartMinute, clubEndHour, clubEndMinute, img);
+  const handleUpdate = async (values) => {
+    try {
+      let img = initialPicture;
+        img = await uploadFile(values.picture_location.file);
+      const openTime = moment(values.open_time);
+      const closeTime = moment(values.close_time);
+  
+      const data = await updateClubAPI(
+        clubId,
+        values.name,
+        values.address,
+        values.price,
+        openTime.hour(),
+        openTime.minute(),
+        closeTime.hour(),
+        closeTime.minute(),
+        img
+      );
+  
+      if (data) {
+        message.success('Club updated successfully!');
+      }
+    } catch (err) {
+      console.error(err);
+      message.error('Failed to update club');
+    }
+  };  
 
-                //console.log('Updated successfully!', data);
+  const handleRemove = () => {
+    setInitialPicture(null);
+    form.setFieldsValue({ picture_location: null });
+  };
 
-                if (data) {
-                    alert("Club updated successfully!");
-                }
-
-            } catch (err) {
-                console.error(err);
-                setError(err.message);
-            }
-        }
-    }; return (
-        <div className="login-container" style={{ height: '50%', paddingTop: "20px" }}>
-            <div className="login-card" >
-
-
-                <form onSubmit={handleUpdate} className="login-form">
-                    <div className="form-group">
-                        <label htmlFor="clubName">Club Name</label>
-                        <input
-                            type="text"
-                            required
-                            placeholder='Enter club name'
-                            id="clubName"
-                            value={clubName}
-                            onChange={(e) => setClubName(e.target.value)}
-                            className="form-input"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="clubAddress">Club Address</label>
-                        <input
-                            type="text"
-                            required
-                            placeholder='Enter club address'
-                            id="clubAddress"
-                            value={clubAddress}
-                            onChange={(e) => setClubAddress(e.target.value)}
-                            className="form-input"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="Price">Price</label>
-                        <input
-                            type="number"
-                            required
-
-                            placeholder='Price'
-                            id="price"
-                            value={clubPrice}
-                            onChange={(e) => setClubPrice(e.target.value)}
-                            className="form-input"
-                        />
-                    </div>
-                    <div className="column flex-column">
-                        <div className="form-group row justify-content-center">
-                            <label htmlFor="openTime">Open time</label>
-                            <input
-                                type="number"
-                                required
-                                min={7}
-                                max={23}
-                                placeholder='Open hour'
-                                id="openTime"
-                                value={clubStartHour}
-                                onChange={(e) => setClubStartHour(e.target.value)}
-                                className="form-input col-md-5 me-5"
-                            />
-                            <input
-                                type="number"
-                                required
-                                min={0}
-                                max={59}
-                                placeholder='Open minute'
-                                id="openTime"
-                                value={clubStartMinute}
-                                onChange={(e) => setClubStartMinute(e.target.value)}
-                                className="form-input col-md-5"
-                            />
-                        </div>
-                        <div className="form-group row justify-content-center">
-                            <label htmlFor="closeTime">Close time</label>
-                            <input
-                                type="number"
-                                required
-                                min={7}
-                                max={23}
-                                placeholder='Close hour'
-                                id="closeTime"
-                                value={clubEndHour}
-                                onChange={(e) => setClubEndHour(e.target.value)}
-                                className="form-input col-md-5 me-5"
-                            />
-                            <input
-                                type="number"
-                                required
-                                min={0}
-                                max={59}
-                                placeholder='Close minute'
-                                id="closeTime"
-                                value={clubEndMinute}
-                                onChange={(e) => setClubEndMinute(e.target.value)}
-                                className="form-input col-md-5"
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="picture_location">Club picture</label>
-                        <input
-                            type="file"
-                            required
-                            name="picture_location"
-                            id="picture_location"
-                            onChange={(e) => setUploadImage(e.target.files[0])}
-                            className="form-input"
-                        />
-
-                    </div>
-                    <button onClick={handleUpdate} type="submit" className="login-button">Update Club</button>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                </form>
-                <Link to="/clubManage" className="btn btn-warning">Back to Club List</Link>
-            </div>
-        </div>
-    );
+  return (
+    <div className="login-container" style={{ height: '50%', paddingTop: "20px" }}>
+      <div className="login-card">
+        <Form
+          form={form}
+          name="updateClubForm"
+          layout="vertical"
+          onFinish={handleUpdate}
+        >
+          <Form.Item
+            name="name"
+            label="Club Name"
+            rules={[{ required: true, message: 'Please enter the club name!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="address"
+            label="Club Address"
+            rules={[{ required: true, message: 'Please enter the club address!' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="price"
+            label="Price"
+            rules={[{ required: true, message: 'Please enter the price!' }]}
+          >
+            <InputNumber
+              min={0}
+              formatter={(value) =>
+                `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+              }
+              parser={(value) => value.replace(/₫\s?|(,*)/g, '')}
+              style={{ width: '100%' }}
+            />
+          </Form.Item>
+          <Form.Item
+            name="open_time"
+            label="Open Time"
+            rules={[{ required: true, message: 'Please select the open time!' }]}
+          >
+            <TimePicker format="HH:mm:ss" style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item
+            name="close_time"
+            label="Close Time"
+            rules={[{ required: true, message: 'Please select the close time!' }]}
+          >
+            <TimePicker format="HH:mm:ss" style={{ width: '100%' }} />
+          </Form.Item>
+          <Form.Item
+            name="picture_location"
+            label="Club picture"
+          >
+            <Upload
+              name="file"
+              type='file'
+              listType="picture"
+              beforeUpload={() => false} // Prevents automatic upload
+              maxCount={1}
+              defaultFileList={initialPicture ? [{
+                uid: '-1',
+                name: 'current-picture',
+                status: 'done',
+                url: initialPicture,
+              }] : []}
+              onRemove={handleRemove}
+            >
+              <Button icon={<UploadOutlined />}>Click to upload</Button>
+            </Upload>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">Update Club</Button>
+          </Form.Item>
+        </Form>
+        <Link to="/clubManage" className="btn btn-warning">Back to Club List</Link>
+      </div>
+    </div>
+  );
 };
 
 export default UpdateClub;
