@@ -4,18 +4,9 @@ import click.badcourt.be.entity.*;
 
 import click.badcourt.be.entity.CourtTimeslot;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
-import click.badcourt.be.model.request.BookingDetailRequest;
-import click.badcourt.be.model.request.BookingDetailRequestCombo;
-import click.badcourt.be.model.request.ChangeSlotBookingDetailRequestCombo;
-import click.badcourt.be.model.request.FixedBookingDetailRequest;
-import click.badcourt.be.model.response.BookingDetailDeleteResponse;
-import click.badcourt.be.model.response.BookingDetailResponse;
-import click.badcourt.be.model.response.BookingDetailsCustomerResponse;
-import click.badcourt.be.model.response.ChangeSlotBookingDetailResponseCombo;
-import click.badcourt.be.repository.BookingDetailRepository;
-import click.badcourt.be.repository.BookingRepository;
-import click.badcourt.be.repository.CourtRepository;
-import click.badcourt.be.repository.CourtTimeSlotRepository;
+import click.badcourt.be.model.request.*;
+import click.badcourt.be.model.response.*;
+import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -144,7 +135,7 @@ public class BookingDetailService {
         }
     }
 
-    public List<BookingDetailResponse> getBookingDetailByCourtId(Long courtId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
+    public List<BookingDetailResponseHaveClubId> getBookingDetailByCourtId(Long courtId, @DateTimeFormat(pattern="yyyy-MM-dd") Date date) {
             List<BookingDetail> bookingDetails = new ArrayList<>();
         List<BookingDetail> finding = new ArrayList<>();
             List<CourtTimeslot> courtTimeslots = courtTimeSlotRepository.findCourtTimeslotsByCourt_CourtId(courtId);
@@ -153,10 +144,10 @@ public class BookingDetailService {
                 bookingDetails.addAll(finding);
             }
 
-            List<BookingDetailResponse> bookingDetailResponses= new ArrayList<>();
+            List<BookingDetailResponseHaveClubId> bookingDetailResponses= new ArrayList<>();
             for(BookingDetail bookingDetail : bookingDetails){
                 if(date.getDate()==bookingDetail.getDate().getDate() && date.getMonth()==bookingDetail.getDate().getMonth() && date.getYear()==bookingDetail.getDate().getYear()) {
-                    BookingDetailResponse bookingDetailResponse = new BookingDetailResponse();
+                    BookingDetailResponseHaveClubId bookingDetailResponse = new BookingDetailResponseHaveClubId();
                     bookingDetailResponse.setBookingDate(bookingDetail.getDate());
                     bookingDetailResponse.setBookingId(bookingDetail.getBooking().getBookingId());
                     bookingDetailResponse.setCourtTSId(bookingDetail.getCourtTimeslot().getCourtTSlotID());
@@ -168,6 +159,7 @@ public class BookingDetailService {
                     bookingDetailResponse.setEnd_time(bookingDetail.getCourtTimeslot().getTimeslot().getEndTime());
                     bookingDetailResponse.setStatus(bookingDetail.getDetailStatus());
                     bookingDetailResponse.setTimeslotId(bookingDetail.getCourtTimeslot().getTimeslot().getTimeslotId());
+                    bookingDetailResponse.setClubId(bookingDetail.getBooking().getClub().getClubId());
                     bookingDetailResponses.add(bookingDetailResponse);
                 }
             }
