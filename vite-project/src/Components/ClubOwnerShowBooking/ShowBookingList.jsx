@@ -35,11 +35,8 @@ const ShowBookingList = () => {
     try {
       setLoading(true);
       const response = await api.get(`/bookingDetail/${courtId}/${date}`);
-      const sortedBookings = response.data.sort(
-        (a, b) => b.bookingId - a.bookingId
-      );
-      console.log(sortedBookings);
-      setBookings(sortedBookings);
+      // Remove the sorting logic here
+      setBookings(response.data);
     } catch (error) {
       console.error("Error fetching booking details", error);
     } finally {
@@ -47,11 +44,24 @@ const ShowBookingList = () => {
     }
   };
 
-  // Function to sort bookings by date
+
   const sortBookings = () => {
-    const sortedBookings = [...bookings].sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
+    const sortedBookings = [...bookings].sort((a, b) => {
+      const startTimeA = new Date(a.start_time);
+      const endTimeA = new Date(a.end_time);
+      const startTimeB = new Date(b.start_time);
+      const endTimeB = new Date(b.end_time);
+
+
+      const durationA = (endTimeA - startTimeA) / 1000 / 60 / 60;
+      const durationB = (endTimeB - startTimeB) / 1000 / 60 / 60;
+
+
+      return durationA - durationB;
+    });
     setBookings(sortedBookings);
   };
+
 
   return (
     <div>
@@ -78,7 +88,7 @@ const ShowBookingList = () => {
         </Form.Item>
       </Form>
       {/* Add a sort button */}
-      <Button onClick={sortBookings}>Sort by Date</Button>
+      <Button onClick={sortBookings}>Sort by TimeSlot</Button>
       <ul className="list-group shadow-sm">
         {bookings.map((booking, index) => {
           return (

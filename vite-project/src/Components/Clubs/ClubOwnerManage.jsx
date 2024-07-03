@@ -41,15 +41,6 @@ const ClubOwnerManage = () => {
         >
           Booking
         </Link>
-        <Link
-          to={{
-            pathname: `/clubManage/ShowBookingsOfAClub`,
-
-          }}
-          className="nav-link"
-        >
-          Update Booking
-        </Link>
 
         <Link
           to={{

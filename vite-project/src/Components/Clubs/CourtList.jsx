@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from "../../config/axios";
 import { useParams } from 'react-router-dom';
-import { Card, Button, Pagination } from 'react-bootstrap';
+import { Card, Button, Pagination, Modal, Form, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 const CourtList = () => {
@@ -9,9 +9,22 @@ const CourtList = () => {
     const [courts, setCourts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [courtsPerPage] = useState(10);
-
+    const [showModal, setShowModal] = useState(false);
+    const [selectedCourt, setSelectedCourt] = useState(null);
+    const [newCourtName, setNewCourtName] = useState('');
     console.log('Club ID:', clubId);
+    const handleUpdateCourt = async () => {
+        try {
+            await api.put(`/court/${selectedCourt.id}`, { courtname: newCourtName });
+            fetchCourts();
+            setShowModal(false);
+            window.location.reload();
 
+
+        } catch (error) {
+            console.error('Error updating court:', error);
+        }
+    };
     const fetchCourts = async () => {
         try {
             const response = await api.get(`/court/${clubId}`);
@@ -62,6 +75,7 @@ const CourtList = () => {
                                 <Link to={`/showBooking/${court.id}`} className="btn btn-warning">View Booking</Link>
                                 <Link to={`/clubManage/courtList/CourtsDetail/${court.id}`} className="btn btn-warning">View Court Time Slots</Link>
                                 <Button className="btn btn-warning" onClick={() => deleteCourt(court.id)}>Delete Court</Button>
+                                <Button className="btn btn-warning" onClick={() => { setShowModal(true); setSelectedCourt(court); setNewCourtName(court.courtName); }}>Update Court Name</Button>
                             </Card.Body>
                         </Card>
                     ))
@@ -78,6 +92,27 @@ const CourtList = () => {
                     ))}
                 </Pagination>
             </div>
+            <Modal show={showModal} onHide={() => { setShowModal(false); setNewCourtName(''); }}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Court Name</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>New Court Name</Form.Label>
+                            <Form.Control type="text" placeholder="Enter new court name" value={newCourtName} onChange={(e) => setNewCourtName(e.target.value)} />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => { setShowModal(false); setNewCourtName(''); }}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleUpdateCourt}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }
