@@ -268,6 +268,7 @@ public class BookingService {
             response.setBookingDate(savedBooking.getBookingDate());
             response.setBookingTypeId(savedBooking.getBookingType().getBookingTypeId());
             response.setClub_name(savedBooking.getClub().getName());
+            response.setClubId(savedBooking.getClub().getClubId());
             return response;
         }
         else{
