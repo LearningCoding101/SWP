@@ -60,7 +60,7 @@ public class ClubApi {
 
     @PostMapping("clubCombo")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity addClubcombo(@RequestBody ClubComboCreateRequest clubComboCreateRequest){
+    public ResponseEntity addClubCombo(@RequestBody ClubComboCreateRequest clubComboCreateRequest){
         try {
             HashMap<String, Object> hmap = new HashMap<String, Object>();
             Account account= authenticationService.registerClubOwner(clubComboCreateRequest);
