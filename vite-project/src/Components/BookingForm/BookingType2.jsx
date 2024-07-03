@@ -14,6 +14,14 @@ import api from "../../config/axios";
 
 const { Option } = Select;
 
+// const timeSlots = [
+//   { time: "07:00" },
+//   { time: "08:00" },
+//   { time: "09:00" },
+//   { time: "10:00" },
+//   { time: "11:00" },
+// ];
+
 const BookingType2 = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(1);
@@ -24,14 +32,6 @@ const BookingType2 = (props) => {
   const [weekDay, setWeekDay] = useState();
   const [error, setError] = useState(null);
   const [typeDetailList, setTypeDetailList] = useState([]);
-
-  // Validate date
-  const disabledDate = (current) => {
-    const today = moment().startOf("day");
-    const maxDate = moment().add(91, "days").endOf("day");
-    return current && (current < today || current > maxDate);
-  };
-
   //GET Booking type 2
   const fetchCourtTimeSlots = async (startDate, enDate, dayOfWeek) => {
     try {
@@ -157,11 +157,7 @@ const BookingType2 = (props) => {
               { required: true, message: "Please select the booking date!" },
             ]}
           >
-            <DatePicker
-              format="YYYY-MM-DD"
-              onChange={handleDateChange}
-              disabledDate={disabledDate}
-            />
+            <DatePicker format="YYYY-MM-DD" onChange={handleDateChange} />
           </Form.Item>
         </div>
         <div className="col-md-6">
@@ -172,7 +168,6 @@ const BookingType2 = (props) => {
           >
             <InputNumber
               min={1}
-              max={12}
               style={{ width: "100%" }}
               onChange={handleMonthChange}
             />

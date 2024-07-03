@@ -1,13 +1,6 @@
+
 import React, { createContext, useContext, useEffect, useState } from "react";
-import {
-  Form,
-  DatePicker,
-  Button,
-  message,
-  Select,
-  InputNumber,
-  Flex,
-} from "antd";
+import { Form, DatePicker, Button, message, Select, InputNumber, Flex } from "antd";
 import moment from "moment";
 import { Option } from "antd/es/mentions";
 import NavBar from "../layout/NavBar";
@@ -17,13 +10,13 @@ import BookingType1 from "./BookingType1";
 import BookingType2 from "./BookingType2";
 import BookingType3 from "./BookingType3";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import useGetParams from "./../../assets/hooks/useGetParams";
+import useGetParams from './../../assets/hooks/useGetParams';
 import TransactionSuccess from "../Payment/TransactionSuccess";
 import Transaction from "../Payment/Transaction";
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 const BookingForm = ({ children }) => {
-  const isLoggedIn = localStorage.getItem("token");
-  const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("token")
+  const navigate  = useNavigate();
   const handleSetId = (id) => {
     props.setId(id); // Dispatch an action to update state
   };
@@ -46,12 +39,13 @@ const BookingForm = ({ children }) => {
   console.log(bookingDetailRequestCombos);
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
-  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false);
+  const [isBookingConfirmed, setIsBookingConfirmed] = useState(false)
   const [days, setDays] = useState(0);
   const userRole = localStorage.getItem("userRole");
   const isEnoughDay = (value) => {
     setDays(value);
   };
+
 
   //post api, create booking
   const bookingDetailRequest = (items) => {
@@ -71,27 +65,27 @@ const BookingForm = ({ children }) => {
         booking_type_id: values.booking_type_id,
         bookingDetailRequestCombos: bookingDetailRequestCombos,
       });
-      console.log(response);
+      console.log(response)
       // Handle response here
 
-      const bId = response.data.bookingResponse.id;
-      setBookId(bId);
-      setBookingDate(response.data.bookingResponse.bookingDate);
-      const res = await api.get(`/transactions/price/${bId}`);
-      setTotalPrice(res.data.totalPriceNeedToPay);
-      console.log(res.data.totalPriceNeedToPay);
-      localStorage.setItem("totalPrice", res.data.totalPriceNeedToPay);
-      setBookingConfirm(res.data);
-      console.log(res.data);
+      const bId = response.data.bookingResponse.id
+      setBookId(bId)
+      setBookingDate(response.data.bookingResponse.bookingDate)
+      const res = await api.get(`/transactions/price/${bId}`)
+      setTotalPrice(res.data.totalPriceNeedToPay)
+      console.log(res.data.totalPriceNeedToPay)
+      localStorage.setItem("totalPrice", res.data.totalPriceNeedToPay)
+      setBookingConfirm(res.data)
+      console.log(res.data)
 
       form.setFields([
-        { name: "name", readonly: true },
-        { name: "booking_type_id", readonly: true },
-        { name: "submitButton", readonly: true },
-
-        // ... add other form fields
-      ]);
-      setIsBookingConfirmed(true);
+          { name: "name", readonly: true },
+          { name: "booking_type_id", readonly: true },
+          { name: "submitButton", readonly: true }
+  
+          // ... add other form fields
+        ]);
+        setIsBookingConfirmed(true);
       console.log("Booking created:", response.data);
       message.success("Booking confirmed!");
     } catch (error) {
@@ -123,39 +117,31 @@ const BookingForm = ({ children }) => {
   const handlePayament = async () => {
     const payment = {
       bookingId: bookId,
-      amount: totalPrice,
-    };
+      amount: totalPrice
+    }
+
+
 
     try {
-      const paymentResponse = await api.post("/pay", payment);
+      const paymentResponse = await api.post("/pay", payment)
       const paymentURL = paymentResponse.data; // Assuming the entire response is the URL
       if (paymentURL) {
         window.location.href = paymentURL;
       } else {
         console.error("No paymentURL found in response");
       }
+
     } catch (error) {
       setError(error.message);
     }
-  };
+  }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        gap: "20px",
-        justifyContent: "center",
-      }}
-    >
+
+    <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
+
       <NavBar /> {/* Render NavBar at the top */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginTop: 100,
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
         {" "}
         {/* Added margin-top for space */}
         <div
@@ -174,6 +160,7 @@ const BookingForm = ({ children }) => {
               layout="vertical"
               onFinish={onFinish}
             >
+
               <Form.Item
                 name="name"
                 label="Court Name"
@@ -197,10 +184,7 @@ const BookingForm = ({ children }) => {
                 name="booking_type_id"
                 label="Booking Type"
                 rules={[
-                  {
-                    required: true,
-                    message: "Please select the booking type!",
-                  },
+                  { required: true, message: "Please select the booking type!" },
                 ]}
               >
                 <Select onChange={(value) => setBookingType(value)}>
@@ -230,29 +214,25 @@ const BookingForm = ({ children }) => {
                 ></BookingType3>
               )}
 
-              <Form.Item name="submitButton">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={isBookingConfirmed}
-                >
+              <Form.Item
+               name="submitButton"
+               >
+                <Button type="primary" htmlType="submit" disabled={isBookingConfirmed}>
                   Confirm Booking
                 </Button>
               </Form.Item>
             </Form>
           ) : (
             navigate("/login")
+
           )}
         </div>
       </div>
+
+
+
       {/* Right form */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          marginTop: 150,
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 150 }}>
         {" "}
         {/* Added margin-top for space */}
         <div
@@ -285,8 +265,11 @@ const BookingForm = ({ children }) => {
         </div>
       </div>
       <Footer />
+
     </div>
+
   );
 };
 
 export default BookingForm;
+

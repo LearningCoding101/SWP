@@ -1,3 +1,63 @@
+// import React, { useState } from 'react'
+// import api from '../../config/axios'
+// import { useLocation, useNavigate } from 'react-router-dom';
+// import { message } from 'antd';
+
+// const SignUp = () => {
+//     const [userOTP, setUserOTP] = useState('');
+//     const [error, setError] = useState(null);
+//     const navigate = useNavigate
+//     const location = useLocation();
+//     const { phone, password, email, fullName } = location.state || {}; // Handle potential absence of state
+//     const handleConfirmOTP = async () => {
+//         const payload = {
+//             phone: phone,
+//             password: password,
+//             email: email,
+//             fullName: fullName
+//         }
+//         try {
+//             const response = await api.post(`/register?otp=${userOTP}`, payload)
+//             navigate("/login")
+//             message.success("Register successfully!")
+//         } catch (error) {
+//             message.error("Am unknown error occurred. Please try again later.")
+//             setError(error.message);
+//           }
+//     }
+//     return (
+//         <div className='login-container'>
+//         <div className='login-card'>
+//           <div className='forgotPass-text'>
+//             <h3>Confirm OTP</h3>
+//             <p>We have sent a verification code to your email. Enter your code to register.</p>
+//           </div>
+//           {error && <div className="error">{error}</div>}
+//           <form onSubmit={handleConfirmOTP} className="login-form">
+//             <div className="form-group">
+//               <label htmlFor="userOTP">Verification code</label>
+//               <input
+//                 type="text"
+//                 placeholder='Enter your OTP here'
+//                 id="userOTP"
+//                 value={userOTP}
+//                 onChange={(e) => setUserOTP(e.target.value)}
+//                 className="form-input"
+//               />
+//             </div>
+
+  
+//             <button type="submit" className="login-button">
+//               Confirm
+//             </button>
+//           </form>
+//         </div>
+//       </div>
+//     )
+// }
+
+// export default SignUp
+
 import { useState, useEffect } from 'react';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';

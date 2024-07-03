@@ -40,7 +40,7 @@ import MyResponsiveLine from "./Components/Admin/LineGraph";
 import UpdateForCustomer from './Components/Clubs/UpdateForCustomer'
 import UpdateForOwner from "./Components/Clubs/UpdateForOwner";
 import ShowBookingsOfAClub from "./Components/Clubs/ShowBookingsOfAClub";
-import PieChartComponent from './Components/ClubOwnerShowBooking/PieChart'
+
 
 function App() {
   return (
@@ -83,6 +83,10 @@ function App() {
               path="/signup"
               element={<SignUp />}
             />
+            {/* <Route
+              path="/confirmOTP"
+              element={<OTPConfirm />}
+            /> */}
             <Route
               path='/forgotpassword'
               element={<ForgotPassword />}
@@ -173,9 +177,6 @@ function App() {
             <Route
               path="/bar"
               element={<BookingReport />} />
-            <Route
-              path="/pieChart"
-              element={<PieChartComponent />} />
           </Routes>
         </Router>
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const register = async (phone, password, email, fullname) => {
-  const url = 'http://152.42.168.144:8080/api/register'; 
+  const url = 'http://152.42.168.144:8080/api/sendOTP'; 
 
   const payload = {
     phone: phone,

@@ -1,57 +1,3 @@
-// import React, { useState, useEffect } from 'react';
-// import { Table, Empty } from 'antd';
-// import api from '../../config/axios';
-
-// const UserManage = () => {
-//     const [accounts, setAccounts] = useState([]);
-//     const [isLoading, setIsLoading] = useState(false);
-//     const [error, setError] = useState(null);
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             setIsLoading(true);
-//             setError(null);
-
-//             try {
-//                 const response = await api.get('/accounts');
-//                 setAccounts(response.data);
-//             } catch (error) {
-//                 setError(error.message);
-//                 console.error('Error fetching accounts:', error);
-//             } finally {
-//                 setIsLoading(false);
-//             }
-//         };
-
-//         fetchData();
-//     }, []);
-
-//     const columns = [
-//         // Define your table columns here based on the API data structure
-//         { title: 'ID', dataIndex: 'accountId' },
-//         { title: 'Full name', dataIndex: 'fullName' },
-//         { title: 'Email', dataIndex: 'email' },
-//         { title: 'Phone No.', dataIndex: 'phone' },
-//         { title: 'Account status', dataIndex: 'status' },
-//     ];
-
-//     return (
-//         <div>
-//             {isLoading ? (
-//                 <p>Loading accounts...</p>
-//             ) : error ? (
-//                 <p>Error: {error}</p>
-//             ) : accounts.length === 0 ? (
-//                 <Empty description="No accounts found" />
-//             ) : (
-//                 <Table dataSource={accounts} columns={columns} rowKey="id" />
-//             )}
-//         </div>
-//     );
-// };
-
-
-// export default UserManage
 
 import React, { useState, useEffect } from 'react';
 import { Table, Empty, Button, Modal, message, Select } from 'antd'; // Import Modal and Select from Ant Design
@@ -101,6 +47,11 @@ const UserManage = () => {
     try {
       const res = await api.put(`/{accountId}?accountId=${accountIdToUpdate}`, payload);
       message.success('Update success!');
+      setAccounts((prevAccounts) =>
+        prevAccounts.map((account) =>
+          account.accountId === accountIdToUpdate ? { ...account, status: statusToUpdate } : account
+        )
+      );
     } catch (error) {
       message.error('An unknown error occurred, try again later.');
       setError(error.message);
@@ -119,12 +70,14 @@ const UserManage = () => {
     { title: 'ID', dataIndex: 'accountId' },
     { title: 'Full name', dataIndex: 'fullName' },
     { title: 'Email', dataIndex: 'email' },
+    { title: 'Role', dataIndex: 'role' },
     { title: 'Phone No.', dataIndex: 'phone' },
     { title: 'Account status', dataIndex: 'status' },
     {
       title: 'Action',
       dataIndex: '', // No data index needed for action column
       render: (_, record) => (
+        record.role != "ADMIN" &&
         <Button type="primary" onClick={() => handleUpdateStatus(record.accountId)}>
           Update Status
         </Button>
@@ -158,3 +111,4 @@ const UserManage = () => {
 };
 
 export default UserManage;
+

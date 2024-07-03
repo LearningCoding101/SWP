@@ -30,6 +30,7 @@
     outline: none;
     border-color: #007bff;
   }
+
   .otp-modal {
     position: fixed;
     top: 0;
@@ -41,7 +42,7 @@
     justify-content: center;
     align-items: center;
   }
-  
+
   .otp-card {
     background: white;
     padding: 2rem;
@@ -49,11 +50,11 @@
     text-align: center;
     width: 300px;
   }
-  
+
   .otp-title {
     margin-bottom: 1rem;
   }
-  
+
   .otp-button {
     padding: 0.75rem;
     background: #007bff;
@@ -62,15 +63,15 @@
     border-radius: 4px;
     cursor: pointer;
   }
-  
+
   .otp-button:hover {
     background: #0056b3;
   }
-  
+
   .resend-otp {
     margin-top: 1rem;
   }
-  
+
   .resend-button {
     background: none;
     color: #007bff;
@@ -79,8 +80,7 @@
     text-decoration: underline;
     font-size: 0.9rem;
   }
-  
+
   .resend-button:hover {
     color: #0056b3;
   }
-  
