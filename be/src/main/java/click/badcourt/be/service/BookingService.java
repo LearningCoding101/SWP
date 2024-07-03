@@ -5,10 +5,8 @@ import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.RoleEnum;
 import click.badcourt.be.exception.BadRequestException;
-import click.badcourt.be.model.request.BookingCreateRequest;
-import click.badcourt.be.model.request.BookingUpdateRequest;
-import click.badcourt.be.model.request.QRCodeData;
-import click.badcourt.be.model.request.BookingComboRequest;
+import click.badcourt.be.model.request.*;
+import click.badcourt.be.model.response.BookingComboResponse;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.model.response.BookingResponseFeedbackYN;
 import click.badcourt.be.repository.*;
@@ -48,6 +46,9 @@ public class BookingService {
     private AuthenticationRepository authenticationRepository;
 
     @Autowired
+    private BookingDetailService bookingDetailService;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
@@ -75,7 +76,29 @@ public class BookingService {
         logger.info("Scheduled task completed at {}.", oneHourAgo);
     }
 
+    public BookingComboResponse createBookingForStaff(BookingComboRequestForStaff bookingComboRequest) throws MessagingException, IOException, WriterException {
+        BookingResponse bkcr = createBookingNew(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
+        Optional<Booking> booking = bookingRepository.findById(bkcr.getId());
+        booking.get().setStatus(BookingStatusEnum.COMPLETED);
+        bookingRepository.save(booking.get());
+        BookingComboResponse bookingComboResponse = new BookingComboResponse();
+        bookingComboResponse.setBookingResponse(bkcr);
+        List<BookingDetailRequestCombo> bkdtrspl = bookingComboRequest.getBookingDetailRequestCombos();
+        List<BookingDetailRequest> returnlist = new ArrayList<>();
+        BookingDetailRequest store;
+        Long id = bkcr.getId();
+        for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
+            store = bookingDetailService.create3rdBookingDetailCombo(bkdtr, id);
+            returnlist.add(store);
+        }
 
+        QRCodeData qrCodeData = new QRCodeData();
+        qrCodeData.setBookingId(booking.get().getBookingId());
+        sendBookingConfirmation(qrCodeData, bookingComboRequest.getEmail());
+
+        bookingComboResponse.setBookingDetailRequestList(returnlist);
+        return bookingComboResponse;
+    }
 
     public long countBookingsByClubOwner() {
         Account currentAccount = accountUtils.getCurrentAccount();

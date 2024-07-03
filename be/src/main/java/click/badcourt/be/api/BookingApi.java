@@ -1,5 +1,6 @@
 package click.badcourt.be.api;
 
+import click.badcourt.be.entity.Booking;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
@@ -7,6 +8,7 @@ import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.model.response.BookingResponseFeedbackYN;
 import click.badcourt.be.repository.BookingDetailRepository;
+import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.service.BookingDetailService;
 import click.badcourt.be.service.BookingService;
 import click.badcourt.be.service.EmailService;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -37,6 +40,8 @@ public class BookingApi {
     private EmailService emailService;
     @Autowired
     private BookingDetailRepository bookingDetailRepository;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
@@ -120,6 +125,14 @@ public class BookingApi {
         }
     }
 
+    @PostMapping("/bookingForStaff")
+    public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequestForStaff bookingComboRequest) {
+        try {
+            return ResponseEntity.ok(bookingService.createBookingForStaff(bookingComboRequest));
+        } catch (IllegalArgumentException | MessagingException | IOException | WriterException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable Long id) {
