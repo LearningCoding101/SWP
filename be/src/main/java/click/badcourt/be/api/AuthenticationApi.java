@@ -105,19 +105,18 @@ public class AuthenticationApi {
     public void resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
         authenticationService.resetPassword(resetPasswordRequest);
     }
+
     @PutMapping("/setAccountStatus/{accId}/{ban}")
     public void setAccountStatusByID(@PathVariable Long accId, @PathVariable boolean ban) {
         authenticationService.setAccountStatus(accId, ban);
     }
-
-
-
 
     @GetMapping("/account/{email}")
     public ResponseEntity getAccount(@PathVariable String email) {
         Account account= authenticationService.getAccountByEmail(email);
         return ResponseEntity.ok(account);
     }
+
     @GetMapping("/accounts")
     public ResponseEntity getAccounts() {
         return ResponseEntity.ok(accountService.getAllAccount());
