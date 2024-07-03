@@ -133,12 +133,14 @@ const UpdateForCustomer = () => {
                                         <Button
                                             onClick={() => showModal(booking)}
                                             disabled={
-                                                moment().isAfter(moment(booking.bookingDate).subtract(24, 'hours'))
+                                                moment().utc().format('YYYY-MM-DD') >= moment.utc(booking.bookingDate).format('YYYY-MM-DD')
                                                 || booking.status !== 'NOTYET'
                                             }
                                         >
                                             Update
                                         </Button>
+
+
 
 
                                     </Space>
