@@ -12,8 +12,10 @@ import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.repository.CourtRepository;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -38,6 +40,17 @@ public class ClubService {
     private CourtRepository courtRepository;
     @Autowired
     private FeedbackService feedbackService;
+
+    @Transactional
+    @Scheduled(fixedRate = 300000)
+    public void verifyClub(){
+        List<Club> club = clubRepository.findAll();
+        for (Club clubcheck : club) {
+            if(clubcheck.isDeleted() && clubcheck.getAccount().getPassword() == null){
+                clubcheck.setDeleted(false);
+            }
+        }
+    }
 
     public ClubResponse getClubByCurrentAccount() {
         Account currentAccount = accountUtils.getCurrentAccount();
@@ -149,6 +162,7 @@ public class ClubService {
         club.setClose_time(LocalTime.of(clubCreateRequest.getEndHour(), clubCreateRequest.getEndMinute()));
         club.setOpen_time(LocalTime.of(clubCreateRequest.getStartHour(), clubCreateRequest.getStartMinute()));
         club.setPicture_location(clubCreateRequest.getPicture_location());
+        club.setDeleted(true);
         return clubRepository.save(club);
     }
 
