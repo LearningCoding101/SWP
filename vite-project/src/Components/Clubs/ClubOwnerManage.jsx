@@ -44,11 +44,10 @@ const ClubOwnerManage = () => {
         <Link
           to={{
             pathname: `/clubManage/ShowBookingsOfAClub`,
-
           }}
           className="nav-link"
         >
-          Show Booking
+          Update Booking
         </Link>
         <Link
           to={{
@@ -75,7 +74,6 @@ const ClubOwnerManage = () => {
           </p>
           <p className="club-owner">Owner: {club.ownerName}</p>
         </div>
-
       ) : (
         <p>No club data available.</p>
       )}
