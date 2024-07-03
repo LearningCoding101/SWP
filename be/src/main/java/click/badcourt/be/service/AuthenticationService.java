@@ -9,6 +9,7 @@ import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.ClubRepository;
+import click.badcourt.be.utils.AccountUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -43,6 +44,9 @@ public class AuthenticationService implements UserDetailsService {
 
     @Autowired
     TokenService tokenService;
+
+    @Autowired
+    private AccountUtils accountUtils;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -82,6 +86,13 @@ public class AuthenticationService implements UserDetailsService {
             return BCrypt.checkpw(otp, otpData.otpHash);
         }
         return false;
+    }
+
+    public void updateNameAndPhone(String fullname, String phone) {
+        Account account = accountUtils.getCurrentAccount();
+        account.setFullName(fullname);
+        account.setPhone(phone);
+        authenticationRepository.save(account);
     }
 
 

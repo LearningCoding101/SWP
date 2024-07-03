@@ -1,10 +1,12 @@
 package click.badcourt.be.api;
 
+import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
 import click.badcourt.be.model.response.BookingDetailResponse;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.model.response.BookingResponseFeedbackYN;
+import click.badcourt.be.repository.BookingDetailRepository;
 import click.badcourt.be.service.BookingDetailService;
 import click.badcourt.be.service.BookingService;
 import click.badcourt.be.service.EmailService;
@@ -33,6 +35,8 @@ public class BookingApi {
     private BookingDetailService bookingDetailService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private BookingDetailRepository bookingDetailRepository;
 
     @PostMapping
     public ResponseEntity<BookingResponse> createBooking(@RequestBody BookingCreateRequest bookingCreateRequest) {
@@ -107,6 +111,7 @@ public class BookingApi {
                 store = bookingDetailService.create3rdBookingDetailCombo(bkdtr, id);
                 returnlist.add(store);
             }
+            if(bookingDetailRepository.countBookingDetailsByBooking_BookingId(id)<10) bkcr.setStatus(BookingStatusEnum.COMPLETED);
         }
         bookingComboResponse.setBookingDetailRequestList(returnlist);
         return ResponseEntity.ok(bookingComboResponse);

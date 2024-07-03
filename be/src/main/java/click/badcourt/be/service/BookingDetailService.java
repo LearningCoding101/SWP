@@ -385,7 +385,6 @@ public class BookingDetailService {
         Date datee = Date.from(startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         List<BookingDetail> bookingDTList = bookingDetailRepository.findBookingDetailsByDeletedFalse();
 
-
         BookingDetail bookingDetail= new BookingDetail();
         Optional<Booking> bookingOptional= bookingRepository.findById(id);
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(bookingDetailRequest.getCourtTSId());

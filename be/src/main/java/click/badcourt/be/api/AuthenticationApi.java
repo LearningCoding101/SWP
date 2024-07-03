@@ -9,6 +9,7 @@ import click.badcourt.be.service.AuthenticationService;
 import click.badcourt.be.service.EmailService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -109,6 +110,16 @@ public class AuthenticationApi {
     @PutMapping("/setAccountStatus/{accId}/{ban}")
     public void setAccountStatusByID(@PathVariable Long accId, @PathVariable boolean ban) {
         authenticationService.setAccountStatus(accId, ban);
+    }
+
+    @PutMapping("/{fullname}/{phone}")
+    public ResponseEntity updateFullNameAndPhone(@PathVariable String fullname, @PathVariable String phone) {
+        try{
+            authenticationService.updateNameAndPhone(fullname, phone);
+            return new ResponseEntity<>("Update Successfully !", HttpStatus.OK);
+        }catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/account/{email}")
