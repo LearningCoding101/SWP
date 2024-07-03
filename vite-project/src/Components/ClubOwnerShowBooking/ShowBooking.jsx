@@ -1,8 +1,82 @@
 import React, { useEffect, useState } from "react";
-import { Card, Descriptions, List, Spin } from "antd";
+import { Card, Descriptions, List, Modal, Button, Form, Select, DatePicker, message, Tag } from "antd";
 import api from "../../config/axios";
-
+import moment from 'moment'
 const ShowBooking = (props) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentBooking, setCurrentBooking] = useState(null);
+  const [courts, setCourts] = useState([]);
+  const [courtTimeSlots, setCourtTimeSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedCourt, setSelectedCourt] = useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+
+  const showModal = async (booking) => {
+    setCurrentBooking(booking);
+    setIsModalVisible(true);
+
+
+    try {
+      const response = await api.get(`/court/${props.clubId}`);
+      setCourts(response.data);
+    } catch (error) {
+      console.error('Failed to fetch courts:', error);
+    }
+  };
+
+
+
+  const handleOk = async () => {
+    try {
+      const changeSlotBookingDetailRequestCombo = {
+        newcourtTSId: selectedTimeSlot,
+        newbookingDate: selectedDate.format('YYYY-MM-DD')
+      };
+      const response = await api.put(`/bookingDetail/slot/${currentBooking.bookingDetailsId}`, changeSlotBookingDetailRequestCombo);
+      console.log("Booking updated:", response.data);
+      message.success("Updated success!")
+      setIsModalVisible(false);
+
+      window.location.reload();
+    } catch (error) {
+      message.error("Error!")
+      console.error("Error updating booking:", error);
+    }
+  };
+
+
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCourtChange = async (value) => {
+    setSelectedCourt(value);
+    if (selectedDate) {
+      try {
+        const response = await api.get(`/courtTimeSlot/${value}/${selectedDate.format('YYYY-MM-DD')}`);
+        setCourtTimeSlots(response.data);
+      } catch (error) {
+        console.error('Failed to fetch court time slots:', error);
+      }
+    }
+  };
+
+  const handleDateChange = async (date, dateString) => {
+    setSelectedDate(date);
+    if (selectedCourt) {
+      try {
+        const response = await api.get(`/courtTimeSlot/${selectedCourt}/${date.format('YYYY-MM-DD')}`);
+        setCourtTimeSlots(response.data);
+      } catch (error) {
+        console.error('Failed to fetch court time slots:', error);
+      }
+    }
+  };
+
+  const handleTimeSlotClick = (timeSlotId) => {
+    setSelectedTimeSlot(timeSlotId);
+  };
   console.log(props);
   // const { bookings } = props;
   // console.log(bookings);
@@ -42,6 +116,7 @@ const ShowBooking = (props) => {
                   <Descriptions.Item label="Court Name">
                     {booking.courtName}
                   </Descriptions.Item>
+
                   <Descriptions.Item label="Full Name of Customer">
                     {booking.fullnameoforder}
                   </Descriptions.Item>
@@ -57,46 +132,57 @@ const ShowBooking = (props) => {
                   <Descriptions.Item label="Status">
                     {booking.status}
                   </Descriptions.Item>
+
+
                 </Descriptions>
+
               }
             />
+            <Button
+              style={{ cursor: 'pointer' }}
+              onClick={() => showModal(booking)}
+              disabled={
+                moment().isAfter(moment(booking.bookingDate).subtract(24, 'hours'))
+                || booking.status !== 'NOTYET'
+              }
+            >
+              Update
+            </Button>
           </List.Item>
         )}
       />
+      <Modal title="Update Booking" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        <Form>
+          <Form.Item name="ctslot_id">
+            <Select placeholder="Select a court" onChange={handleCourtChange}>
+              {courts.map((court) => (
+                <Option key={court.id} value={court.id}>{court.courtName}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name="date">
+            <DatePicker
+              placeholder="Select a date"
+              format="YYYY-MM-DD"
+              onChange={handleDateChange}
+              disabledDate={(current) => current && current < moment().startOf('day')}
+            />
+          </Form.Item>
+          <Form.Item name="courtTimeSlotId">
+            {courtTimeSlots.filter(timeSlot => timeSlot.status === 'AVAILABLE').map((timeSlot) => (
+              <Tag
+                key={timeSlot.courtTimeSlotId}
+                color={selectedTimeSlot === timeSlot.courtTimeSlotId ? 'blue' : 'default'}
+                onClick={() => handleTimeSlotClick(timeSlot.courtTimeSlotId)}
+              >
+                {timeSlot.start_time} - {timeSlot.end_time}
+              </Tag>
+            ))}
+          </Form.Item>
+        </Form>
+      </Modal>
     </Card>
-    // <li className="list-group-item" style={{ margin: 7 }}>
-    //   <div className="container media align-items-lg-center flex-column flex-lg-row p-3 d-flex">
-    //     <div className="media-body col-8">
-    //       <Descriptions bordered>
-    //         <Descriptions.Item label="Court TS ID">
-    //           {props.courtTSId}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Booking Date">
-    //           {props.bookingDate}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Booking Details ID">
-    //           {props.bookingDetailsId}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Court Name">
-    //           {props.courtName}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Full Name of Order">
-    //           {props.fullnameoforder}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Phone Number">
-    //           {props.phonenumber}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Start Time">
-    //           {props.start_time}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="End Time">
-    //           {props.end_time}
-    //         </Descriptions.Item>
-    //         <Descriptions.Item label="Status">{props.status}</Descriptions.Item>
-    //       </Descriptions>
-    //     </div>
-    //   </div>
-    // </li>
+
   );
 };
 

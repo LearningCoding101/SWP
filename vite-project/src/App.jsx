@@ -99,14 +99,14 @@ function App() {
               path="/UpdateForCustomer/:bookingid/:clubid"
               element={<UpdateForCustomer />}
             />
-            <Route
+            {/* <Route
               path="/clubManage/ShowBookingsOfAClub"
               element={<ShowBookingsOfAClub />}
-            />
-            <Route
+            /> */}
+            {/* <Route
               path="/clubManage/ShowBookingsOfAClub/UpdateForOwner/:bookingid/:clubid"
               element={<UpdateForOwner />}
-            />
+            /> */}
             <Route
               path='/reset-password'
               element={<ForgotPassConfirm />}

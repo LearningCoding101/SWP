@@ -9,6 +9,7 @@ const ShowBookingList = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [club, setClubs] = useState([]);
   const { courtId } = useParams();
+
   const fetchClubs = async () => {
     try {
       const response = await api.get('/club');
@@ -19,22 +20,17 @@ const ShowBookingList = () => {
     }
   };
   useEffect(() => {
-
-
-
     fetchClubs();
   }, []);
 
   const handleDateChange = async (date) => {
     setSelectedDate(date.format("YYYY-MM-DD"));
-    // <ShowBooking date={date.format("YYYY-MM-DD")} />;
     fetchBookingDetails(date.format("YYYY-MM-DD"));
   };
 
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
 
-  // useEffect(() => {
   const fetchBookingDetails = async (date) => {
     try {
       setLoading(true);
@@ -50,16 +46,12 @@ const ShowBookingList = () => {
       setLoading(false);
     }
   };
-  //   fetchBookingDetails();
-  // }, []);
 
-  // if (loading) {
-  //   return <Spin />;
-  // }
-
-  // if (!bookings) {
-  //   return <div>Error loading booking details</div>;
-  // }
+  // Function to sort bookings by date
+  const sortBookings = () => {
+    const sortedBookings = [...bookings].sort((a, b) => new Date(a.bookingDate) - new Date(b.bookingDate));
+    setBookings(sortedBookings);
+  };
 
   return (
     <div>
@@ -72,7 +64,6 @@ const ShowBookingList = () => {
           </Link>
         </Form.Item>
         {/* Select a date to display */}
-
         <Form.Item
           name="Date"
           label="Select Booking Date"
@@ -83,10 +74,11 @@ const ShowBookingList = () => {
           <DatePicker
             format="YYYY-MM-DD"
             onChange={handleDateChange}
-            // onChange={(value) => setSelectedDate(value.format("YYYY-MM-DD "))}
           />
         </Form.Item>
       </Form>
+      {/* Add a sort button */}
+      <Button onClick={sortBookings}>Sort by Date</Button>
       <ul className="list-group shadow-sm">
         {bookings.map((booking, index) => {
           return (
@@ -102,6 +94,7 @@ const ShowBookingList = () => {
               start_time={booking?.start_time}
               end_time={booking?.end_time}
               status={booking?.status}
+              clubId={booking?.clubId}
             ></ShowBooking>
           );
         })}
