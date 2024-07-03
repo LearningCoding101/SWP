@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Layout,
   Menu,
@@ -23,6 +23,8 @@ import BookingReport from "./BarChart";
 import UserManage from "./UserManage";
 import ManageClub from "./ManageClub";
 import api from "../../config/axios";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../Login/AuthProvider";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
@@ -60,6 +62,9 @@ const Dashboard = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const filteredItems = items.filter(
     (item) =>
       item.key === "1" ||
@@ -70,6 +75,8 @@ const Dashboard = () => {
 
   const handleLogout = () => {
     console.log("Logged out");
+    auth.handleLogout();
+    navigate("/");
   };
 
   useEffect(() => {
