@@ -276,8 +276,12 @@ public class BookingService {
         QRCodeData decodedData = qrCodeService.decodeQr(qrCodeData);
         return decodedData != null && decodedData.getBookingId().equals(expectedData.getBookingId());
     }
-
-
+    public Map<String, Long> getBookingStatusCounts(Long clubId) {
+        Map<String, Long> statusCounts = new HashMap<>();
+        statusCounts.put("CANCELED", bookingRepository.countByClubIdAndStatus(clubId, BookingStatusEnum.CANCELED));
+        statusCounts.put("COMPLETED", bookingRepository.countByClubIdAndStatus(clubId, BookingStatusEnum.COMPLETED));
+        return statusCounts;
+    }
 
     //    public List<Booking> getBookingsByCustomerId(Long customerId) {
 //        List<Booking> bookingList= bookingRepository.findBookingsByDeletedFalse();

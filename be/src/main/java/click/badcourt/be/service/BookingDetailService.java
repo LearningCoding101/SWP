@@ -54,7 +54,7 @@ public class BookingDetailService {
     private static final Logger logger = LoggerFactory.getLogger(BookingDetailService.class);
 
     @Transactional
-    @Scheduled(fixedRate = 60000) // Run the method every 1 minute
+    @Scheduled(fixedRate = 60000) // Run the method every 30 minutes
     public void updatePassedBookingDetails() {
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
