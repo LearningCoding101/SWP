@@ -112,10 +112,10 @@ public class AuthenticationApi {
         authenticationService.setAccountStatus(accId, ban);
     }
 
-    @PutMapping("/{fullname}/{phone}")
-    public ResponseEntity updateFullNameAndPhone(@PathVariable String fullname, @PathVariable String phone) {
+    @PutMapping("/updateNameAndPhone")
+    public ResponseEntity updateFullNameAndPhone(@RequestBody AccountUpdateRequest accountUpdateRequest) {
         try{
-            authenticationService.updateNameAndPhone(fullname, phone);
+            authenticationService.updateNameAndPhone(accountUpdateRequest);
             return new ResponseEntity<>("Update Successfully !", HttpStatus.OK);
         }catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

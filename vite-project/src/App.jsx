@@ -102,8 +102,8 @@ function App() {
             {/* <Route
               path="/clubManage/ShowBookingsOfAClub"
               element={<ShowBookingsOfAClub />}
-            /> */}
-            {/* <Route
+            />
+            <Route
               path="/clubManage/ShowBookingsOfAClub/UpdateForOwner/:bookingid/:clubid"
               element={<UpdateForOwner />}
             /> */}

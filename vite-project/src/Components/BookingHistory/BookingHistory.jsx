@@ -7,6 +7,7 @@ import QRCode from "qrcode.react"; // Import QRCode from qrcode.react
 import { Link } from "react-router-dom";
 
 const BookingHistory = (props) => {
+  const isLoggedIn = localStorage.getItem("token")
   const [showBookingDetail, updateShowBookingDetail] = useState(false);
 
   const displayDetail = () => {
@@ -29,6 +30,8 @@ const BookingHistory = (props) => {
   const qrCodeValue = JSON.stringify({ bookingId: props.orderID });
 
   return (
+    <>
+      {isLoggedIn ? (
     <div>
       <Card
         bordered={false}
@@ -109,6 +112,10 @@ const BookingHistory = (props) => {
         )}
       </Card>
     </div>
+     ) : (
+      navigate('/')
+    )}
+  </>
   );
 };
 

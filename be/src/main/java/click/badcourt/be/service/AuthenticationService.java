@@ -88,10 +88,10 @@ public class AuthenticationService implements UserDetailsService {
         return false;
     }
 
-    public void updateNameAndPhone(String fullname, String phone) {
+    public void updateNameAndPhone(AccountUpdateRequest accountUpdateRequest) {
         Account account = accountUtils.getCurrentAccount();
-        account.setFullName(fullname);
-        account.setPhone(phone);
+        account.setFullName(accountUpdateRequest.getFullName());
+        account.setPhone(accountUpdateRequest.getPhone());
         authenticationRepository.save(account);
     }
 

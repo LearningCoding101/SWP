@@ -6,6 +6,7 @@ import { ArrowLeftOutlined } from "@ant-design/icons";
 import api from "../../config/axios";
 
 const ShowBookingList = () => {
+  const isLoggedIn = localStorage.getItem("token")
   const [selectedDate, setSelectedDate] = useState(null);
   const [club, setClubs] = useState([]);
   const { courtId } = useParams();
@@ -64,52 +65,58 @@ const ShowBookingList = () => {
 
 
   return (
-    <div>
-      <Form>
-        <Form.Item>
-          <Link to="/">
-            <Button type="text" style={{ marginTop: "20px" }}>
-              <ArrowLeftOutlined /> Back to Home Page
-            </Button>
-          </Link>
-        </Form.Item>
-        {/* Select a date to display */}
-        <Form.Item
-          name="Date"
-          label="Select Booking Date"
-          rules={[
-            { required: true, message: "Please select the booking date!" },
-          ]}
-        >
-          <DatePicker
-            format="YYYY-MM-DD"
-            onChange={handleDateChange}
-          />
-        </Form.Item>
-      </Form>
-      {/* Add a sort button */}
-      <Button onClick={sortBookings}>Sort by TimeSlot</Button>
-      <ul className="list-group shadow-sm">
-        {bookings.map((booking, index) => {
-          return (
-            <ShowBooking
-              key={index}
-              bookingID={booking?.bookingId}
-              courtTSId={booking?.courtTSId}
-              bookingDate={booking?.bookingDate}
-              bookingDetailsId={booking?.bookingDetailsId}
-              courtName={booking?.courtName}
-              fullnameoforder={booking?.fullnameoforder}
-              phonenumber={booking?.phonenumber}
-              start_time={booking?.start_time}
-              end_time={booking?.end_time}
-              status={booking?.status}
-              clubId={booking?.clubId}
-            ></ShowBooking>
-          );
-        })}
-      </ul>
-    </div>
+    <>
+      {isLoggedIn ? (
+        <div>
+          <Form>
+            <Form.Item>
+              <Link to="/">
+                <Button type="text" style={{ marginTop: "20px" }}>
+                  <ArrowLeftOutlined /> Back to Home Page
+                </Button>
+              </Link>
+            </Form.Item>
+            {/* Select a date to display */}
+            <Form.Item
+              name="Date"
+              label="Select Booking Date"
+              rules={[
+                { required: true, message: "Please select the booking date!" },
+              ]}
+            >
+              <DatePicker
+                format="YYYY-MM-DD"
+                onChange={handleDateChange}
+              />
+            </Form.Item>
+          </Form>
+          {/* Add a sort button */}
+          <Button onClick={sortBookings}>Sort by TimeSlot</Button>
+          <ul className="list-group shadow-sm">
+            {bookings.map((booking, index) => {
+              return (
+                <ShowBooking
+                  key={index}
+                  bookingID={booking?.bookingId}
+                  courtTSId={booking?.courtTSId}
+                  bookingDate={booking?.bookingDate}
+                  bookingDetailsId={booking?.bookingDetailsId}
+                  courtName={booking?.courtName}
+                  fullnameoforder={booking?.fullnameoforder}
+                  phonenumber={booking?.phonenumber}
+                  start_time={booking?.start_time}
+                  end_time={booking?.end_time}
+                  status={booking?.status}
+                  clubId={booking?.clubId}
+                ></ShowBooking>
+              );
+            })}
+          </ul>
+        </div>
+      ) : (
+        navigate('/')
+      )}
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import { Card, Descriptions, List, Modal, Button, Form, Select, DatePicker, mess
 import api from "../../config/axios";
 import moment from 'moment'
 const ShowBooking = (props) => {
+  const isLoggedIn = localStorage.getItem("token")
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentBooking, setCurrentBooking] = useState(null);
   const [courts, setCourts] = useState([]);
@@ -81,108 +82,113 @@ const ShowBooking = (props) => {
   // const { bookings } = props;
   // console.log(bookings);
   return (
-    <Card
-      bordered={false}
-      style={{
-        margin: "16px 24px",
-        padding: "16px",
-        backgroundColor: "#f5f5f5", // Light grey background
-      }}
-    >
-      <List
-        // grid={{ gutter: 16, column: 1 }}
-        itemLayout="horizontal"
-        dataSource={[props]} // Use bookings array here
-        renderItem={(booking) => (
-          <List.Item>
-            <List.Item.Meta
-              // avatar={<div className="status-badge">{booking.status}</div>}
-              title={`Booking ID: ${booking.bookingID}`}
-              description={
-                <Descriptions bordered>
-                  <Descriptions.Item label="Court TS ID">
-                    {booking.courtTSId}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Booking Date">
-                    {new Date(booking.bookingDate).toLocaleDateString("en-GB", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Booking Details ID">
-                    {booking.bookingDetailsId}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Court Name">
-                    {booking.courtName}
-                  </Descriptions.Item>
+    <>
+      {isLoggedIn ? (
+        <Card
+          bordered={false}
+          style={{
+            margin: "16px 24px",
+            padding: "16px",
+            backgroundColor: "#f5f5f5", // Light grey background
+          }}
+        >
+          <List
+            // grid={{ gutter: 16, column: 1 }}
+            itemLayout="horizontal"
+            dataSource={[props]} // Use bookings array here
+            renderItem={(booking) => (
+              <List.Item>
+                <List.Item.Meta
+                  // avatar={<div className="status-badge">{booking.status}</div>}
+                  title={`Booking ID: ${booking.bookingID}`}
+                  description={
+                    <Descriptions bordered>
+                      <Descriptions.Item label="Court TS ID">
+                        {booking.courtTSId}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Booking Date">
+                        {new Date(booking.bookingDate).toLocaleDateString("en-GB", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Booking Details ID">
+                        {booking.bookingDetailsId}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Court Name">
+                        {booking.courtName}
+                      </Descriptions.Item>
 
-                  <Descriptions.Item label="Full Name of Customer">
-                    {booking.fullnameoforder}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Phone Number">
-                    {booking.phonenumber}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Start Time">
-                    {booking.start_time}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="End Time">
-                    {booking.end_time}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Status">
-                    {booking.status}
-                  </Descriptions.Item>
+                      <Descriptions.Item label="Full Name of Customer">
+                        {booking.fullnameoforder}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Phone Number">
+                        {booking.phonenumber}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Start Time">
+                        {booking.start_time}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="End Time">
+                        {booking.end_time}
+                      </Descriptions.Item>
+                      <Descriptions.Item label="Status">
+                        {booking.status}
+                      </Descriptions.Item>
 
 
-                </Descriptions>
+                    </Descriptions>
 
-              }
-            />
-            <Button
-              style={{ cursor: 'pointer' }}
-              onClick={() => showModal(booking)}
-              disabled={
-                moment().isAfter(moment(booking.bookingDate).subtract(24, 'hours'))
-                || booking.status !== 'NOTYET'
-              }
-            >
-              Update
-            </Button>
-          </List.Item>
-        )}
-      />
-      <Modal title="Update Booking" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <Form>
-          <Form.Item name="ctslot_id">
-            <Select placeholder="Select a court" onChange={handleCourtChange}>
-              {courts.map((court) => (
-                <Option key={court.id} value={court.id}>{court.courtName}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name="date">
-            <DatePicker
-              placeholder="Select a date"
-              format="YYYY-MM-DD"
-              onChange={handleDateChange}
-              disabledDate={(current) => current && current < moment().startOf('day')}
-            />
-          </Form.Item>
-          <Form.Item name="courtTimeSlotId">
-            {courtTimeSlots.filter(timeSlot => timeSlot.status === 'AVAILABLE').map((timeSlot) => (
-              <Tag
-                key={timeSlot.courtTimeSlotId}
-                color={selectedTimeSlot === timeSlot.courtTimeSlotId ? 'blue' : 'default'}
-                onClick={() => handleTimeSlotClick(timeSlot.courtTimeSlotId)}
-              >
-                {timeSlot.start_time} - {timeSlot.end_time}
-              </Tag>
-            ))}
-          </Form.Item>
-        </Form>
-      </Modal>
-    </Card>
-
+                  }
+                />
+                <Button
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => showModal(booking)}
+                  disabled={
+                    moment().isAfter(moment(booking.bookingDate).subtract(24, 'hours'))
+                    || booking.status !== 'NOTYET'
+                  }
+                >
+                  Update
+                </Button>
+              </List.Item>
+            )}
+          />
+          <Modal title="Update Booking" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <Form>
+              <Form.Item name="ctslot_id">
+                <Select placeholder="Select a court" onChange={handleCourtChange}>
+                  {courts.map((court) => (
+                    <Option key={court.id} value={court.id}>{court.courtName}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item name="date">
+                <DatePicker
+                  placeholder="Select a date"
+                  format="YYYY-MM-DD"
+                  onChange={handleDateChange}
+                  disabledDate={(current) => current && current < moment().startOf('day')}
+                />
+              </Form.Item>
+              <Form.Item name="courtTimeSlotId">
+                {courtTimeSlots.filter(timeSlot => timeSlot.status === 'AVAILABLE').map((timeSlot) => (
+                  <Tag
+                    key={timeSlot.courtTimeSlotId}
+                    color={selectedTimeSlot === timeSlot.courtTimeSlotId ? 'blue' : 'default'}
+                    onClick={() => handleTimeSlotClick(timeSlot.courtTimeSlotId)}
+                  >
+                    {timeSlot.start_time} - {timeSlot.end_time}
+                  </Tag>
+                ))}
+              </Form.Item>
+            </Form>
+          </Modal>
+        </Card>
+      ) : (
+        navigate('/')
+      )}
+    </>
   );
 };
 
