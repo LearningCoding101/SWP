@@ -2,10 +2,7 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Transaction;
 import click.badcourt.be.model.request.TransactionRequest;
-import click.badcourt.be.model.response.MoneyPredictResponse;
-import click.badcourt.be.model.response.PreTransactionResponse;
-import click.badcourt.be.model.response.TotalAmountByMonthDTO;
-import click.badcourt.be.model.response.TransactionResponse;
+import click.badcourt.be.model.response.*;
 import click.badcourt.be.repository.ClubRepository;
 import click.badcourt.be.service.TransactionService;
 import com.google.protobuf.DoubleValue;
@@ -37,6 +34,7 @@ import java.util.List;
             return transactionService.getTotalAmountByMonth(year);
         }
 
+
         @GetMapping
         public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
             return ResponseEntity.ok(transactionService.findAll());
@@ -46,8 +44,13 @@ import java.util.List;
             PreTransactionResponse pretrans = transactionService.TotalPriceCombo(bookingId);
             return pretrans;
         }
+        @GetMapping("/totalRevenueForClubOwner/{clubId}")
+        public ResponseEntity<List<TotalAmountByPeriodDTO>> getTotalRevenueForClubOwner(@PathVariable Long clubId,@RequestParam String period, @RequestParam(required = false) Integer month, @RequestParam(required = false) Integer year) {
+            List<TotalAmountByPeriodDTO> totalRevenue = transactionService.calculateTotalRevenueForClubOwner( clubId,period, month, year);
+            return ResponseEntity.ok(totalRevenue);
+        }
 
-   // @PreAuthorize("hasAuthority('STAFF')")
+        // @PreAuthorize("hasAuthority('STAFF')")
         @PostMapping
         public ResponseEntity addTransaction(@RequestBody TransactionRequest request) {
             try {

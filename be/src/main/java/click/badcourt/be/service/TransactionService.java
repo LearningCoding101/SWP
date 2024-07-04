@@ -1,17 +1,11 @@
 package click.badcourt.be.service;
 
-import click.badcourt.be.entity.Booking;
-import click.badcourt.be.entity.BookingDetail;
-import click.badcourt.be.entity.Club;
-import click.badcourt.be.entity.Transaction;
+import click.badcourt.be.entity.*;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.TransactionEnum;
 import click.badcourt.be.model.request.QRCodeData;
 import click.badcourt.be.model.request.TransactionRequest;
-import click.badcourt.be.model.response.MoneyPredictResponse;
-import click.badcourt.be.model.response.PreTransactionResponse;
-import click.badcourt.be.model.response.TotalAmountByMonthDTO;
-import click.badcourt.be.model.response.TransactionResponse;
+import click.badcourt.be.model.response.*;
 import click.badcourt.be.repository.*;
 import click.badcourt.be.utils.AccountUtils;
 import com.google.zxing.WriterException;
@@ -20,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -216,6 +212,88 @@ public class TransactionService {
 
         return totalAmountByMonthList;
     }
+
+    public List<TotalAmountByPeriodDTO> calculateTotalRevenueForClubOwner(Long clubId,String period, Integer month, Integer year) {
+
+        Club club = clubRepository.findClubByClubId(clubId);
+
+        Map<String, Double> revenueByPeriod = new HashMap<>();
+
+        // Initialize revenueByPeriod with all periods and 0 revenue
+        switch (period) {
+            case "month":
+                if (month == null || year == null) {
+                    throw new IllegalArgumentException("Month and year must be provided for monthly revenue calculation");
+                }
+                for (int day = 1; day <= 31; day++) {
+                    revenueByPeriod.put(day + "-" + month + "-" + year, 0.0);
+                }
+                break;
+            case "year":
+                if (year == null) {
+                    throw new IllegalArgumentException("Year must be provided for yearly revenue calculation");
+                }
+                for (int m = 1; m <= 12; m++) {
+                    revenueByPeriod.put(m + "-" + year, 0.0);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid period: " + period);
+        }
+
+        // Get all bookings for this club
+        List<Booking> bookings = bookingRepository.findBookingsByClub_ClubId(club.getClubId());
+
+        // Iterate over each booking
+        for (Booking booking : bookings) {
+            // Get the transaction for this booking
+            Transaction transaction = transactionRepository.findByBooking_BookingId(booking.getBookingId()).orElse(null);
+
+            // If a transaction exists and it's fully paid, add its total amount to the total revenue
+            if (transaction != null && transaction.getStatus().equals(TransactionEnum.FULLY_PAID)) {
+                LocalDate transactionDate = transaction.getPaymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                String periodKey;
+
+                switch (period) {
+                    case "month":
+                        if (transactionDate.getMonthValue() == month &&
+                                transactionDate.getYear() == year) {
+                            periodKey = transactionDate.getDayOfMonth() + "-" + transactionDate.getMonthValue() + "-" + transactionDate.getYear(); // "1-7-2024"
+                        } else {
+                            continue; // Skip transactions that are not from the current month
+                        }
+                        break;
+                    case "year":
+                    default:
+                        periodKey = transactionDate.getMonthValue() + "-" + transactionDate.getYear(); // "7-2024"
+                        break;
+                }
+
+                double totalAmount = transaction.getTotalAmount();
+                revenueByPeriod.put(periodKey, revenueByPeriod.getOrDefault(periodKey, 0.0) + totalAmount);
+            }
+        }
+
+        // Convert the map to a list of DTOs
+        List<TotalAmountByPeriodDTO> result = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : revenueByPeriod.entrySet()) {
+            result.add(new TotalAmountByPeriodDTO(entry.getKey(), entry.getValue()));
+        }
+
+        // Sort the result list based on the period
+        result.sort(Comparator.comparing(TotalAmountByPeriodDTO::getPeriod));
+
+        return result;
+    }
+
+
+
+
+
+
+
+
+
 
 
     //    public Transaction updateTransaction(TransactionRequest transactionRequest,Long id) {
