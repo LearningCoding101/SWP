@@ -70,9 +70,9 @@ const ShowBookingList = () => {
         <div>
           <Form>
             <Form.Item>
-              <Link to= {`/clubManage/courtList/${club.clubId}`} >
+            <Link to= {`/clubManage/courtList/${club.clubId}`} >
                 <Button type="text" style={{ marginTop: "20px" }}>
-                  <ArrowLeftOutlined /> Back
+                  <ArrowLeftOutlined /> Back 
                 </Button>
               </Link>
             </Form.Item>

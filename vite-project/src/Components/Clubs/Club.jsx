@@ -52,11 +52,9 @@ const Club = () => {
 
   const fetchFeedbacks = async (clubId) => {
     try {
-      const response = await fetch(`http://badcourts.click:8080/api/feedback/club/${clubId}`, {
-        method: 'GET'
-      });
-      const data = await response.json();
-      setFeedbacks(data);
+      const response = await api.get(`/feedback/club/${clubId}`);
+      setFeedbacks(response.data);
+      console.log(response.data)
       setShowModal(true);
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
