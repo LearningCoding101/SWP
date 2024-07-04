@@ -41,7 +41,15 @@ const ClubOwnerManage = () => {
         >
           Booking
         </Link>
-
+        <Link
+          to={{
+            pathname: `/RevenueChart/${club.clubId}`,
+            state: { club },
+          }}
+          className="nav-link"
+        >
+          RevenueChart
+        </Link>
         <Link
           to={{
             pathname: `/clubManage/courtList/${club.clubId}`,

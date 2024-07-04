@@ -40,7 +40,8 @@ import MyResponsiveLine from "./Components/Admin/LineGraph";
 import UpdateForCustomer from './Components/Clubs/UpdateForCustomer'
 import UpdateForOwner from "./Components/Clubs/UpdateForOwner";
 import ShowBookingsOfAClub from "./Components/Clubs/ShowBookingsOfAClub";
-
+import ChartForClubOwner from './Components/Clubs/ChartForClubOwner'
+import RevenueChart from './Components/Clubs/RevenueChart'
 
 function App() {
   return (
@@ -99,6 +100,11 @@ function App() {
               path="/UpdateForCustomer/:bookingid/:clubid"
               element={<UpdateForCustomer />}
             />
+            <Route
+              path="/ChartForClubOwner"
+              element={<ChartForClubOwner />}
+
+            />
             {/* <Route
               path="/clubManage/ShowBookingsOfAClub"
               element={<ShowBookingsOfAClub />}
@@ -147,7 +153,10 @@ function App() {
               path='/AddClubCombo'
               element={<AddClubCombo />}
             />
-
+            <Route
+              path='/RevenueChart/:clubId'
+              element={<RevenueChart />}
+            />
             <Route
               path='/adminDashboard'
               element={<Dashboard />}
