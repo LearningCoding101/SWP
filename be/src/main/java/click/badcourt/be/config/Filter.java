@@ -56,11 +56,11 @@ public class Filter extends OncePerRequestFilter {
 //            "/api/account/{email}",
 //            "/api/club/{id}",
 //            "/api/court",
-            "/api/court/{clubId}"
+            "/api/court/{clubId}",
 //            "/api/booking",
 //            "/api/booking/customer/{customerId}",
 //            "/api/booking/{id}",
-//            "/api/feedback",
+            "/api/feedback/club/{clubId}"
 //            "/api/feedback/{id}",
 //            "/api/timeslots",
 //            "/api/timeslots/{id}",

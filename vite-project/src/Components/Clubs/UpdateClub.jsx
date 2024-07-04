@@ -62,7 +62,7 @@ const UpdateClub = () => {
       console.error(err);
       message.error('Failed to update club');
     }
-  };  
+  };    
 
   const handleRemove = () => {
     setInitialPicture(null);

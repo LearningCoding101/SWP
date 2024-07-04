@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api from "../../config/axios";
-import { useParams } from 'react-router-dom';
-import { Card, Button, Pagination, Modal, Form, Alert } from 'react-bootstrap';
+import {useParams } from 'react-router-dom';
+import { Card, Button, Pagination, Modal } from 'react-bootstrap';
+import AddCourt from './AddCourt'; // Make sure the path is correct
 import { Link } from 'react-router-dom';
+import { Form } from 'react-bootstrap';
 
 const CourtList = () => {
     const { clubId } = useParams();
@@ -10,9 +12,21 @@ const CourtList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [courtsPerPage] = useState(10);
     const [showModal, setShowModal] = useState(false);
+    const [showModal1, setShowModal1] = useState(false);
     const [selectedCourt, setSelectedCourt] = useState(null);
     const [newCourtName, setNewCourtName] = useState('');
+
     console.log('Club ID:', clubId);
+
+    const fetchCourts = async () => {
+        try {
+            const response = await api.get(`/court/${clubId}`);
+            console.log(response.data);
+            setCourts(response.data);
+        } catch (error) {
+            console.error('Error fetching courts:', error);
+        }
+    };
     const handleUpdateCourt = async () => {
         try {
             await api.put(`/court/${selectedCourt.id}`, { courtname: newCourtName });
@@ -25,16 +39,6 @@ const CourtList = () => {
             console.error('Error updating court:', error);
         }
     };
-    const fetchCourts = async () => {
-        try {
-            const response = await api.get(`/court/${clubId}`);
-            console.log(response.data);
-            setCourts(response.data);
-        } catch (error) {
-            console.error('Error fetching courts:', error);
-        }
-    };
-
     const deleteCourt = async (id) => {
         try {
             await api.delete(`/court/${id}`);
@@ -59,9 +63,9 @@ const CourtList = () => {
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                <Link to={`/clubManage/courtList/addCourt/${clubId}`} className="btn btn-warning">
+                <Button variant="warning" onClick={() => setShowModal(true)}>
                     Add Courts
-                </Link>
+                </Button>
             </div>
             <div className="court-list-container d-flex flex-wrap justify-content-around">
                 {currentCourts.length > 0 ? (
@@ -75,7 +79,7 @@ const CourtList = () => {
                                 <Link to={`/showBooking/${court.id}`} className="btn btn-warning">View Booking</Link>
                                 <Link to={`/clubManage/courtList/CourtsDetail/${court.id}`} className="btn btn-warning">View Court Time Slots</Link>
                                 <Button className="btn btn-warning" onClick={() => deleteCourt(court.id)}>Delete Court</Button>
-                                <Button className="btn btn-warning" onClick={() => { setShowModal(true); setSelectedCourt(court); setNewCourtName(court.courtName); }}>Update Court Name</Button>
+                                <Button className="btn btn-warning" onClick={() => { setShowModal1(true); setSelectedCourt(court); setNewCourtName(court.courtName); }}>Update Court Name</Button>
                             </Card.Body>
                         </Card>
                     ))
@@ -92,7 +96,7 @@ const CourtList = () => {
                     ))}
                 </Pagination>
             </div>
-            <Modal show={showModal} onHide={() => { setShowModal(false); setNewCourtName(''); }}>
+            <Modal show={showModal1} onHide={() => { setShowModal1(false); setNewCourtName(''); }}>
                 <Modal.Header closeButton>
                     <Modal.Title>Update Court Name</Modal.Title>
                 </Modal.Header>
@@ -105,13 +109,22 @@ const CourtList = () => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => { setShowModal(false); setNewCourtName(''); }}>
+                    <Button variant="secondary" onClick={() => { setShowModal1(false); setNewCourtName(''); }}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleUpdateCourt}>
                         Save Changes
                     </Button>
                 </Modal.Footer>
+            </Modal>
+
+            <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Add Courts</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AddCourt onClose={() => setShowModal(false)} />
+                </Modal.Body>
             </Modal>
         </div>
     );

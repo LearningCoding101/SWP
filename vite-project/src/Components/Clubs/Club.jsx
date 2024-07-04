@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import {
   List,
@@ -12,6 +10,7 @@ import {
   Rate,
   Select,
   Input,
+  Modal,
 } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,24 +20,16 @@ import api from "../../config/axios";
 
 const Club = () => {
   const options = [
-    {
-      value: "searchName",
-      label: "Search Name",
-    },
-    {
-      value: "searchStartTime",
-      label: "Search Start Time",
-    },
-    {
-      value: "searchAddress",
-      label: "Search Address",
-    },
+    { value: "searchName", label: "Search Name" },
+    { value: "searchStartTime", label: "Search Start Time" },
+    { value: "searchAddress", label: "Search Address" },
   ];
 
   const [clubs, setClubs] = useState([]);
   const [search, setSearch] = useState("");
-  const [optionValue, setOptionValue] = useState("");
   const [searchType, setSearchType] = useState("searchName");
+  const [showModal, setShowModal] = useState(false);
+  const [feedbacks, setFeedbacks] = useState([]);
   const accessToken = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -48,19 +39,32 @@ const Club = () => {
     const fetchClubs = async () => {
       try {
         const response = await api.get("/clubs", {
-          headers: { Authorization: `Bearer ${accessToken}` }, // Assuming token-based auth
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         setClubs(response.data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching clubs:", error);
       }
     };
 
     fetchClubs();
   }, [accessToken]);
 
+  const fetchFeedbacks = async (clubId) => {
+    try {
+      const response = await fetch(`http://badcourts.click:8080/api/feedback/club/${clubId}`, {
+        method: 'GET'
+      });
+      const data = await response.json();
+      setFeedbacks(data);
+      setShowModal(true);
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
+    }
+  };
+
   const renderClubList = (club) => (
-    <List.Item key={club.id}>
+    <List.Item key={club.clubId}>
       <List.Item.Meta
         avatar={
           <Image
@@ -78,8 +82,12 @@ const Club = () => {
               Open: {club.open_time} - {club.close_time}
             </Typography.Text>
             <Typography.Text>{club.price}VND/hour</Typography.Text>
-            <Rate value={club.rating} />
-            <Typography.Text>{club.feedbacks} reviews</Typography.Text>
+            <Rate value={club.rating} disabled />
+            <Typography.Text>
+              <Button type="link" onClick={() => fetchFeedbacks(club.clubId)}>
+                {club.feedbacks} reviews
+              </Button>
+            </Typography.Text>
           </Space>
         }
       />
@@ -121,7 +129,7 @@ const Club = () => {
   return (
     <div>
       <NavBar />
-      <div className="container" style={{ marginTop: 100}}>
+      <div className="container" style={{ marginTop: 100 }}>
         <Space direction="vertical" size="middle">
           <Space.Compact>
             <Select
@@ -130,33 +138,47 @@ const Club = () => {
               options={options}
               onChange={handleSearchTypeChange}
             />
-            {/* <Search
-              placeholder="input search text"
-              enterButton
-              size="large"
-              // onSearch={onSearch}
-              style={{ maxWidth: 400 }}
-            /> */}
             <Input
               placeholder="Enter text to search"
               onChange={handleSearchChange}
               style={{ maxWidth: 400 }}
             />
           </Space.Compact>
-        </Space>{" "}
-        {/* Added a container class for better styling */}
+        </Space>
         {filteredClubs.length > 0 ? (
           <List
             itemLayout="horizontal"
             dataSource={filteredClubs}
             renderItem={renderClubList}
-            pagination={{ pageSize: 4 }} // Optional pagination configuration
+            pagination={{ pageSize: 4 }}
           />
         ) : (
           <Empty description="No clubs found." />
         )}
       </div>
       <Footer />
+      <Modal
+        title="Feedbacks"
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        footer={[
+          <Button key="close" onClick={() => setShowModal(false)}>
+            Close
+          </Button>,
+        ]}
+      >
+        {feedbacks.length > 0 ? (
+          feedbacks.map((feedback, index) => (
+            <Card key={index} style={{ marginBottom: 10 }}>
+              <Typography.Text>{feedback.feedbackContent}</Typography.Text>
+              <br />
+              <Rate value={feedback.feedbackRating} disabled />
+            </Card>
+          ))
+        ) : (
+          <Empty description="No feedbacks found." />
+        )}
+      </Modal>
     </div>
   );
 };

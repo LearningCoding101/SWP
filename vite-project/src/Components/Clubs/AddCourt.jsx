@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import api from "../../config/axios";
-import { Button, Form } from 'react-bootstrap';
+import { Button, Form, Container, Row, Col, Card } from 'react-bootstrap';
 import '../css/AddCourt.css'; // Import CSS for styling the tags
 
-const AddCourt = () => {
+const AddCourt = ({ onClose }) => {
     const { clubId } = useParams();
     const [numberOfCourts, setNumberOfCourts] = useState(1);
     const [timeSlots, setTimeSlots] = useState([]);
@@ -13,8 +13,6 @@ const AddCourt = () => {
     useEffect(() => {
         api.get('/timeslots')
             .then(response => {
-                console.log('Raw response:', response); // Log the raw response
-
                 let data = response.data;
 
                 if (typeof data === 'string') {
@@ -25,11 +23,8 @@ const AddCourt = () => {
                     }
                 }
 
-                console.log('Parsed data:', data); // Log the parsed data
-
                 if (typeof data === 'object') {
                     setTimeSlots(data);
-                    console.log('Fetched time slots:', data); // Log the fetched time slots
                 } else {
                     console.error('API response is not an object or array:', data);
                 }
@@ -40,10 +35,6 @@ const AddCourt = () => {
             });
     }, []);
 
-
-
-
-
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -51,6 +42,7 @@ const AddCourt = () => {
             console.log('Request payload:', courtCreateRequestCombo);
             await api.post(`court/manycourts/${clubId}`, courtCreateRequestCombo);
             alert('Courts created successfully');
+            onClose();
         } catch (error) {
             console.error('Error creating courts:', error);
             alert('Error creating courts');
@@ -68,32 +60,43 @@ const AddCourt = () => {
     };
 
     return (
-        <div>
-            <h1>Add Courts</h1>
+        <Container className="add-court-container">
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formBasicNumberOfCourts">
                     <Form.Label>Number of Courts</Form.Label>
-                    <Form.Control type="number" value={numberOfCourts} onChange={(e) => setNumberOfCourts(e.target.value)} />
+                    <Form.Control 
+                        type="number" 
+                        value={numberOfCourts} 
+                        onChange={(e) => setNumberOfCourts(e.target.value)} 
+                        min="1"
+                    />
                 </Form.Group>
-                <Form.Group controlId="formBasicTimeSlots">
+                <Form.Group controlId="formBasicTimeSlots" className="my-4">
                     <Form.Label>Time Slots</Form.Label>
-                    <div className="time-slot-tags">
+                    <Row className="time-slot-tags">
                         {Array.isArray(timeSlots) && timeSlots.map(timeSlot => (
-                            <span
-                                key={timeSlot.timeslotId}
-                                onClick={() => handleTimeSlotClick(timeSlot.timeslotId)}
-                                className={`time-slot-tag ${selectedTimeSlots.includes(timeSlot.timeslotId) ? 'selected' : ''}`}
-                            >
-                                {`${timeSlot.startTime} - ${timeSlot.endTime}`}
-                            </span>
+                            <Col xs={6} md={4} lg={3} key={timeSlot.timeslotId}>
+                                <Card 
+                                    onClick={() => handleTimeSlotClick(timeSlot.timeslotId)}
+                                    className={`time-slot-tag ${selectedTimeSlots.includes(timeSlot.timeslotId) ? 'selected' : ''}`}
+                                >
+                                    <Card.Body>
+                                        <Card.Text className="text-center">
+                                            {`${timeSlot.startTime} - ${timeSlot.endTime}`}
+                                        </Card.Text>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
                         ))}
-                    </div>
+                    </Row>
                 </Form.Group>
-                <Button variant="warning" type="submit">
-                    Submit
-                </Button>
+                <div className="text-center">
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </div>
             </Form>
-        </div>
+        </Container>
     );
 }
 
