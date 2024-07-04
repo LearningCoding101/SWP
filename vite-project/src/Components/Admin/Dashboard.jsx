@@ -51,7 +51,7 @@
 //     <Layout style={{ minHeight: '100vh' }}>
 //       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
 //         {/* Your Sider content */}
-     
+
 //         <Menu
 //           theme="dark"
 //           selectedKeys={[selectedKey]} // Highlight the selected item
@@ -137,6 +137,7 @@ const items = [
 ];
 
 const Dashboard = () => {
+  const isLoggedIn = localStorage.getItem("token")
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -214,100 +215,106 @@ const Dashboard = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-        <Menu
-          theme="dark"
-          selectedKeys={[selectedKey]}
-          mode="inline"
-          onClick={({ key }) => setSelectedKey(key)}
-          items={filteredItems}
-        />
-      </Sider>
-      <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ marginLeft: 16 }}>
-            <Button
-              type="primary"
-              style={{ marginRight: 8 }}
-              onClick={showModal}
+    <>
+      {isLoggedIn ? (
+        <Layout style={{ minHeight: "100vh" }}>
+          <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
+            <Menu
+              theme="dark"
+              selectedKeys={[selectedKey]}
+              mode="inline"
+              onClick={({ key }) => setSelectedKey(key)}
+              items={filteredItems}
+            />
+          </Sider>
+          <Layout>
+            <Header
+              style={{
+                padding: 0,
+                background: colorBgContainer,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
             >
-              Update Booking Type
-            </Button>
-          </div>
-          <div>
-            <Button
-              type="primary"
-              icon={<LogoutOutlined />}
-              onClick={handleLogout}
-              style={{ marginRight: 16 }}
-            >
-              Logout
-            </Button>
-          </div>
-        </Header>
-        <Content style={{ margin: "0 16px" }}>
-          {selectedKey === "1" && <MyResponsiveLine />}
-          {selectedKey === "10" && <ManageClub />}
-          {selectedKey === "11" && <BookingReport />}
-          {selectedKey === "12" && <UserManage />}
-          {selectedKey === "13" && <PieChartComponent />}
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Badcourts ©{new Date().getFullYear()}. All rights reserved
-        </Footer>
-      </Layout>
+              <div style={{ marginLeft: 16 }}>
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={showModal}
+                >
+                  Update Booking Type
+                </Button>
+              </div>
+              <div>
+                <Button
+                  type="primary"
+                  icon={<LogoutOutlined />}
+                  onClick={handleLogout}
+                  style={{ marginRight: 16 }}
+                >
+                  Logout
+                </Button>
+              </div>
+            </Header>
+            <Content style={{ margin: "0 16px" }}>
+              {selectedKey === "1" && <MyResponsiveLine />}
+              {selectedKey === "10" && <ManageClub />}
+              {selectedKey === "11" && <BookingReport />}
+              {selectedKey === "12" && <UserManage />}
+              {selectedKey === "13" && <PieChartComponent />}
+            </Content>
+            <Footer style={{ textAlign: "center" }}>
+              Badcourts ©{new Date().getFullYear()}. All rights reserved
+            </Footer>
+          </Layout>
 
-      <Modal
-        title="Booking Type"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form layout="vertical" form={form}>
-          <Form.Item
-            label="Type ID"
-            name="typeID"
-            rules={[
-              { required: true, message: "Please select the booking type!" },
-            ]}
+          <Modal
+            title="Booking Type"
+            visible={isModalVisible}
+            onOk={handleOk}
+            onCancel={handleCancel}
           >
-            <Select
-              placeholder="Select a Booking Type"
-              onChange={handleBookingTypeChange}
-            >
-              {bookingTypes.map((bkt) => (
-                <Option key={bkt.bookingTypeId} value={bkt.bookingTypeId}>
-                  {bkt.bookingTypeId}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Type Name"
-            name="typeName"
-            rules={[{ required: true, message: "Please input the type name!" }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Discount"
-            name="discount"
-            rules={[{ required: true, message: "Please input the discount!" }]}
-          >
-            <InputNumber min={0} max={100} style={{ width: "100%" }} />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </Layout>
+            <Form layout="vertical" form={form}>
+              <Form.Item
+                label="Type ID"
+                name="typeID"
+                rules={[
+                  { required: true, message: "Please select the booking type!" },
+                ]}
+              >
+                <Select
+                  placeholder="Select a Booking Type"
+                  onChange={handleBookingTypeChange}
+                >
+                  {bookingTypes.map((bkt) => (
+                    <Option key={bkt.bookingTypeId} value={bkt.bookingTypeId}>
+                      {bkt.bookingTypeId}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
+                label="Type Name"
+                name="typeName"
+                rules={[{ required: true, message: "Please input the type name!" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Discount"
+                name="discount"
+                rules={[{ required: true, message: "Please input the discount!" }]}
+              >
+                <InputNumber min={0} max={100} style={{ width: "100%" }} />
+              </Form.Item>
+            </Form>
+          </Modal>
+        </Layout>
+      ) : (
+        navigate('/')
+      )}
+    </>
   );
 };
 

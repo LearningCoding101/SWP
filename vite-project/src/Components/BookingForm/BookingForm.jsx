@@ -120,8 +120,6 @@ const BookingForm = ({ children }) => {
       amount: totalPrice
     }
 
-
-
     try {
       const paymentResponse = await api.post("/pay", payment)
       const paymentURL = paymentResponse.data; // Assuming the entire response is the URL

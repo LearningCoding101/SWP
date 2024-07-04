@@ -10,6 +10,7 @@ const { Meta } = Card;
 const { Option } = Select;
 
 const UpdateForCustomer = () => {
+    const isLoggedIn = localStorage.getItem("token")
     const [bookingDetail, setBookingDetail] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentBooking, setCurrentBooking] = useState(null);
@@ -108,6 +109,8 @@ const UpdateForCustomer = () => {
     };
 
     return (
+        <>
+      {isLoggedIn ? (
         <div>
             <NavBar />
             <div style={{ marginTop: 130, marginBottom: 30 }}>
@@ -190,6 +193,10 @@ const UpdateForCustomer = () => {
             </div>
             <Footer />
         </div>
+            ) : (
+                navigate('/')
+              )}
+            </>
     );
 };
 

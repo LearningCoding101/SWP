@@ -225,6 +225,8 @@ const Login = () => {
         localStorage.setItem("userName", fullname);
         const userEmail = data.email;
         localStorage.setItem("userEmail", userEmail);
+        const userPhone = data.phone;
+        localStorage.setItem("userPhone", userPhone);
         const role = data.role;
         localStorage.setItem("userRole", role);
         const token = data.token;
@@ -258,12 +260,15 @@ const Login = () => {
       const newToken = newTokenData.token;
       localStorage.setItem("token", newToken);
       const ggData = res.data;
+      console.log(ggData)
       const roleGG = ggData.role;
       localStorage.setItem("userRole", roleGG);
       const userEmail = ggData.email;
       localStorage.setItem("userEmail", userEmail);
       const name = ggData.fullName;
       localStorage.setItem("userName", name);
+      const userPhoneNo = ggData.phone;
+      localStorage.setItem("userPhone", userPhoneNo);
       navigate("/");
     } catch (error) {
       console.log(error);

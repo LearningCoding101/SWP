@@ -9,6 +9,7 @@ import { updateClubAPI } from '../API/UpdateClubAPI';
 import api from '../../config/axios';
 
 const UpdateClub = () => {
+  const isLoggedIn = localStorage.getItem("token")
   const { clubId } = useParams();
   const [form] = Form.useForm();
   const [initialPicture, setInitialPicture] = useState(null);
@@ -70,6 +71,8 @@ const UpdateClub = () => {
   };
 
   return (
+    <>
+      {isLoggedIn ? (
     <div className="login-container" style={{ height: '50%', paddingTop: "20px" }}>
       <div className="login-card">
         <Form
@@ -148,6 +151,10 @@ const UpdateClub = () => {
         <Link to="/clubManage" className="btn btn-warning">Back to Club List</Link>
       </div>
     </div>
+      ) : (
+        navigate('/')
+      )}
+    </>
   );
 };
 
