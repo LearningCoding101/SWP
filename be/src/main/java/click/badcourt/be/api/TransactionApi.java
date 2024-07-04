@@ -34,7 +34,17 @@ import java.util.List;
             return transactionService.getTotalAmountByMonth(year);
         }
 
+        @GetMapping("/monthlyRevenue/{clubId}")
+        public ResponseEntity<?> getMonthlyRevenueByClub(@PathVariable Long clubId, @RequestParam int year, @RequestParam int month) {
+            double monthlyRevenue = transactionService.calculateMonthlyRevenueByClub(year, month, clubId);
+            return new ResponseEntity<>(monthlyRevenue, HttpStatus.OK);
+        }
 
+        @GetMapping("/yearlyRevenue/{clubId}")
+        public ResponseEntity<?> getYearlyRevenueByClub(@PathVariable Long clubId, @RequestParam int year) {
+            double yearlyRevenue = transactionService.calculateYearlyRevenueByClub(year, clubId);
+            return new ResponseEntity<>(yearlyRevenue, HttpStatus.OK);
+        }
         @GetMapping
         public ResponseEntity<List<TransactionResponse>> getAllTransactions() {
             return ResponseEntity.ok(transactionService.findAll());
@@ -46,7 +56,7 @@ import java.util.List;
         }
         @GetMapping("/totalRevenueForClubOwner/{clubId}")
         public ResponseEntity<List<TotalAmountByPeriodDTO>> getTotalRevenueForClubOwner(@PathVariable Long clubId,@RequestParam String period, @RequestParam(required = false) Integer month, @RequestParam(required = false) Integer year) {
-            List<TotalAmountByPeriodDTO> totalRevenue = transactionService.calculateTotalRevenueForClubOwner( clubId,period, month, year);
+            List<TotalAmountByPeriodDTO> totalRevenue = transactionService.getTotalRevenueForClubOwner( clubId,period, month, year);
             return ResponseEntity.ok(totalRevenue);
         }
 

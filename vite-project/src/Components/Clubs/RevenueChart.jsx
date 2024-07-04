@@ -8,10 +8,12 @@ const RevenueChart = () => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [period, setPeriod] = useState('month');
-    const [month, setMonth] = useState(new Date().getMonth() + 1);
+    const [month, setMonth] = useState(1);
     const [year, setYear] = useState(new Date().getFullYear());
+    const [revenue, setRevenue] = useState(0);
 
     useEffect(() => {
+        let cancel = false;
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -22,6 +24,7 @@ const RevenueChart = () => {
                         year,
                     },
                 });
+                if (cancel) return;
                 const sortedData = response.data.sort((a, b) => {
                     let dateA, dateB;
                     if (period === 'month') {
@@ -50,40 +53,91 @@ const RevenueChart = () => {
                     ],
                 };
                 setData(chartData);
+
+                let revenueResponse;
+                if (period === 'month') {
+                    revenueResponse = await api.get(`/transactions/monthlyRevenue/${clubId}`, {
+                        params: {
+                            year,
+                            month,
+                        },
+                    });
+                } else if (period === 'year') {
+                    revenueResponse = await api.get(`/transactions/yearlyRevenue/${clubId}`, {
+                        params: {
+                            year,
+                        },
+                    });
+                }
+                setRevenue(revenueResponse.data);
             } catch (error) {
-                console.error('Error fetching revenue data:', error);
+                if (!cancel) {
+                    console.error('Error fetching revenue data:', error);
+                }
             }
-            setLoading(false);
+            if (!cancel) {
+                setLoading(false);
+            }
         };
 
         fetchData();
+        return () => {
+            cancel = true;
+        };
     }, [clubId, period, month, year]);
 
+    const options = {
+        hover: {
+            mode: 'nearest',
+            intersect: true
+        },
+        tooltips: {
+            mode: 'nearest',
+            intersect: true,
+            backgroundColor: 'rgba(0, 0, 0, .03)',
+            titleFontColor: 'rgba(0, 0, 0, .5)',
+            bodyFontColor: 'rgba(0, 0, 0, .5)',
+            footerFontColor: 'rgba(0, 0, 0, .5)'
+        },
+        legend: {
+            labels: {
+                fontColor: 'rgba(0, 0, 0, .5)'
+            }
+        }
+    };
+
     return (
-        <div>
-            <h2>Revenue Chart</h2>
-            <select onChange={(e) => setPeriod(e.target.value)}>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-            </select>
-            {period === 'month' && (
-                <select onChange={(e) => setMonth(e.target.value)}>
-                    {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
-                        <option key={m} value={m}>
-                            {m}
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <div style={{ width: '75%', marginRight: '5%', height: '50%' }}>
+                <h2>Revenue Chart</h2>
+                <select onChange={(e) => setPeriod(e.target.value)}>
+                    <option value="month">Month</option>
+                    <option value="year">Year</option>
+                </select>
+                {period === 'month' && (
+                    <select onChange={(e) => setMonth(e.target.value)}>
+                        {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                            <option key={m} value={m}>
+                                {m}
+                            </option>
+                        ))}
+                    </select>
+                )}
+                <select onChange={(e) => setYear(e.target.value)}>
+                    {Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - i).map((y) => (
+                        <option key={y} value={y}>
+                            {y}
                         </option>
                     ))}
                 </select>
-            )}
-            <select onChange={(e) => setYear(e.target.value)}>
-                {Array.from({ length: 11 }, (_, i) => new Date().getFullYear() - i).map((y) => (
-                    <option key={y} value={y}>
-                        {y}
-                    </option>
-                ))}
-            </select>
-            <div style={{ width: '80%', height: '80%' }}>
-                {loading ? <div>Loading...</div> : <Line data={data} />}
+
+                <div style={{ width: '100%', height: '80%' }}>
+                    {loading ? <div>Loading...</div> : <Line data={data} options={options} />}
+                </div>
+            </div>
+            <div style={{ width: '20%' }}>
+                <h2>Revenue Display</h2>
+                {loading ? <div>Loading...</div> : <div>{revenue}</div>}
             </div>
         </div>
     );

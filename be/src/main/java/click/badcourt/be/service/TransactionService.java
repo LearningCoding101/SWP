@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -212,8 +213,17 @@ public class TransactionService {
 
         return totalAmountByMonthList;
     }
+    public Double calculateMonthlyRevenueByClub(int year, int month, Long clubId) {
+        Double revenue = transactionRepository.calculateMonthlyRevenueByClub(year, month, clubId);
+        return revenue != null ? revenue : 0.0;
+    }
 
-    public List<TotalAmountByPeriodDTO> calculateTotalRevenueForClubOwner(Long clubId,String period, Integer month, Integer year) {
+    public Double calculateYearlyRevenueByClub(int year, Long clubId) {
+        Double revenue = transactionRepository.calculateYearlyRevenueByClub(year, clubId);
+        return revenue != null ? revenue : 0.0;
+    }
+
+    public List<TotalAmountByPeriodDTO> getTotalRevenueForClubOwner(Long clubId,String period, Integer month, Integer year) {
 
         Club club = clubRepository.findClubByClubId(clubId);
 
@@ -225,7 +235,9 @@ public class TransactionService {
                 if (month == null || year == null) {
                     throw new IllegalArgumentException("Month and year must be provided for monthly revenue calculation");
                 }
-                for (int day = 1; day <= 31; day++) {
+                YearMonth yearMonth = YearMonth.of(year, month);
+                int daysInMonth = yearMonth.lengthOfMonth();
+                for (int day = 1; day <= daysInMonth; day++) {
                     revenueByPeriod.put(day + "-" + month + "-" + year, 0.0);
                 }
                 break;
@@ -285,6 +297,7 @@ public class TransactionService {
 
         return result;
     }
+
 
 
 
