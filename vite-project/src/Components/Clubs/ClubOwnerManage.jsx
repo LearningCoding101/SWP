@@ -99,16 +99,54 @@ import {
   List,
   Breadcrumb,
   Button,
+  Dropdown,
 } from "antd";
+import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { Link, useParams } from "react-router-dom";
 import api from "../../config/axios"; // Assuming your API client
 import QRScanner from "../QRCheckin/StaffPage";
+import StaffBookingForm from "../BookingForm/StaffBookingForm";
+import RevenueChart from "./RevenueChart";
 
 const ClubOwnerManage = () => {
   const [club, setClub] = useState(null);
   const [selectedKey, setSelectedKey] = useState("1");
   const { clubId } = useParams(); // Get club ID from URL parameters
+  const [showAccountDropdown, setShowAccountDropdown] = useState(false);
 
+  const handleAccountClick = () => {
+    setShowAccountDropdown(!showAccountDropdown);
+  };
+
+  const isLoggedIn = localStorage.getItem("token");
+  const userRole = localStorage.getItem("userRole");
+
+  const accountMenu = (
+    <Menu>
+      {isLoggedIn ? (
+        <>
+          <Menu.Item>
+            <Link to="/profile" style={{ textDecoration: "none" }}>
+              Profile
+            </Link>
+          </Menu.Item>
+          {/* {userRole === "CUSTOMER" && (
+            <Menu.Item>
+              <Link to="/bookingHistory" style={{ textDecoration: "none" }}>
+                History
+              </Link>
+            </Menu.Item>
+          )} */}
+        </>
+      ) : (
+        <Menu.Item>
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            Login
+          </Link>
+        </Menu.Item>
+      )}
+    </Menu>
+  );
   useEffect(() => {
     const fetchClub = async () => {
       try {
@@ -142,6 +180,8 @@ const ClubOwnerManage = () => {
           <Menu.Item key="1">Dashboard</Menu.Item>
           {/* Add more menu items as needed */}
           <Menu.Item key="2">Check In</Menu.Item>
+          <Menu.Item key="3">Booking</Menu.Item>
+          <Menu.Item key="4">Revenue Chart</Menu.Item>
         </Menu>
       </Layout.Sider>
 
@@ -152,14 +192,34 @@ const ClubOwnerManage = () => {
             background: "#fff",
             textAlign: "center",
             fontFamily: "fantasy",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Court Owner's workspace
+          <div></div>
+          <div>Court Owner's workspace</div>
+          <Dropdown
+            overlay={accountMenu}
+            trigger="click"
+            placement="bottomRight"
+          >
+            <Button.Group>
+              <Button
+                type="ghost"
+                onClick={handleAccountClick}
+                style={{ fontSize: "24px" }}
+              >
+                {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
+                <DownOutlined />
+              </Button>
+            </Button.Group>
+          </Dropdown>
         </Layout.Header>
 
         <Layout.Content style={{ padding: "0 24px", minHeight: 280 }}>
           {selectedKey === "1" && (
-            <Card title="Club Details" bordered={true}>
+            <Card title={club.name} bordered={true}>
               <Row gutter={[16, 16]}>
                 <Col xs={24} md={12} lg={8}>
                   <Image src={club.picture_location} alt={name} width="100%" />
@@ -189,12 +249,12 @@ const ClubOwnerManage = () => {
                     <Link to={`/clubManage/clubUpdate/${club.clubId}`}>
                       <Button type="primary">Update Club</Button>
                     </Link>
-                    <Link to={`/StaffBooking/${club.clubId}`}>
+                    {/* <Link to={`/StaffBooking/${club.clubId}`}>
                       <Button>Booking</Button>
                     </Link>
                     <Link to={`/RevenueChart/${club.clubId}`}>
                       <Button>Revenue Chart</Button>
-                    </Link>
+                    </Link> */}
                     <Link to={`/clubManage/courtList/${club.clubId}`}>
                       <Button>Show Courts</Button>
                     </Link>
@@ -205,6 +265,10 @@ const ClubOwnerManage = () => {
           )}
 
           {selectedKey === "2" && <QRScanner />}
+
+          {selectedKey === "3" && <StaffBookingForm id={club.clubId} />}
+
+          {selectedKey === "4" && <RevenueChart clubId={club.clubId} />}
         </Layout.Content>
 
         {/* Replace with your actual admin dashboard footer */}
