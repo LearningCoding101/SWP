@@ -19,37 +19,45 @@ const NavBar = () => {
       {isLoggedIn ? (
         <>
           <Menu.Item>
-            <Link to="/profile" style={{ textDecoration: 'none' }}>Profile</Link>
+            <Link to="/profile" style={{ textDecoration: "none" }}>
+              Profile
+            </Link>
           </Menu.Item>
           {userRole === "CUSTOMER" && (
             <Menu.Item>
-              <Link to="/bookingHistory" style={{ textDecoration: 'none' }}>History</Link>
+              <Link to="/bookingHistory" style={{ textDecoration: "none" }}>
+                History
+              </Link>
             </Menu.Item>
           )}
         </>
       ) : (
         <Menu.Item>
-          <Link to="/login" style={{ textDecoration: 'none' }}>Login</Link>
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            Login
+          </Link>
         </Menu.Item>
       )}
     </Menu>
   );
 
-
   return (
-    <nav className="navbar border-0 bg-white fixed-top d-flex justify-content-between align-items-center" style={{ height: 80 }}>
-      <div className="container-fluid" >
+    <nav
+      className="navbar border-0 bg-white fixed-top d-flex justify-content-between align-items-center"
+      style={{ height: 80 }}
+    >
+      <div className="container-fluid">
         {/* Logo */}
         <Link to="/" className="navbar-brand text-primary">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
-            style={{ width: '100px', height: '70px', marginLeft: '10px' }}
+            style={{ width: "100px", height: "70px", marginLeft: "10px" }}
           />
         </Link>
 
         {/* Navigation Links (left-aligned) */}
         <ul className="nav mb-2 mb-lg-0">
-          {isLoggedIn && userRole === "ClUB_OWNER" && (
+          {isLoggedIn && userRole === "CLUB_OWNER" && (
             <li className="nav-item">
               <NavLink
                 to="/clubManage"
@@ -62,7 +70,7 @@ const NavBar = () => {
             </li>
           )}
 
-          {userRole != "ClUB_OWNER" && (
+          {userRole != "CLUB_OWNER" && (
             <li className="nav-item">
               <NavLink
                 to="/clubs"
@@ -101,10 +109,13 @@ const NavBar = () => {
           )}
         </ul>
 
-
         <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
           <Button.Group>
-            <Button type="ghost" onClick={handleAccountClick} style={{ fontSize: '24px' }}>
+            <Button
+              type="ghost"
+              onClick={handleAccountClick}
+              style={{ fontSize: "24px" }}
+            >
               {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
               <DownOutlined />
             </Button>
