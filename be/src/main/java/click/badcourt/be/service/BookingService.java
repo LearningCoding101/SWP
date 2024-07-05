@@ -4,7 +4,6 @@ import click.badcourt.be.entity.*;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.enums.RoleEnum;
-import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
 import click.badcourt.be.model.response.BookingResponse;

@@ -1,6 +1,5 @@
 package click.badcourt.be.api;
 
-import click.badcourt.be.entity.BookingDetail;
 import click.badcourt.be.model.request.BookingDetailRequest;
 import click.badcourt.be.model.request.ChangeSlotBookingDetailRequestCombo;
 import click.badcourt.be.model.request.FixedBookingDetailRequest;

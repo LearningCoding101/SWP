@@ -2,11 +2,9 @@ package click.badcourt.be.service;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.model.request.RechargeRequestDTO;
-import click.badcourt.be.model.request.RechargeRequestDTOCombo;
 import click.badcourt.be.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
@@ -17,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 @Service
 public class WalletService {

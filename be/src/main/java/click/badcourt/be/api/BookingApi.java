@@ -1,6 +1,5 @@
 package click.badcourt.be.api;
 
-import click.badcourt.be.entity.Booking;
 import click.badcourt.be.enums.BookingStatusEnum;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
@@ -94,30 +93,30 @@ public class BookingApi {
     @PostMapping("/bookingCombo")
     public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequest bookingComboRequest) {
         try {
-        BookingResponse bkcr = bookingService.createBookingNew(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
+        BookingResponse bookingCreateTemporary = bookingService.createBookingNew(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
         BookingComboResponse bookingComboResponse = new BookingComboResponse();
-        bookingComboResponse.setBookingResponse(bkcr);
-        List<BookingDetailRequestCombo> bkdtrspl = bookingComboRequest.getBookingDetailRequestCombos();
+        bookingComboResponse.setBookingResponse(bookingCreateTemporary);
+        List<BookingDetailRequestCombo> bookingDetailResponseList = bookingComboRequest.getBookingDetailRequestCombos();
         List<BookingDetailRequest> returnlist = new ArrayList<>();
         BookingDetailRequest store;
-        Long id = bkcr.getId();
-        if(bkcr.getBookingTypeId() == 1){
-            for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
-                store = bookingDetailService.create1stBookingDetailCombo(bkdtr, id);
+        Long id = bookingCreateTemporary.getId();
+        if(bookingCreateTemporary.getBookingTypeId() == 1){
+            for(BookingDetailRequestCombo bookingDetailRun : bookingDetailResponseList) {
+                store = bookingDetailService.create1stBookingDetailCombo(bookingDetailRun, id);
                 returnlist.add(store);
             }
-        } else if (bkcr.getBookingTypeId() == 2) {
+        } else if (bookingCreateTemporary.getBookingTypeId() == 2) {
             List<BookingDetailRequest> returnlistAdd = new ArrayList<>();
-            for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
-                returnlistAdd = bookingDetailService.createFixedBookingDetailCombos(bkdtr, id);
+            for(BookingDetailRequestCombo bookingDetailRun : bookingDetailResponseList) {
+                returnlistAdd = bookingDetailService.createFixedBookingDetailCombos(bookingDetailRun, id);
                 returnlist.addAll(returnlistAdd);
             }
-        } else if (bkcr.getBookingTypeId() == 3) {
-            for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
-                store = bookingDetailService.create3rdBookingDetailCombo(bkdtr, id);
+        } else if (bookingCreateTemporary.getBookingTypeId() == 3) {
+            for(BookingDetailRequestCombo bookingDetailRun : bookingDetailResponseList) {
+                store = bookingDetailService.create3rdBookingDetailCombo(bookingDetailRun, id);
                 returnlist.add(store);
             }
-            if(bookingDetailRepository.countBookingDetailsByBooking_BookingId(id)<10) bkcr.setStatus(BookingStatusEnum.COMPLETED);
+            if(bookingDetailRepository.countBookingDetailsByBooking_BookingId(id)<10) bookingCreateTemporary.setStatus(BookingStatusEnum.COMPLETED);
         }
         bookingComboResponse.setBookingDetailRequestList(returnlist);
         return ResponseEntity.ok(bookingComboResponse);
