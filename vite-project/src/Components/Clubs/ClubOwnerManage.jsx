@@ -167,6 +167,9 @@ const ClubOwnerManage = () => {
                   <Link to={`/clubManage/courtList/${club.clubId}`}>
                     <Button>Show Courts</Button>
                   </Link>
+                  <Link to={`/staff`}>
+                    <Button>Check-in</Button>
+                  </Link>
                 </div>
               </Col>
             </Row>
