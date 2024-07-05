@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { useParams } from "react-router-dom";
 import api from "../../config/axios";
 
 const RevenueChart = ({ clubId }) => {
-  // const { clubId } = useParams();
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("month");
   const [month, setMonth] = useState(1);
   const [year, setYear] = useState(new Date().getFullYear());
-  const [revenue, setRevenue] = useState(0);
+  const [monthlyRevenue, setMonthlyRevenue] = useState(0);
+  const [yearlyRevenue, setYearlyRevenue] = useState(0);
 
   useEffect(() => {
     let cancel = false;
@@ -44,7 +43,17 @@ const RevenueChart = ({ clubId }) => {
           return dateA - dateB;
         });
         const chartData = {
-          labels: sortedData.map((item) => item.period),
+          labels: sortedData.map((item) => {
+            if (period === "month") {
+              const [day, month, ____] = item.period.split("-");
+              return `${day}-${month}`;
+            } else if (period === "year") {
+              const [month, __] = item.period.split("-");
+              return month;
+            } else {
+              return item.period;
+            }
+          }),
           datasets: [
             {
               label: "Total Revenue",
@@ -55,30 +64,26 @@ const RevenueChart = ({ clubId }) => {
             },
           ],
         };
+
         setData(chartData);
 
-        let revenueResponse;
-        if (period === "month") {
-          revenueResponse = await api.get(
-            `/transactions/monthlyRevenue/${clubId}`,
-            {
-              params: {
-                year,
-                month,
-              },
-            }
-          );
-        } else if (period === "year") {
-          revenueResponse = await api.get(
-            `/transactions/yearlyRevenue/${clubId}`,
-            {
-              params: {
-                year,
-              },
-            }
-          );
-        }
-        setRevenue(revenueResponse.data);
+        const [monthlyResponse, yearlyResponse] = await Promise.all([
+          api.get(`/transactions/monthlyRevenue/${clubId}`, {
+            params: {
+              year,
+              month,
+            },
+          }),
+          api.get(`/transactions/yearlyRevenue/${clubId}`, {
+            params: {
+              year,
+            },
+          }),
+        ]);
+
+
+        setMonthlyRevenue(monthlyResponse.data);
+        setYearlyRevenue(yearlyResponse.data);
       } catch (error) {
         if (!cancel) {
           console.error("Error fetching revenue data:", error);
@@ -113,11 +118,39 @@ const RevenueChart = ({ clubId }) => {
         fontColor: "rgba(0, 0, 0, .5)",
       },
     },
+    scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: period === "month" ? 'Day' : 'Month'
+        }
+      },
+      y: {
+        display: true,
+        title: {
+          display: true,
+          text: 'VND'
+        }
+      }
+    }
+
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
-      <div style={{ width: "75%", marginRight: "5%", height: "50%" }}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <div className="RevenueDisplay" style={{ gap: "5%", display: "flex", flexDirection: "row", width: "100%", borderRadius: "20px", marginTop: "20px", height: "10%" }}>
+        <div className="RevenueDisplayPerMonth" style={{ flex: 1, boxShadow: "0px 10px 15px rgba(0.1, 0.1, 0.1, 0.1)", borderRadius: "10px", padding: "20px" }}>
+          <h2>Revenue Per Month</h2>
+          {loading ? <div>Loading...</div> : <div style={{ fontSize: "2em" }}>{monthlyRevenue}</div>}
+        </div>
+        <div className="RevenueDisplayPerYear" style={{ flex: 1, boxShadow: "0px 10px 15px rgba(0.1, 0.1, 0.1, 0.1)", borderRadius: "10px", padding: "20px" }}>
+          <h2>Revenue Per Year</h2>
+          {loading ? <div>Loading...</div> : <div style={{ fontSize: "2em" }}>{yearlyRevenue}</div>}
+        </div>
+      </div>
+
+      <div className="RevenueChart" style={{ width: "100%", marginBottom: "5%", height: "40%", boxShadow: "0px 10px 15px rgba(0.1, 0.1, 0.1, 0.1)", borderRadius: "20px", padding: "20px" }}>
         <h2>Revenue Chart</h2>
         <select onChange={(e) => setPeriod(e.target.value)}>
           <option value="month">Month</option>
@@ -143,7 +176,7 @@ const RevenueChart = ({ clubId }) => {
           ))}
         </select>
 
-        <div style={{ width: "100%", height: "80%" }}>
+        <div style={{ width: "100%", height: "500px" }}>
           {loading ? (
             <div>Loading...</div>
           ) : (
@@ -151,11 +184,9 @@ const RevenueChart = ({ clubId }) => {
           )}
         </div>
       </div>
-      <div style={{ width: "20%" }}>
-        <h2>Revenue Display</h2>
-        {loading ? <div>Loading...</div> : <div>{revenue}</div>}
-      </div>
+
     </div>
+
   );
 };
 
