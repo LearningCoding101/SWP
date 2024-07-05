@@ -80,7 +80,6 @@
 
 // export default Dashboard;
 
-
 import React, { useContext, useEffect, useState } from "react";
 import {
   Layout,
@@ -100,6 +99,9 @@ import {
   PieChartOutlined,
   UserOutlined,
   LogoutOutlined,
+  LineChartOutlined,
+  FundViewOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
 import AddClubCombo from "./AddClubCombo";
 import BookingReport from "./BarChart";
@@ -108,7 +110,7 @@ import ManageClub from "./ManageClub";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../Login/AuthProvider";
-import PieChartComponent from './../ClubOwnerShowBooking/PieChart';
+import PieChartComponent from "./../ClubOwnerShowBooking/PieChart";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Option } = Select;
@@ -123,21 +125,21 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem("Booking Status", "13", <PieChartOutlined />),
-  getItem("Income Analysis", "1", <PieChartOutlined />),
+  getItem("Income Analysis", "1", <LineChartOutlined />),
   getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
+  getItem("Chart", "sub1", <FundViewOutlined />, [
+    getItem("Income Analysis", "1", <LineChartOutlined />),
+    getItem("Bar Chart Demo", "11", <BarChartOutlined />),
+    getItem("Booking Status", "13", <PieChartOutlined />),
   ]),
-  getItem("Manage Users", "12", <UserOutlined />),
   getItem("Manage Club", "10", <DesktopOutlined />),
-  getItem("Bar Chart Demo", "11", <UserOutlined />),
+  getItem("Manage Users", "12", <UserOutlined />),
+  getItem("Bar Chart Demo", "11", <BarChartOutlined />),
+  getItem("Booking Status", "13", <PieChartOutlined />),
 ];
 
 const Dashboard = () => {
-  const isLoggedIn = localStorage.getItem("token")
+  const isLoggedIn = localStorage.getItem("token");
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1");
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -152,12 +154,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const filteredItems = items.filter(
-    (item) =>
-      item.key === "1" ||
-      item.key === "10" ||
-      item.key === "11" ||
-      item.key === "12" ||
-      item.key === "13"
+    (item) => item.key === "10" || item.key === "12" || item.key === "sub1"
   );
 
   const handleLogout = () => {
@@ -280,7 +277,10 @@ const Dashboard = () => {
                 label="Type ID"
                 name="typeID"
                 rules={[
-                  { required: true, message: "Please select the booking type!" },
+                  {
+                    required: true,
+                    message: "Please select the booking type!",
+                  },
                 ]}
               >
                 <Select
@@ -297,14 +297,18 @@ const Dashboard = () => {
               <Form.Item
                 label="Type Name"
                 name="typeName"
-                rules={[{ required: true, message: "Please input the type name!" }]}
+                rules={[
+                  { required: true, message: "Please input the type name!" },
+                ]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 label="Discount"
                 name="discount"
-                rules={[{ required: true, message: "Please input the discount!" }]}
+                rules={[
+                  { required: true, message: "Please input the discount!" },
+                ]}
               >
                 <InputNumber min={0} max={100} style={{ width: "100%" }} />
               </Form.Item>
@@ -312,7 +316,7 @@ const Dashboard = () => {
           </Modal>
         </Layout>
       ) : (
-        navigate('/')
+        navigate("/")
       )}
     </>
   );
