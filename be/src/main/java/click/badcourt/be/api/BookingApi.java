@@ -126,6 +126,14 @@ public class BookingApi {
         }
     }
 
+    @PostMapping("/bookingForStaff")
+    public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequestForStaff bookingComboRequest) {
+        try {
+            return ResponseEntity.ok(bookingService.createBookingForStaff(bookingComboRequest));
+        } catch (IllegalArgumentException | MessagingException | IOException | WriterException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable Long id) {
