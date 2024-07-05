@@ -40,10 +40,10 @@ const UpdateClub = () => {
   const handleUpdate = async (values) => {
     try {
       let img = initialPicture;
-        img = await uploadFile(values.picture_location.file);
+      img = await uploadFile(values.picture_location.file);
       const openTime = moment(values.open_time);
       const closeTime = moment(values.close_time);
-  
+
       const data = await updateClubAPI(
         clubId,
         values.name,
@@ -55,7 +55,7 @@ const UpdateClub = () => {
         closeTime.minute(),
         img
       );
-  
+
       if (data) {
         message.success('Club updated successfully!');
       }
@@ -63,7 +63,7 @@ const UpdateClub = () => {
       console.error(err);
       message.error('Failed to update club');
     }
-  };    
+  };
 
   const handleRemove = () => {
     setInitialPicture(null);
@@ -73,84 +73,84 @@ const UpdateClub = () => {
   return (
     <>
       {isLoggedIn ? (
-    <div className="login-container" style={{ height: '50%', paddingTop: "20px" }}>
-      <div className="login-card">
-        <Form
-          form={form}
-          name="updateClubForm"
-          layout="vertical"
-          onFinish={handleUpdate}
-        >
-          <Form.Item
-            name="name"
-            label="Club Name"
-            rules={[{ required: true, message: 'Please enter the club name!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="address"
-            label="Club Address"
-            rules={[{ required: true, message: 'Please enter the club address!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="price"
-            label="Price"
-            rules={[{ required: true, message: 'Please enter the price!' }]}
-          >
-            <InputNumber
-              min={0}
-              formatter={(value) =>
-                `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-              }
-              parser={(value) => value.replace(/₫\s?|(,*)/g, '')}
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
-          <Form.Item
-            name="open_time"
-            label="Open Time"
-            rules={[{ required: true, message: 'Please select the open time!' }]}
-          >
-            <TimePicker format="HH:mm:ss" style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            name="close_time"
-            label="Close Time"
-            rules={[{ required: true, message: 'Please select the close time!' }]}
-          >
-            <TimePicker format="HH:mm:ss" style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item
-            name="picture_location"
-            label="Club picture"
-          >
-            <Upload
-              name="file"
-              type='file'
-              listType="picture"
-              beforeUpload={() => false} // Prevents automatic upload
-              maxCount={1}
-              defaultFileList={initialPicture ? [{
-                uid: '-1',
-                name: 'current-picture',
-                status: 'done',
-                url: initialPicture,
-              }] : []}
-              onRemove={handleRemove}
+        <div className="login-container" style={{ height: '50%', paddingTop: "20px" }}>
+          <div className="login-card">
+            <Form
+              form={form}
+              name="updateClubForm"
+              layout="vertical"
+              onFinish={handleUpdate}
             >
-              <Button icon={<UploadOutlined />}>Click to upload</Button>
-            </Upload>
-          </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">Update Club</Button>
-          </Form.Item>
-        </Form>
-        <Link to="/clubManage" className="btn btn-warning">Back to Club List</Link>
-      </div>
-    </div>
+              <Form.Item
+                name="name"
+                label="Club Name"
+                rules={[{ required: true, message: 'Please enter the club name!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="address"
+                label="Club Address"
+                rules={[{ required: true, message: 'Please enter the club address!' }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="price"
+                label="Price"
+                rules={[{ required: true, message: 'Please enter the price!' }]}
+              >
+                <InputNumber
+                  min={0}
+                  formatter={(value) =>
+                    `₫ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                  }
+                  parser={(value) => value.replace(/₫\s?|(,*)/g, '')}
+                  style={{ width: '100%' }}
+                />
+              </Form.Item>
+              <Form.Item
+                name="open_time"
+                label="Open Time"
+                rules={[{ required: true, message: 'Please select the open time!' }]}
+              >
+                <TimePicker format="HH:mm:ss" style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item
+                name="close_time"
+                label="Close Time"
+                rules={[{ required: true, message: 'Please select the close time!' }]}
+              >
+                <TimePicker format="HH:mm:ss" style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item
+                name="picture_location"
+                label="Club picture"
+              >
+                <Upload
+                  name="file"
+                  type='file'
+                  listType="picture"
+                  beforeUpload={() => false} // Prevents automatic upload
+                  maxCount={1}
+                  defaultFileList={initialPicture ? [{
+                    uid: '-1',
+                    name: 'current-picture',
+                    status: 'done',
+                    url: initialPicture,
+                  }] : []}
+                  onRemove={handleRemove}
+                >
+                  <Button icon={<UploadOutlined />}>Click to upload</Button>
+                </Upload>
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">Update Club</Button>
+              </Form.Item>
+            </Form>
+            <Link to="/clubManage" className="btn btn-warning">Back to Club List</Link>
+          </div>
+        </div>
       ) : (
         navigate('/')
       )}
