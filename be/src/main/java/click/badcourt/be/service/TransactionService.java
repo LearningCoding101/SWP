@@ -40,6 +40,9 @@ public class TransactionService {
     @Autowired
     private BookingService bookingService;
 
+    public Long integerPart;
+
+
     public List<TransactionResponse> findAll() {
         List<Transaction> transactions = transactionRepository.findAll();
         List<TransactionResponse> transactionResponses = new ArrayList<>();
@@ -55,20 +58,20 @@ public class TransactionService {
         }
         return transactionResponses;
     }
-    public Transaction addTransactionPending(TransactionRequest transactionRequest) {
-        Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
-        if(booking.isPresent()) {
-            Transaction transaction = new Transaction();
-            transaction.setDepositAmount(TotalPrice(transactionRequest.getBookingId())*50/100);
-            transaction.setTotalAmount(TotalPrice(booking.get().getBookingId()));
-            transaction.setPaymentDate(new Date());
-            transaction.setBooking(booking.get());
-            return transactionRepository.save(transaction);
-        }
-        else{
-            throw new IllegalArgumentException("PaymentMethod or Booking not found");
-        }
-    }
+//    public Transaction addTransactionPending(TransactionRequest transactionRequest) {
+//        Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
+//        if(booking.isPresent()) {
+//            Transaction transaction = new Transaction();
+//            transaction.setDepositAmount(TotalPrice(transactionRequest.getBookingId())*50/100);
+//            transaction.setTotalAmount(TotalPrice(booking.get().getBookingId()));
+//            transaction.setPaymentDate(new Date());
+//            transaction.setBooking(booking.get());
+//            return transactionRepository.save(transaction);
+//        }
+//        else{
+//            throw new IllegalArgumentException("PaymentMethod or Booking not found");
+//        }
+//    }
     public Transaction addTransaction(TransactionRequest transactionRequest) throws MessagingException, IOException, WriterException {
         Optional<Booking> booking= bookingRepository.findById(transactionRequest.getBookingId());
         if(booking.isPresent()) {
@@ -77,7 +80,10 @@ public class TransactionService {
                 if (booking.get().getBookingType().getBookingTypeId() == 1){
                     transaction.setStatus(TransactionEnum.DEPOSITED);
                     booking.get().setStatus(BookingStatusEnum.COMPLETED);
-                    transaction.setDepositAmount((TotalPrice(transactionRequest.getBookingId()) * 0.5)-((TotalPrice(transactionRequest.getBookingId())*0.5)%10));
+                    Double money = TotalPrice(transactionRequest.getBookingId()) * 0.5;
+                    integerPart = money.longValue();
+                    money = integerPart.doubleValue();
+                    transaction.setDepositAmount(money);
                     }
                 else {
                     transaction.setStatus(TransactionEnum.FULLY_PAID);
@@ -106,17 +112,22 @@ public class TransactionService {
         Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
         List<BookingDetail> bookingDetails= bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
         Double totalPrice= 0.0;
-        if(booking.getBookingType().getBookingTypeId() == 1 || booking.getBookingType().getBookingTypeId() == 2){
-            for(BookingDetail bookingDetail : bookingDetails) {
+        if(booking.getBookingType().getBookingTypeId() == 1){
                 totalPrice += booking.getClub().getPrice();
-            }
-            totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount()) - (totalPrice*(1-booking.getBookingType().getBookingDiscount()))%10;
-        } else if (booking.getBookingType().getBookingTypeId() == 3) {
+            totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount());
+            integerPart = totalPrice.longValue();
+            totalPrice = integerPart.doubleValue();
+        } else if (booking.getBookingType().getBookingTypeId() == 3 || booking.getBookingType().getBookingTypeId() == 2) {
             if(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)<10) {
-                Double salealready = booking.getClub().getPrice() * (1 - booking.getBookingType().getBookingDiscount()) * (bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId));
-                totalPrice = salealready - salealready % 10;
+                totalPrice = booking.getClub().getPrice() * (bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId));
+                integerPart = totalPrice.longValue();
+                totalPrice = integerPart.doubleValue();
             }
-            else totalPrice = (booking.getClub().getPrice() * bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)) - (booking.getClub().getPrice() * bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId))%10;
+            else {
+                totalPrice = booking.getClub().getPrice() * (1 - booking.getBookingType().getBookingDiscount()) * bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId);
+                integerPart = totalPrice.longValue();
+                totalPrice = integerPart.doubleValue();
+            }
         }
         return totalPrice;
     }
@@ -160,7 +171,9 @@ public class TransactionService {
         if (bookingTypeId == 1){
             money = price;
         } else if (bookingTypeId == 2 || bookingTypeId == 3){
-            money = (cal * scale) - (cal * scale) % 10;
+            money = (cal * scale);
+            integerPart = money.longValue();
+            money = integerPart.doubleValue();
         }
         return money.longValue();
     }
@@ -172,9 +185,13 @@ public class TransactionService {
         Double scale = Double.valueOf(1 - bookingTypeRepository.findBookingTypeByBookingTypeId(bookingTypeId).getBookingDiscount());
         Double cal = price * num;
         if (bookingTypeId == 1){
-            money = (price-price*0.5)-(price-price*0.5)%10;
+            money = price-price*0.5;
+            integerPart = money.longValue();
+            money = integerPart.doubleValue();
         } else if (bookingTypeId == 2 || bookingTypeId == 3){
-            money = (cal * scale) - (cal * scale) % 10;
+            money = cal * scale;
+            integerPart = money.longValue();
+            money = integerPart.doubleValue();
         }
         return money.longValue();
     }
