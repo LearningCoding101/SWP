@@ -61,7 +61,7 @@ public class ClubService {
     public ClubResponse getClubByCurrentAccount() {
         Account currentAccount = accountUtils.getCurrentAccount();
 
-        if (currentAccount.getRole() != RoleEnum.ClUB_OWNER) {
+        if (currentAccount.getRole() != RoleEnum.CLUB_OWNER) {
 
             throw new IllegalStateException("Access denied: Only club owners can retrieve club information.");
         }

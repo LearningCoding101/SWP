@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -125,14 +126,6 @@ public class BookingApi {
         }
     }
 
-    @PostMapping("/bookingForStaff")
-    public ResponseEntity<BookingComboResponse> createBookingCombo(@RequestBody BookingComboRequestForStaff bookingComboRequest) {
-        try {
-            return ResponseEntity.ok(bookingService.createBookingForStaff(bookingComboRequest));
-        } catch (IllegalArgumentException | MessagingException | IOException | WriterException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBooking(@RequestBody BookingUpdateRequest bookingUpdateRequest, @PathVariable Long id) {
@@ -180,6 +173,12 @@ public class BookingApi {
             return "Failed to validate QR code.";
         }
     }
+    @GetMapping("/status-counts")
+    public ResponseEntity<Map<String, Long>> getStatusCounts(@RequestParam Long clubId) {
+        return ResponseEntity.ok(bookingService.getBookingStatusCounts(clubId));
+    }
+
+
 
 
 //    @DeleteMapping("/{bookingId}")

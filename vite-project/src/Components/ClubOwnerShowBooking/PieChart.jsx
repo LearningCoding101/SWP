@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
+import api from '../../config/axios';
 
 const PieChartComponent = () => {
   const [clubId, setClubId] = useState(1); // default clubId
@@ -14,11 +15,7 @@ const PieChartComponent = () => {
   });
 
   useEffect(() => {
-    const token = "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJvd25lciIsImlhdCI6MTcxOTk4OTY1OSwiZXhwIjoxNzIwMDc2MDU5fQ.jY4TyivOV7mK4XNT-092jJg0uQNfB8stI4N6sTEziPcjcv51j2snslG2Y5fxkLtF";
-    fetch(`http://localhost:8080/api/booking/status-counts?clubId=${clubId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      api.get(`/booking/status-counts?clubId=${clubId}`, {  
       })
       .then(response => response.json())
       .then(data => {

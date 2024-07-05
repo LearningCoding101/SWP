@@ -102,7 +102,7 @@ public class BookingService {
 
     public long countBookingsByClubOwner() {
         Account currentAccount = accountUtils.getCurrentAccount();
-        if (currentAccount.getRole() == RoleEnum.ClUB_OWNER) {
+        if (currentAccount.getRole() == RoleEnum.CLUB_OWNER) {
             return bookingRepository.findAll().stream()
                     .filter(booking -> booking.getClub().getAccount().equals(currentAccount))
                     .count();
@@ -174,7 +174,7 @@ public class BookingService {
         Account currentAccount = accountUtils.getCurrentAccount();
 
 
-        if (!currentAccount.getRole().equals(RoleEnum.ClUB_OWNER)) {
+        if (!currentAccount.getRole().equals(RoleEnum.CLUB_OWNER)) {
             throw new IllegalArgumentException("Current account is not a club owner");
         }
 

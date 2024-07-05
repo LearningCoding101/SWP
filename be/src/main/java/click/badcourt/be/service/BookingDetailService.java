@@ -466,7 +466,6 @@ public class BookingDetailService {
     public void deleteBookingDetail(Long bookingDetailId) {
         BookingDetail bookingDetail= bookingDetailRepository.findById(bookingDetailId).orElseThrow(() -> new RuntimeException("BookingDetail not found!"));
         bookingDetail.setDeleted(true);
-
         bookingDetailRepository.save(bookingDetail);
     }
     public void checkin(Long id){

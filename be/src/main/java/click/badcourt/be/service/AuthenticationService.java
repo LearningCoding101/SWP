@@ -128,7 +128,7 @@ public class AuthenticationService implements UserDetailsService {
         Account account = new Account();
         account.setPhone(reg.getPhone());
         account.setPassword(null);
-        account.setRole(RoleEnum.ClUB_OWNER);
+        account.setRole(RoleEnum.CLUB_OWNER);
         account.setEmail(reg.getEmail());
         account.setFullName(reg.getFullName());
         return authenticationRepository.save(account);
