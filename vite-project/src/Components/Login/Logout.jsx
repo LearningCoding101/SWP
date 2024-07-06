@@ -38,7 +38,7 @@ const Logout = () => {
           });
           // console.log(response.data);
           setUserDetails({
-            username: response.data.username,
+            username: response.data.fullName,
             phone: response.data.phone,
           });
         } catch (error) {
@@ -49,7 +49,7 @@ const Logout = () => {
         fetchAccountInfo();
       }
       fetchAccountInfo();
-    }, [accessToken, userDetails]);
+    }, [accessToken]);
 
   
 
@@ -62,7 +62,7 @@ const Logout = () => {
       const response = await api.put('/updateNameAndPhone', payloadData);
       setUserDetails(response.data);
       message.success('User details saved successfully!');
-      // navigate("/")
+      navigate("/")
     } catch (error) {
       console.error('Error saving user details:', error);
       message.error('An error occurred while saving user details.');
