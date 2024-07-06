@@ -197,7 +197,7 @@ const QRScanner = () => {
                           <td>{detail.end_time}</td>
                           <td>{detail.status}</td>
                           <td>
-                            {detail.status !== "CHECKEDIN" && (
+                            {detail.status !== "CHECKED_IN" && (
                               <button
                                 className="btn btn-custom-primary"
                                 onClick={() =>

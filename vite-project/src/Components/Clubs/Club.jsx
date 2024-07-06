@@ -54,10 +54,10 @@ const Club = () => {
     try {
       const response = await api.get(`/feedback/club/${clubId}`);
       setFeedbacks(response.data);
-      console.log(response.data);
+      console.log(response.data)
       setShowModal(true);
     } catch (error) {
-      console.error("Error fetching feedbacks:", error);
+      console.error('Error fetching feedbacks:', error);
     }
   };
 
@@ -89,7 +89,7 @@ const Club = () => {
           </Space>
         }
       />
-      {userRole === "CLUB_OWNER" ? (
+      {userRole === "ClUB_OWNER" ? (
         <Link to={`/StaffBooking/${club.clubId}`}>
           <Button type="primary" size="small">
             Book Now

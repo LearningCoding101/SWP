@@ -1,5 +1,5 @@
 
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
@@ -7,23 +7,51 @@ import { Breadcrumb, Button, Input, Layout, Menu, Form, message, theme, Row, Col
 import { Formik, Field, ErrorMessage, useFormikContext } from 'formik';
 import * as Yup from 'yup';
 import api from "../../config/axios";
+import { login } from "../API/LoginService";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const Logout = () => {
+  const accessToken = localStorage.getItem("token");
   const isLoggedIn = localStorage.getItem("token")
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
-  const loginUserName = localStorage.getItem('userName');
-  const loginPhone = localStorage.getItem('userPhone');
-  const [userDetails, setUserDetails] = useState({ username: loginUserName, phone: loginPhone });
+  const [loginUserName, setLoginUserName] = useState('')
+  const [loginPhone, setLoginPhone] = useState('') 
+  const loginEmail = localStorage.getItem('userEmail')
+  const [userDetails, setUserDetails] = useState({ username: '', phone: '' });
+ 
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required('Username is required'),
+    username: Yup.string().required('Full name is required'),
     phone: Yup.string().required('Phone is required'),
   });
+
+ 
+    useEffect(() => {
+      const fetchAccountInfo = async () => {
+        try {
+          const response = await api.get(`/account/${loginEmail}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+          // console.log(response.data);
+          setUserDetails({
+            username: response.data.username,
+            phone: response.data.phone,
+          });
+        } catch (error) {
+          console.error("Error fetching clubs:", error);
+        }
+      };
+      if (accessToken && loginEmail) {
+        fetchAccountInfo();
+      }
+      fetchAccountInfo();
+    }, [accessToken, userDetails]);
+
+  
 
   const handleSave = async (values, actions) => {
     const payloadData = {
@@ -34,9 +62,7 @@ const Logout = () => {
       const response = await api.put('/updateNameAndPhone', payloadData);
       setUserDetails(response.data);
       message.success('User details saved successfully!');
-      localStorage.setItem("userName", values.username),
-        localStorage.setItem("userPhone", values.phone)
-      navigate("/")
+      // navigate("/")
     } catch (error) {
       console.error('Error saving user details:', error);
       message.error('An error occurred while saving user details.');
@@ -120,8 +146,10 @@ const Logout = () => {
                 }}
               >
                 <h4>Account Detail</h4>
+                <p>Email: {loginEmail}</p>
                 <Formik
                   initialValues={userDetails}
+                  enableReinitialize //THIS ONE IS REALLY IMPORTANT
                   validationSchema={validationSchema}
                   onSubmit={handleSave}
                 >
@@ -130,7 +158,7 @@ const Logout = () => {
                       <Row gutter={16}>
                         <Col xs={24}>
                           <Form.Item
-                            label="Username"
+                            label="Full name"
                             required
                             validateStatus={errors.username && touched.username ? 'error' : ''}
                             help={errors.username && touched.username && errors.username}

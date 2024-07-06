@@ -7,7 +7,7 @@ import {
   Select,
   Radio,
   List,
-  Input,
+  Input
 } from "antd";
 import moment from "moment";
 import { Option } from "antd/es/mentions";
@@ -16,8 +16,8 @@ import Footer from "../layout/Footer";
 import api from "../../config/axios";
 import { Link, useParams } from "react-router-dom";
 
-const StaffBookingForm = ({ id }) => {
-  // const { id } = useParams();
+const StaffBookingForm = () => {
+  const { id } = useParams();
   console.log(id);
 
   const [courtId, setCourtID] = useState();
@@ -184,14 +184,9 @@ const StaffBookingForm = ({ id }) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      {/* <NavBar /> Render NavBar at the top */}
+      <NavBar /> {/* Render NavBar at the top */}
       <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: 10,
-          // marginBottom: 100,
-        }}
+        style={{ display: "flex", justifyContent: "center", marginTop: 100, marginBottom: 100 }}
       >
         {" "}
         {/* Added margin-top for space */}
@@ -234,7 +229,7 @@ const StaffBookingForm = ({ id }) => {
               label="Email"
               rules={[
                 { required: true, message: "Please enter your email!" },
-                { type: "email", message: "Please enter a valid email!" },
+                { type: 'email', message: "Please enter a valid email!" }
               ]}
             >
               <Input placeholder="Enter your email" />
@@ -257,7 +252,10 @@ const StaffBookingForm = ({ id }) => {
                   </Form.Item>
                 </div>
               </div>
-              <Form.Item name="time" label="Available Times">
+              <Form.Item
+                name="time"
+                label="Available Times"
+              >
                 <Radio.Group>
                   {availableTimes.map((item, index) => (
                     <Radio.Button
@@ -301,7 +299,7 @@ const StaffBookingForm = ({ id }) => {
 
             <Form.Item style={{ textAlign: "center" }}>
               <Button type="link">
-                Total: {sum ? `${sum.moneyback}₫` : "0₫"}
+                Total: {sum ? `${sum.moneyback}₫` : '0₫'}
               </Button>
               <br></br>
               <Button type="primary" htmlType="submit">
@@ -311,7 +309,7 @@ const StaffBookingForm = ({ id }) => {
           </Form>
         </div>
       </div>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
