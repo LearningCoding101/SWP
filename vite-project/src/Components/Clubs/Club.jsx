@@ -12,11 +12,13 @@ import {
   Input,
   Modal,
 } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import NavBar from "../layout/NavBar";
 import Footer from "../layout/Footer";
 import api from "../../config/axios";
+import SearchNavBar from "../layout/SearchNavBar";
+
 
 const Club = () => {
   const options = [
@@ -32,13 +34,14 @@ const Club = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const accessToken = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { clubName } = useParams()
 
   const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const response = await api.get("/clubs", {
+        const response = await api.get(`/clubs`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setClubs(response.data);
@@ -126,7 +129,8 @@ const Club = () => {
 
   return (
     <div>
-      <NavBar />
+      {/* <NavBar /> */}
+      <SearchNavBar />
       <div className="container" style={{ marginTop: 100 }}>
         <Space direction="vertical" size="middle">
           <Space.Compact>

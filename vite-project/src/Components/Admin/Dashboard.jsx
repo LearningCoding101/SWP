@@ -100,6 +100,9 @@ import {
   PieChartOutlined,
   UserOutlined,
   LogoutOutlined,
+  LineChartOutlined, 
+  BarChartOutlined,
+   FundViewOutlined
 } from "@ant-design/icons";
 import AddClubCombo from "./AddClubCombo";
 import BookingReport from "./BarChart";
@@ -123,23 +126,24 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem("Booking Status", "13", <PieChartOutlined />),
-  getItem("Income Analysis", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
+  // getItem("Booking Status", "13", <PieChartOutlined />),
+  // getItem("Income Analysis", "1", <PieChartOutlined />),
+  getItem("Option 2", "2", <DesktopOutlined />), 
   getItem("Manage Users", "12", <UserOutlined />),
   getItem("Manage Club", "10", <DesktopOutlined />),
-  getItem("Bar Chart Demo", "11", <UserOutlined />),
+  getItem("Chart", "sub1", <FundViewOutlined />, [
+    getItem("Income Analysis", "1", <LineChartOutlined />),
+    getItem("Bar Chart Demo", "11", <BarChartOutlined />),
+    getItem("Booking Status", "13", <PieChartOutlined />),
+  ]),
+
+  // getItem("Bar Chart Demo", "11", <UserOutlined />),
 ];
 
 const Dashboard = () => {
   const isLoggedIn = localStorage.getItem("token")
   const [collapsed, setCollapsed] = useState(false);
-  const [selectedKey, setSelectedKey] = useState("1");
+  const [selectedKey, setSelectedKey] = useState("12");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookingTypes, setBookingTypes] = useState([]);
   const [selectedBookingType, setSelectedBookingType] = useState(null);
@@ -152,12 +156,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const filteredItems = items.filter(
-    (item) =>
-      item.key === "1" ||
-      item.key === "10" ||
-      item.key === "11" ||
-      item.key === "12" ||
-      item.key === "13"
+     (item) => item.key === "10" || item.key === "12" || item.key === "sub1"
   );
 
   const handleLogout = () => {
@@ -265,7 +264,7 @@ const Dashboard = () => {
               {selectedKey === "13" && <PieChartComponent />}
             </Content>
             <Footer style={{ textAlign: "center" }}>
-              Badcourts ©{new Date().getFullYear()}. All rights reserved
+               ©{new Date().getFullYear()} Badcourts. All rights reserved
             </Footer>
           </Layout>
 

@@ -113,7 +113,7 @@ function App() {
               element={<ForgotPassConfirm />}
             />
             <Route
-              path='/clubs'
+              path='/clubs:clubName'
               element={<Club />}
             />
             <Route
