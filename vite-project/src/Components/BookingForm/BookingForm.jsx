@@ -14,6 +14,7 @@ import useGetParams from './../../assets/hooks/useGetParams';
 import TransactionSuccess from "../Payment/TransactionSuccess";
 import Transaction from "../Payment/Transaction";
 import { connect } from 'react-redux';
+import SearchNavBar from "../layout/SearchNavBar";
 const BookingForm = ({ children }) => {
   const isLoggedIn = localStorage.getItem("token")
   const navigate  = useNavigate();
@@ -136,7 +137,7 @@ const BookingForm = ({ children }) => {
 
   return (
     <>
-<NavBar />
+<SearchNavBar />
     <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
 
      

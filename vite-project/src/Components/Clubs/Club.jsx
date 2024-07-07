@@ -37,11 +37,11 @@ const Club = () => {
   const { clubName } = useParams()
 
   const userRole = localStorage.getItem("userRole");
-
+console.log(clubName)
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const response = await api.get(`/clubs`, {
+        const response = await api.get(`/clubs?clubName=${clubName}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setClubs(response.data);
@@ -92,7 +92,7 @@ const Club = () => {
           </Space>
         }
       />
-      {userRole === "ClUB_OWNER" ? (
+      {userRole === "CLUB_OWNER" ? (
         <Link to={`/StaffBooking/${club.clubId}`}>
           <Button type="primary" size="small">
             Book Now

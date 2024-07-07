@@ -182,7 +182,7 @@ const SearchNavBar = () => {
     setShowAccountDropdown(!showAccountDropdown);
   };
 
-  const handleSearch = async() => {
+  const handleSearch = async () => {
     // Perform API call with clubName
     // if (clubName) {
     //   const apiUrl = `http://badcourts.click:8080/api/clubs?name=${clubName}`;
@@ -194,7 +194,7 @@ const SearchNavBar = () => {
     //   const response = await api.get(`/clubs?name=${clubName}`, {
     //     headers: { Authorization: `Bearer ${accessToken}` },
     //   });
-      navigate(`/clubs/${clubName}`)
+    navigate(`/clubs/${clubName}`)
     // }
     // else{
     //   <Empty description="No clubs found." />
@@ -227,11 +227,11 @@ const SearchNavBar = () => {
               Profile
             </Link>
           </Menu.Item>
-          <Menu.Item>
+          {/* <Menu.Item>
             <Link to="/feedback" style={{ textDecoration: "none" }}>
               Feedback Demo
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           {userRole === "CUSTOMER" && (
             <Menu.Item>
               <Link to="/bookingHistory" style={{ textDecoration: "none" }}>
@@ -251,47 +251,54 @@ const SearchNavBar = () => {
   );
 
   return (
-    <nav className="navbar bg-white shadow-sm fixed-top d-flex justify-content-between align-items-center">
+    <nav className="navbar bg-white fixed-top d-flex justify-content-between align-items-center">
       <div className="container-fluid">
         {/* Logo */}
         <Link to="/" className="navbar-brand text-primary">
           <img
             src="https://firebasestorage.googleapis.com/v0/b/projectswp-9019a.appspot.com/o/logo.png?alt=media&token=ec0e9108-2b09-4c86-8b6e-407fb1269a3b"
             style={{
-              width: "60px",
-              height: "50px",
-              marginLeft: "30px",
+              width: '100px',
+              height: '70px',
+              // marginLeft: "30px",
               display: "fixed",
             }}
             alt="Logo"
           />
         </Link>
 
+        {isLoggedIn && userRole === "CLUB_OWNER" && (
+          <NavLink
+            to="/clubManage"
+            className={({ isActive }) =>
+              isActive ? "nav-link active text-primary" : "nav-link"
+            }
+          >
+            Manage Club
+          </NavLink>
+
+        )}
+
         {/* Search Input and Button */}
-        <Space direction="vertical" size="middle">
-          <Space>
-            {/* <Select defaultValue="searchName" style={{ width: 120 }}>
-              {options.map((option) => (
-                <Select.Option key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-            </Select> */}
-            <Search
-              placeholder="Enter text to search"
-              allowClear
-              enterButton={<Button onClick={handleSearch}><SearchOutlined /></Button>}
-              size="middle"
-              value={clubName}
-              onChange={(e) => setClubName(e.target.value)}
-            />
+        {userRole != "CLUB_OWNER" && (
+          <Space direction="vertical" size="middle">
+            <Space>
+              <Search
+                placeholder="Enter text to search"
+                allowClear
+                enterButton={<Button onClick={handleSearch}><SearchOutlined /></Button>}
+                size="large"
+                value={clubName}
+                onChange={(e) => setClubName(e.target.value)}
+              />
+            </Space>
           </Space>
-        </Space>
+        )}
 
         {/* Account Dropdown (right-aligned) */}
         <Dropdown overlay={accountMenu} trigger="click" placement="bottomRight">
           <Button.Group>
-            <Button type="ghost" onClick={handleAccountClick}>
+            <Button type="ghost" onClick={handleAccountClick} style={{ fontSize: '24px' }}>
               {isLoggedIn ? <UserOutlined /> : <UserOutlined />}
               <DownOutlined />
             </Button>
