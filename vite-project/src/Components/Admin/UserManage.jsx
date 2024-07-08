@@ -11,28 +11,30 @@ const UserManage = () => {
   const [accountIdToUpdate, setAccountIdToUpdate] = useState(null);
   const [statusToUpdate, setStatusToUpdate] = useState(null); // New state variable for update status
 
- 
+
 
   const handleUpdateStatus = (accountId) => {
     setAccountIdToUpdate(accountId);
     // Get the current status of the account
     const currentStatus = accounts.find((account) => account.accountId === accountId)?.status; // Optional Chaining
-    setStatusToUpdate(currentStatus === 'Active' ? true : false); // Set the status to update based on current status
+    setStatusToUpdate(currentStatus === 'Active' ? false : true); // Set the status to update based on current status
     setIsUpdateModalVisible(true); // Show confirmation modal
   };
+
+
 
   const handleConfirmUpdate = async () => {
     setIsUpdateModalVisible(false);
     const payload = {
-      status: statusToUpdate,
+      status: statusToUpdate === 'Active' ? false : true,
     };
 
     try {
-      const res = await api.put(`/{accountId}?accountId=${accountIdToUpdate}`, payload);
+      const res = await api.put(`/updateStatus?accountId=${accountIdToUpdate}`, payload);
       message.success('Update success!');
       setAccounts((prevAccounts) =>
         prevAccounts.map((account) =>
-          account.accountId === accountIdToUpdate ? { ...account, status: statusToUpdate } : account
+          account.accountId === accountIdToUpdate ? { ...account, status: statusToUpdate ? 'Active' : 'Deactivate' } : account
         )
       );
     } catch (error) {
@@ -41,6 +43,9 @@ const UserManage = () => {
       console.error('Error updating account status:', error);
     }
   };
+
+
+
 
   const handleCancelUpdate = () => {
     setIsUpdateModalVisible(false);
@@ -83,6 +88,8 @@ const UserManage = () => {
         <Button type="primary" onClick={() => handleUpdateStatus(record.accountId)}>
           Update Status
         </Button>
+
+
       ),
     }, // Add an action column with a button
   ];

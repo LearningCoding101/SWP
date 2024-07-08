@@ -72,8 +72,11 @@ const ManageClub = () => {
       if (data) {
         message.success("Club updated successfully!");
         console.log("update status:", data.data);
-        window.location.reload();
       }
+      setClubs((prevClubs) =>
+        prevClubs.map((club) =>
+          club.clubId === id ? { ...club, active: !active } : club
+        ))
     } catch (error) {
       // Handle error here
       console.error("Error update club:", error);
