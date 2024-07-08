@@ -16,8 +16,8 @@ import Footer from "../layout/Footer";
 import api from "../../config/axios";
 import { Link, useParams } from "react-router-dom";
 
-const StaffBookingForm = () => {
-  const { id } = useParams();
+const StaffBookingForm = ({ id }) => {
+  //const { id } = useParams();
   console.log(id);
 
   const [courtId, setCourtID] = useState();
