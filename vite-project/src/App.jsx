@@ -113,13 +113,17 @@ function App() {
               element={<ForgotPassConfirm />}
             />
             <Route
+              path='/clubs/:clubName'
+              element={<Club />}
+            />
+             <Route
               path='/clubs'
               element={<Club />}
             />
-            <Route
+            {/* <Route
               path='/clubs/:address'
               element={<ClubDetail />}
-            />
+            /> */}
             <Route
               path='/bookingHistory'
               element={<BookingHistoryPage />}

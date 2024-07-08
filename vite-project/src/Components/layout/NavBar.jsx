@@ -49,7 +49,7 @@ const NavBar = () => {
 
         {/* Navigation Links (left-aligned) */}
         <ul className="nav mb-2 mb-lg-0">
-          {isLoggedIn && userRole === "ClUB_OWNER" && (
+          {isLoggedIn && userRole === "CLUB_OWNER" && (
             <li className="nav-item">
               <NavLink
                 to="/clubManage"
@@ -62,7 +62,7 @@ const NavBar = () => {
             </li>
           )}
 
-          {userRole != "ClUB_OWNER" && (
+          {userRole != "CLUB_OWNER" && (
             <li className="nav-item">
               <NavLink
                 to="/clubs"

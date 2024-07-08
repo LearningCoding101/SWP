@@ -11,24 +11,7 @@ const UserManage = () => {
   const [accountIdToUpdate, setAccountIdToUpdate] = useState(null);
   const [statusToUpdate, setStatusToUpdate] = useState(null); // New state variable for update status
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-
-      try {
-        const response = await api.get('/accounts');
-        setAccounts(response.data);
-      } catch (error) {
-        setError(error.message);
-        console.error('Error fetching accounts:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+ 
 
   const handleUpdateStatus = (accountId) => {
     setAccountIdToUpdate(accountId);
@@ -64,6 +47,25 @@ const UserManage = () => {
     setAccountIdToUpdate(null);
     setStatusToUpdate(null); // Reset statusToUpdate on cancel
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await api.get('/accounts');
+        setAccounts(response.data);
+      } catch (error) {
+        setError(error.message);
+        console.error('Error fetching accounts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const columns = [
     // Define your table columns here based on the API data structure

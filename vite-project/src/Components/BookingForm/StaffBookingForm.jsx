@@ -184,7 +184,7 @@ const StaffBookingForm = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <NavBar /> {/* Render NavBar at the top */}
+      {/* <NavBar /> */}
       <div
         style={{ display: "flex", justifyContent: "center", marginTop: 100, marginBottom: 100 }}
       >
@@ -309,7 +309,7 @@ const StaffBookingForm = () => {
           </Form>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

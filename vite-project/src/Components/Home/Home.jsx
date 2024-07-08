@@ -16,7 +16,7 @@ const Home = () => {
   return (
     <>
       <div>
-        <NavBar />
+        <SearchNavBar />
         <section>
           <HeaderMain />
           <div className='container-fluid' style={{ margin: "40px 0" }}>
