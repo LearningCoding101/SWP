@@ -76,17 +76,17 @@ public class BookingService {
     }
 
     public BookingComboResponse createBookingForStaff(BookingComboRequestForStaff bookingComboRequest) throws MessagingException, IOException, WriterException {
-        BookingResponse bkcr = createBookingNew(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
-        Optional<Booking> booking = bookingRepository.findById(bkcr.getId());
+        BookingResponse bookingCreateTemporary = createBookingNew(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
+        Optional<Booking> booking = bookingRepository.findById(bookingCreateTemporary.getId());
         booking.get().setStatus(BookingStatusEnum.COMPLETED);
         bookingRepository.save(booking.get());
         BookingComboResponse bookingComboResponse = new BookingComboResponse();
-        bookingComboResponse.setBookingResponse(bkcr);
-        List<BookingDetailRequestCombo> bkdtrspl = bookingComboRequest.getBookingDetailRequestCombos();
+        bookingComboResponse.setBookingResponse(bookingCreateTemporary);
+        List<BookingDetailRequestCombo> bookingDetailResponseList = bookingComboRequest.getBookingDetailRequestCombos();
         List<BookingDetailRequest> returnlist = new ArrayList<>();
         BookingDetailRequest store;
-        Long id = bkcr.getId();
-        for(BookingDetailRequestCombo bkdtr : bkdtrspl) {
+        Long id = bookingCreateTemporary.getId();
+        for(BookingDetailRequestCombo bkdtr : bookingDetailResponseList) {
             store = bookingDetailService.create3rdBookingDetailCombo(bkdtr, id);
             returnlist.add(store);
         }
