@@ -41,7 +41,7 @@ console.log(clubName)
   useEffect(() => {
     const fetchClubs = async () => {
       try {
-        const response = await api.get(`/clubs?clubName=${clubName}`, {
+        const response = await api.get(`/clubs?name=${clubName}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setClubs(response.data);

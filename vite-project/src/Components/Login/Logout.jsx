@@ -13,7 +13,7 @@ const { Header, Content, Footer, Sider } = Layout;
 
 const Logout = () => {
   const accessToken = localStorage.getItem("token");
-  const isLoggedIn = localStorage.getItem("token")
+  const isLoggedIn = !!accessToken
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
   const auth = useContext(AuthContext);
@@ -33,23 +33,22 @@ const Logout = () => {
     useEffect(() => {
       const fetchAccountInfo = async () => {
         try {
-          const response = await api.get(`/account/${loginEmail}`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
+          const response = await api.get(`/account/${loginEmail}`);
           // console.log(response.data);
           setUserDetails({
             username: response.data.fullName,
             phone: response.data.phone,
           });
+          form2.setFieldValue({
+            username: response.data.fullName,
+            phone: response.data.phone,
+          })
         } catch (error) {
-          console.error("Error fetching clubs:", error);
+          console.error("Error fetching data:", error);
         }
       };
-      if (accessToken && loginEmail) {
-        fetchAccountInfo();
-      }
       fetchAccountInfo();
-    }, [accessToken]);
+    }, [form2]);
 
   
 

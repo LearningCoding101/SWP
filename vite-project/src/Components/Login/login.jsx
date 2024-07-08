@@ -260,7 +260,7 @@ const Login = () => {
       const newToken = newTokenData.token;
       localStorage.setItem("token", newToken);
       const ggData = res.data;
-      // console.log(ggData)
+      console.log(ggData)
       const roleGG = ggData.role;
       localStorage.setItem("userRole", roleGG);
       const userEmail = ggData.email;

@@ -52,7 +52,7 @@ const QRScanner = () => {
     try {
       console.log(`Fetching booking details for ID: ${bookingId}`);
       const response = await api.get(
-        `http://badcourts.click:8080/api/bookingDetail/qrcheck/${bookingId}`
+        `/bookingDetail/qrcheck/${bookingId}`
       );
       console.log("Booking Details Response:", response.data);
       setBookingDetails(response.data);
@@ -69,7 +69,7 @@ const QRScanner = () => {
     setError(null);
     try {
       const response = await api.get(
-        `http://badcourts.click:8080/api/transactions/${bookingId}`
+        `/transactions/${bookingId}`
       );
       setTransactionData(response.data);
     } catch (error) {
@@ -85,7 +85,7 @@ const QRScanner = () => {
     setError(null);
     try {
       const response = await api.put(
-        `http://badcourts.click:8080/api/transactions/${id}`,
+        `/transactions/${id}`,
         {},
         {
           headers: {
@@ -112,7 +112,7 @@ const QRScanner = () => {
     setError(null);
     try {
       const response = await api.put(
-        `http://badcourts.click:8080/api/bookingDetail/checkin/${bookingDetailsId}`,
+        `/bookingDetail/checkin/${bookingDetailsId}`,
         {}
         // {
         //   headers: {
@@ -197,7 +197,7 @@ const QRScanner = () => {
                           <td>{detail.end_time}</td>
                           <td>{detail.status}</td>
                           <td>
-                            {detail.status !== "CHECKEDIN" && (
+                            {detail.status !== "CHECKED_IN" && (
                               <button
                                 className="btn btn-custom-primary"
                                 onClick={() =>
