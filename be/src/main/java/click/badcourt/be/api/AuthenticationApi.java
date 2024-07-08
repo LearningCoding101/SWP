@@ -134,7 +134,7 @@ public class AuthenticationApi {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PutMapping("/{accountId}")
+    @PutMapping("/updateStatus")
     public String updateAccount(@RequestParam Long accountId, @RequestBody BanUnbanAccountRequest banUnbanAccountRequest) {
         Account account = authenticationRepository.findById(accountId).orElseThrow(()-> new RuntimeException("Account not found"));
         if (banUnbanAccountRequest.isStatus()){
