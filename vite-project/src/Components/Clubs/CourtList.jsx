@@ -36,7 +36,7 @@ const CourtList = () => {
                     return court;
                 });
                 setCourts(updatedCourts);
-                setShowModal(false);
+                setShowModal1(false);
             }
         } catch (error) {
             console.error('Error updating court:', error);
