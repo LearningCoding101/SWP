@@ -27,14 +27,22 @@ const CourtList = () => {
 
     const handleUpdateCourt = async () => {
         try {
-            await api.put(`/court/${selectedCourt.id}`, { courtname: newCourtName });
-            fetchCourts();
-            setShowModal(false);
-            window.location.reload();
+            const response = await api.put(`/court/${selectedCourt.id}`, { courtname: newCourtName });
+            if (response.status === 200) {
+                const updatedCourts = courts.map(court => {
+                    if (court.id === selectedCourt.id) {
+                        return { ...court, courtName: newCourtName };
+                    }
+                    return court;
+                });
+                setCourts(updatedCourts);
+                setShowModal(false);
+            }
         } catch (error) {
             console.error('Error updating court:', error);
         }
     };
+
 
     const deleteCourt = async (id) => {
         try {
@@ -126,7 +134,9 @@ const CourtList = () => {
                     <Modal.Title>Add Courts</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AddCourt onClose={() => setShowModal(false)} />
+                    <AddCourt onClose={() => setShowModal(false)} onCourtAdded={fetchCourts} />
+
+
                 </Modal.Body>
             </Modal>
         </div >
