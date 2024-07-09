@@ -2,6 +2,8 @@ package click.badcourt.be.api;
 
 import click.badcourt.be.entity.Account;
 import click.badcourt.be.model.request.*;
+import click.badcourt.be.model.response.AccountManageResponse;
+import click.badcourt.be.model.response.AccountManageResponseProfile;
 import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.service.AccountService;
@@ -124,7 +126,7 @@ public class AuthenticationApi {
 
     @GetMapping("/account/{email}")
     public ResponseEntity getAccount(@PathVariable String email) {
-        Account account= authenticationService.getAccountByEmail(email);
+        AccountManageResponseProfile account= authenticationService.getAccountByEmail(email);
         return ResponseEntity.ok(account);
     }
 

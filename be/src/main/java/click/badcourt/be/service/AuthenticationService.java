@@ -6,6 +6,8 @@ import click.badcourt.be.entity.EmailDetail;
 import click.badcourt.be.enums.RoleEnum;
 import click.badcourt.be.exception.BadRequestException;
 import click.badcourt.be.model.request.*;
+import click.badcourt.be.model.response.AccountManageResponse;
+import click.badcourt.be.model.response.AccountManageResponseProfile;
 import click.badcourt.be.model.response.AccountResponse;
 import click.badcourt.be.repository.AuthenticationRepository;
 import click.badcourt.be.repository.ClubRepository;
@@ -289,8 +291,9 @@ public class AuthenticationService implements UserDetailsService {
         authenticationRepository.save(account);
     }
 
-    public Account getAccountByEmail(String email) {
+    public AccountManageResponseProfile getAccountByEmail(String email) {
         Account account = authenticationRepository.findAccountByEmail(email);
+        AccountManageResponseProfile accountManageResponse = new AccountManageResponseProfile();
         if(account == null){
             try {
                 throw new BadRequestException("Account not found!");
@@ -298,7 +301,15 @@ public class AuthenticationService implements UserDetailsService {
                 throw new RuntimeException(e);
             }
         }
-        else {return account;}
+        else {
+            accountManageResponse.setAccountId(account.getAccountId());
+            accountManageResponse.setFullName(account.getFullName());
+            accountManageResponse.setRole(account.getRole());
+            accountManageResponse.setEmail(account.getEmail());
+            accountManageResponse.setPassword(account.getPassword());
+            accountManageResponse.setPhone(account.getPhone());
+            return accountManageResponse;
+        }
     }
     public void sendOTPEmailConfirmation(String email,String otp){
         System.out.println(email);
