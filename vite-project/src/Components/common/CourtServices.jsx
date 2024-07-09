@@ -13,7 +13,7 @@ const CourtServices = () => {
   const accessToken = localStorage.getItem("token");
   const navigate = useNavigate();
   const carouselRef = useRef(null);
-
+  const userRole = localStorage.getItem("userRole")
   const isExtraSmall = useMediaQuery({ maxWidth: 576 });
   const isSmall = useMediaQuery({ minWidth: 576, maxWidth: 768 });
   const isMedium = useMediaQuery({ minWidth: 768, maxWidth: 992 });
@@ -63,11 +63,13 @@ const CourtServices = () => {
                   marginLeft: 10, marginRight: 10 }}
                 >
                   <Card.Meta title={club.name} description={`Open: ${club.open_time} - ${club.close_time}`} style={{marginBottom: 20}}/>
+                  {userRole ==="CUSTOMER" &&(
                   <Link to={`/booking/${club.clubId}`}>
                     <Button type="primary" size="small">
                       Book Now
                     </Button>
                   </Link>
+                )}
                 </Card>
               </div>
             ))}
