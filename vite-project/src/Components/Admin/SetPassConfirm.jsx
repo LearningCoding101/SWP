@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { setPass } from "../API/SetPassService";
 import useGetParams from "../../assets/hooks/useGetParams";
+import api from "../../config/axios";
+import { message } from "antd";
+import { newPass } from "../API/NewPassService"
 const SetPassConfirm = () => {
   const params = useGetParams();
   const token = params("token");
@@ -21,9 +23,10 @@ const SetPassConfirm = () => {
       setError("Please confirm your password");
     } else {
       try {
-        const data = await setPass(token, password);
-        console.log("Reset succesfully", data);
-        navigate("/");
+        const data = await newPass(token, password);
+        // console.log("Reset succesfully", data);
+        message.success("Confirmed. Navigate to login page.")
+        navigate("/login");
         // Handle valid email (e.g., redirect to confirm pass)
       } catch (err) {
         console.error(err);
@@ -36,7 +39,7 @@ const SetPassConfirm = () => {
       <div className="login-card">
         <link rel="" type="image" href="/password.png" />
         <div className="forgotPass-text">
-          <h3>Set password</h3>
+          <h3>Set your account password</h3>
           <p>Remember to confirm your password</p>
         </div>
         {error && <div className="error">{error}</div>}
@@ -70,10 +73,6 @@ const SetPassConfirm = () => {
           </button>
           <div className="bottom-content">
             <p>
-              <Link to="/login">
-                <link type="image/svg+xml" href="/back.svg" />
-                Back to login
-              </Link>
             </p>
           </div>
         </form>

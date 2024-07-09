@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import HeaderMain from '../layout/HeaderMain.jsx'
 import Parallax from '../common/Parallax.jsx'
 import NavBar from '../layout/NavBar.jsx';
@@ -10,11 +10,14 @@ import AppFooter from '../layout/Footer.jsx';
 
 
 
-
 const Home = () => {
-  const location = useLocation()
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLoggedIn = localStorage.getItem("token")
+  const userRole = localStorage.getItem("userRole")
   return (
     <>
+    {userRole !="ADMIN" ? ( 
       <div>
         <SearchNavBar />
         <section>
@@ -28,7 +31,10 @@ const Home = () => {
           <AppFooter />
         </footer>
       </div>
-
+    
+    ) : (
+       navigate('/error404')
+    )}
     </>
   )
 }

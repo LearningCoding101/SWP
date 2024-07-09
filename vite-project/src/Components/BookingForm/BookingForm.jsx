@@ -17,7 +17,7 @@ import { connect } from 'react-redux';
 import SearchNavBar from "../layout/SearchNavBar";
 const BookingForm = ({ children }) => {
   const isLoggedIn = localStorage.getItem("token")
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
   const handleSetId = (id) => {
     props.setId(id); // Dispatch an action to update state
   };
@@ -80,13 +80,13 @@ const BookingForm = ({ children }) => {
       console.log(res.data)
 
       form.setFields([
-          { name: "name", readonly: true },
-          { name: "booking_type_id", readonly: true },
-          { name: "submitButton", readonly: true }
-  
-          // ... add other form fields
-        ]);
-        setIsBookingConfirmed(true);
+        { name: "name", readonly: true },
+        { name: "booking_type_id", readonly: true },
+        { name: "submitButton", readonly: true }
+
+        // ... add other form fields
+      ]);
+      setIsBookingConfirmed(true);
       console.log("Booking created:", response.data);
       message.success("Booking confirmed!");
     } catch (error) {
@@ -137,137 +137,141 @@ const BookingForm = ({ children }) => {
 
   return (
     <>
-<SearchNavBar />
-    <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
+      {userRole != "ADMIN" && userRole != "CLUB_OWNER" ? (
+        <div>
+          <SearchNavBar />
+          <div style={{ display: "flex", flexDirection: "row", gap: "20px", justifyContent: "center" }}>
 
-     
-      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
-        {" "}
-        {/* Added margin-top for space */}
-        <div
-          style={{
-            width: "511px",
-            padding: 20,
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            border: "1px solid #ccc",
-          }}
-        >
-          {isLoggedIn ? (
-            <Form
-              form={form}
-              name="bookingForm"
-              layout="vertical"
-              onFinish={onFinish}
-            >
 
-              <Form.Item
-                name="name"
-                label="Court Name"
-                rules={[
-                  { required: true, message: "Please select the court name!" },
-                ]}
+            <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
+              {" "}
+              {/* Added margin-top for space */}
+              <div
+                style={{
+                  width: "511px",
+                  padding: 20,
+                  backgroundColor: "#fff",
+                  borderRadius: 10,
+                  border: "1px solid #ccc",
+                }}
               >
-                <Select
-                  placeholder="Select a Court Name"
-                  onChange={(key) => setCourtID(key)}
-                >
-                  {courts.map((court) => (
-                    <Option key={court.id} value={court.id}>
-                      {court.courtName}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
+                {isLoggedIn ? (
+                  <Form
+                    form={form}
+                    name="bookingForm"
+                    layout="vertical"
+                    onFinish={onFinish}
+                  >
 
-              <Form.Item
-                name="booking_type_id"
-                label="Booking Type"
-                rules={[
-                  { required: true, message: "Please select the booking type!" },
-                ]}
-              >
-                <Select onChange={(value) => setBookingType(value)}>
-                  <Option value={1}>Lịch ngày</Option>
-                  <Option value={2}>Lịch cố định</Option>
-                  <Option value={3}>Lịch linh hoạt</Option>
-                </Select>
-              </Form.Item>
+                    <Form.Item
+                      name="name"
+                      label="Court Name"
+                      rules={[
+                        { required: true, message: "Please select the court name!" },
+                      ]}
+                    >
+                      <Select
+                        placeholder="Select a Court Name"
+                        onChange={(key) => setCourtID(key)}
+                      >
+                        {courts.map((court) => (
+                          <Option key={court.id} value={court.id}>
+                            {court.courtName}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
 
-              {bookingType === 1 && (
-                <BookingType1
-                  courtId={courtId}
-                  bookingDetail={bookingDetailRequest}
-                ></BookingType1>
-              )}
-              {bookingType === 2 && (
-                <BookingType2
-                  courtId={courtId}
-                  bookingDetail={bookingDetailRequest}
-                ></BookingType2>
-              )}
-              {bookingType === 3 && (
-                <BookingType3
-                  courtId={courtId}
-                  bookingDetail={bookingDetailRequest}
-                  isEnoughDay={isEnoughDay}
-                ></BookingType3>
-              )}
+                    <Form.Item
+                      name="booking_type_id"
+                      label="Booking Type"
+                      rules={[
+                        { required: true, message: "Please select the booking type!" },
+                      ]}
+                    >
+                      <Select onChange={(value) => setBookingType(value)}>
+                        <Option value={1}>Lịch ngày</Option>
+                        <Option value={2}>Lịch cố định</Option>
+                        <Option value={3}>Lịch linh hoạt</Option>
+                      </Select>
+                    </Form.Item>
 
-              <Form.Item
-               name="submitButton"
-               >
-                <Button type="primary" htmlType="submit" disabled={isBookingConfirmed}>
-                  Confirm Booking
-                </Button>
-              </Form.Item>
-            </Form>
-          ) : (
-            navigate("/login")
+                    {bookingType === 1 && (
+                      <BookingType1
+                        courtId={courtId}
+                        bookingDetail={bookingDetailRequest}
+                      ></BookingType1>
+                    )}
+                    {bookingType === 2 && (
+                      <BookingType2
+                        courtId={courtId}
+                        bookingDetail={bookingDetailRequest}
+                      ></BookingType2>
+                    )}
+                    {bookingType === 3 && (
+                      <BookingType3
+                        courtId={courtId}
+                        bookingDetail={bookingDetailRequest}
+                        isEnoughDay={isEnoughDay}
+                      ></BookingType3>
+                    )}
 
-          )}
-        </div>
-      </div>
+                    <Form.Item
+                      name="submitButton"
+                    >
+                      <Button type="primary" htmlType="submit" disabled={isBookingConfirmed}>
+                        Confirm Booking
+                      </Button>
+                    </Form.Item>
+                  </Form>
+                ) : (
+                  navigate("/login")
 
-
-
-      {/* Right form */}
-      <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
-        {" "}
-        {/* Added margin-top for space */}
-        <div
-          style={{
-            width: "511px",
-            padding: 20,
-            backgroundColor: "#fff",
-            borderRadius: 10,
-            border: "1px solid #ccc",
-          }}
-        >
-          <Form
-            form={form2}
-            name="bookingForm"
-            layout="vertical"
-            onFinish={handlePayament}
-          >
-            <div>
-              <h3>Booking summary</h3>
-              <p>Price: {bookingConfirm?.fullPrice}</p>
-              <p>Discount: {bookingConfirm?.salePrice}</p>
-              <p>Total: {bookingConfirm?.totalPriceNeedToPay}</p>
+                )}
+              </div>
             </div>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Checkout
-              </Button>
-            </Form.Item>
-          </Form>
-        </div>
-      </div>
-   
 
-    </div> 
-      <Footer />
+
+
+            {/* Right form */}
+            <div style={{ display: "flex", justifyContent: "flex-start", marginTop: 100 }}>
+              {" "}
+              {/* Added margin-top for space */}
+              <div
+                style={{
+                  width: "511px",
+                  padding: 20,
+                  backgroundColor: "#fff",
+                  borderRadius: 10,
+                  border: "1px solid #ccc",
+                }}
+              >
+                <Form
+                  form={form2}
+                  name="bookingForm"
+                  layout="vertical"
+                  onFinish={handlePayament}
+                >
+                  <div>
+                    <h3>Booking summary</h3>
+                    <p>Price: {bookingConfirm?.fullPrice}</p>
+                    <p>Discount: {bookingConfirm?.salePrice}</p>
+                    <p>Total: {bookingConfirm?.totalPriceNeedToPay}</p>
+                  </div>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Checkout
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
+            </div>
+          </div>
+          <Footer />
+        </div>
+      ) : (
+        navigate("/error404")
+      )}
     </>
   );
 };

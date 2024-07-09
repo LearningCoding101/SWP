@@ -41,6 +41,8 @@ import UpdateForCustomer from './Components/Clubs/UpdateForCustomer'
 import UpdateForOwner from "./Components/Clubs/UpdateForOwner";
 import ShowBookingsOfAClub from "./Components/Clubs/ShowBookingsOfAClub";
 import RevenueChart from './Components/Clubs/RevenueChart';
+import SetPassConfirm from './Components/Admin/SetPassConfirm'
+import Error404 from './Components/common/Error404'
 
 
 function App() {
@@ -84,6 +86,10 @@ function App() {
               path="/signup"
               element={<SignUp />}
             />
+             <Route
+              path="/error404"
+              element={<Error404 />}
+            />
             {/* <Route
               path="/confirmOTP"
               element={<OTPConfirm />}
@@ -116,7 +122,7 @@ function App() {
               path='/clubs/:clubName'
               element={<Club />}
             />
-             <Route
+            <Route
               path='/clubs'
               element={<Club />}
             />
@@ -175,17 +181,24 @@ function App() {
             />
             <Route
               path="/StaffBooking/:id"
-              element={<StaffBookingForm />} />
+              element={<StaffBookingForm />}
+            />
             <Route
               path="*"
               element={<Navigate to="/" />}
             />
             <Route
               path="/line"
-              element={<MyResponsiveLine />} />
+              element={<MyResponsiveLine />}
+            />
             <Route
               path="/bar"
-              element={<BookingReport />} />
+              element={<BookingReport />}
+            />
+            <Route
+              path="/setPasswordActiveClub"
+              element={<SetPassConfirm />}
+            />
           </Routes>
         </Router>
 
