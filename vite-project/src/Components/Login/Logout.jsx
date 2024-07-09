@@ -13,6 +13,7 @@ const Logout = () => {
   const accessToken = localStorage.getItem("token");
   const isLoggedIn = !!accessToken;
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const loginEmail = localStorage.getItem('userEmail');
@@ -28,12 +29,13 @@ const Logout = () => {
       try {
         const response = await api.get(`/account/${loginEmail}`);
         const responseData = response.data
+        console.log(responseData)
         // setUserDetails({
         //   username: response.data.fullName,
         //   phone: response.data.phone,
         // });
         setUserDetails(response.data);
-        form.setFieldsValue({
+        form2.setFieldsValue({
           username: responseData.fullName,
           phone: responseData.phone,
         });
@@ -51,9 +53,9 @@ const Logout = () => {
     };
     try {
       const response = await api.put('/updateNameAndPhone', payloadData);
+      console.log(response.data)
       setUserDetails(response.data);
       message.success('User details saved successfully!');
-      navigate("/");
     } catch (error) {
       console.error('Error saving user details:', error);
       message.error('An error occurred while saving user details.');
@@ -140,7 +142,7 @@ const Logout = () => {
                   onSubmit={handleSave}
                 >
                   {({ values, handleChange, handleBlur, handleSubmit, errors, touched }) => (
-                    <Form layout="vertical" form={form} onFinish={handleSubmit}>
+                    <Form layout="vertical" form={form2} onFinish={handleSubmit}>
                       <Row gutter={16}>
                         <Col xs={24}>
                           <Form.Item
