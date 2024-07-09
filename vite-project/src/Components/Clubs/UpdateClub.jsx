@@ -41,8 +41,8 @@ const UpdateClub = () => {
     try {
       let img = initialPicture;
       img = await uploadFile(values.picture_location.file);
-      const openTime = moment(values.open_time);
-      const closeTime = moment(values.close_time);
+      const openTime = values.open_time;
+      const closeTime = values.close_time;
 
       const data = await updateClubAPI(
         clubId,
