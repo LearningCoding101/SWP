@@ -25,7 +25,7 @@ const CourtServices = () => {
         const response = await api.get("/clubs", {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
-        setClubs(response.data);
+        setClubs(response.data.sort((a, b) => b.clubId - a.clubId));
       } catch (error) {
         console.error(error);
       }

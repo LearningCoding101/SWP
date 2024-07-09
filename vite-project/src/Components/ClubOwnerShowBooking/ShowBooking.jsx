@@ -27,6 +27,23 @@ const ShowBooking = (props) => {
 
 
 
+  // const handleOk = async () => {
+  //   try {
+  //     const changeSlotBookingDetailRequestCombo = {
+  //       newcourtTSId: selectedTimeSlot,
+  //       newbookingDate: selectedDate.format('YYYY-MM-DD')
+  //     };
+  //     const response = await api.put(`/bookingDetail/slot/${currentBooking.bookingDetailsId}`, changeSlotBookingDetailRequestCombo);
+  //     console.log("Booking updated:", response.data); // This will log the response data
+  //     message.success("Updated success!")
+  //     setIsModalVisible(false);
+  //     props.refreshBookings();
+  //   } catch (error) {
+  //     message.error("Error!")
+  //     console.error("Error updating booking:", error);
+  //   }
+  // };
+
   const handleOk = async () => {
     try {
       const changeSlotBookingDetailRequestCombo = {
@@ -37,13 +54,15 @@ const ShowBooking = (props) => {
       console.log("Booking updated:", response.data);
       message.success("Updated success!")
       setIsModalVisible(false);
-
-      window.location.reload();
+      await props.refreshBookings(props.selectedDate); // Make sure refreshBookings is awaited
+      console.log("Data reloaded successfully"); // Log message after data reload
     } catch (error) {
       message.error("Error!")
       console.error("Error updating booking:", error);
     }
   };
+  
+  
 
 
 

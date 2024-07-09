@@ -108,6 +108,8 @@ const ShowBookingList = () => {
                   end_time={booking?.end_time}
                   status={booking?.status}
                   clubId={booking?.clubId}
+                  selectedDate={selectedDate}
+                  refreshBookings={fetchBookingDetails} 
                 ></ShowBooking>
               );
             })}

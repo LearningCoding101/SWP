@@ -128,8 +128,9 @@ console.log(clubName)
   });
 
   return (
+    <>
+    {userRole != "ADMIN" && userRole != "CLUB_OWNER" ? (
     <div>
-      {/* <NavBar /> */}
       <SearchNavBar />
       <div className="container" style={{ marginTop: 100 }}>
         <Space direction="vertical" size="middle">
@@ -182,6 +183,10 @@ console.log(clubName)
         )}
       </Modal>
     </div>
+    ) :(
+      navigate("/error404")
+    )}
+    </>
   );
 };
 
