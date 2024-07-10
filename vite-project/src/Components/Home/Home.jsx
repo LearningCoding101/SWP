@@ -60,7 +60,7 @@ const Home = () => {
 
   useEffect(() => {
     if (userRole === "ADMIN") {
-      navigate('/error404');
+      navigate('/adminDashboard');
     }
   }, [userRole, navigate]);
 
