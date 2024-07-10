@@ -11,16 +11,19 @@ const AddCourtTimeSlot = () => {
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
     useEffect(() => {
-        if (!courtId) {
+        const fetchTimeSlot = async () =>{
+             if (!courtId) {
             alert('No courtId provided');
             return;
         }
 
         console.log(timeSlots);
-        api.get('/timeslots')
+        const response = await api.get('/timeslots')
             .then(response => setTimeSlots(response.data))
             .catch(error => console.error('Error fetching time slots:', error));
         console.log(timeSlots);
+        }
+       fetchTimeSlot();
     }, [courtId]);
 
     const handleSubmit = async (event) => {
