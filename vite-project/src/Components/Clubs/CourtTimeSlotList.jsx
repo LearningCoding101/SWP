@@ -2,20 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from "../../config/axios";
 import "../css/CourtTimeSlotList.css";
+import { Modal, Button } from 'react-bootstrap';
+import AddCourtTimeSlot from './AddCourtTimeSlot';
 
 const CourtTimeSlotList = () => {
     const { courtId } = useParams();
     const [courtTimeSlots, setCourtTimeSlots] = useState([]);
     const navigate = useNavigate();
+    const [showModal, setShowModal] = useState(false);
+
+    // useEffect(() => {
+    //     api.get(`/courtTimeSlot/${courtId}`)
+    //         .then(response => setCourtTimeSlots(response.data || []))
+    //         .catch(error => console.error('Error fetching court time slots:', error));
+    // }, [courtId]);
+
+    const fecthCourtTimeSlot = async () => {
+        try {
+            const response = await api.get(`/courtTimeSlot/${courtId}`)
+            setCourtTimeSlots(response.data)
+            console.log(response.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
-        api.get(`/courtTimeSlot/${courtId}`)
-            .then(response => setCourtTimeSlots(response.data || []))
-            .catch(error => console.error('Error fetching court time slots:', error));
-    }, [courtId]);
+        fecthCourtTimeSlot()
+    }, []);
 
     const handleAddCourtTimeSlot = () => {
-        navigate('/AddCourtTimeSlot', { state: { courtId: courtId } });
+        setShowModal(true);
     };
 
     const handleDeleteCourtTimeSlot = (courtTimeSlotId) => {
@@ -28,21 +45,33 @@ const CourtTimeSlotList = () => {
     };
 
     return (
-        <div className="court-time-slot-list">
-            <h1>Court Time Slots</h1>
-            {courtTimeSlots.map(courtTimeSlot => (
-                <div key={courtTimeSlot.courtTimeSlotId} className="time-slot">
-                    <p><strong>Price:</strong> {courtTimeSlot.price}</p>
-                    <p><strong>Start Time:</strong> {courtTimeSlot.start_time}</p>
-                    <p><strong>End Time:</strong> {courtTimeSlot.end_time}</p>
-                    <button onClick={() => handleDeleteCourtTimeSlot(courtTimeSlot.courtTimeSlotId)} className="btn btn-danger">
-                        Delete CourtTimeSlot
-                    </button>
-                </div>
-            ))}
-            <button onClick={handleAddCourtTimeSlot} className="btn btn-warning">
-                Add CourtTimeSlot
-            </button>
+        <div className="center-div">
+            <div className="center-content">
+                <h1>Court Time Slots</h1>
+                <button onClick={handleAddCourtTimeSlot} className="btn btn-primary">
+                    Add CourtTimeSlot
+                </button>
+            </div>
+            <div className="court-time-slot-list">
+                {courtTimeSlots.map(courtTimeSlot => (
+                    <div key={courtTimeSlot.courtTimeSlotId} className="time-slot">
+                        <p><strong>Price:</strong> {courtTimeSlot.price}</p>
+                        <p><strong>Start Time:</strong> {courtTimeSlot.start_time}</p>
+                        <p><strong>End Time:</strong> {courtTimeSlot.end_time}</p>
+                        <button onClick={() => handleDeleteCourtTimeSlot(courtTimeSlot.courtTimeSlotId)} className="btn btn-primary">
+                            Delete CourtTimeSlot
+                        </button>
+                    </div>
+                ))}
+            </div>
+            <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Add Court Time Slot</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AddCourtTimeSlot courtId={courtId} onClose={() => setShowModal(false)} onCourtTSAdded={fecthCourtTimeSlot} />
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
