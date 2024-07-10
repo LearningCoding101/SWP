@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../config/axios';
 import { Card, Typography, Space, Row, Col, Button, Form, Input, Modal, message, DatePicker, Select, Tag } from 'antd';
 import NavBar from '../layout/NavBar';
@@ -11,6 +11,8 @@ const { Option } = Select;
 
 const UpdateForCustomer = () => {
     const isLoggedIn = localStorage.getItem("token")
+    const userRole = localStorage.getItem("userRole")
+    const navigate = useNavigate()
     const [bookingDetail, setBookingDetail] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentBooking, setCurrentBooking] = useState(null);
@@ -21,6 +23,12 @@ const UpdateForCustomer = () => {
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
     const { bookingid } = useParams();
     const { clubid } = useParams();
+
+    useEffect(() => {
+        if (userRole != "CUSTOMER") {
+          navigate('/error404');
+        }
+      }, [userRole, navigate]);
 
     useEffect(() => {
         const fetchBookingDetail = async () => {
@@ -194,7 +202,7 @@ const UpdateForCustomer = () => {
             <Footer />
         </div>
             ) : (
-                navigate('/')
+                navigate('/login')
               )}
             </>
     );

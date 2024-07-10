@@ -3,8 +3,11 @@ import React, { useState } from "react";
 import uploadFile from "../util/useUpload";
 import { addClubAPICombo } from "./AddClubAPICombo";
 import { colors } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const AddClubCombo = () => {
+  const navigate = useNavigate()
+  const userRole = localStorage.getItem("userRole")
   const [fullname, setFullname] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -17,6 +20,15 @@ const AddClubCombo = () => {
   const [courtEndMinute, setCourtEndMinute] = useState("");
   const [uploadImage, setUploadImage] = useState(null);
   const [error, setError] = useState("");
+
+
+
+  useEffect(() => {
+    if (userRole != "ADMIN") {
+      navigate('/error404');
+    }
+  }, [userRole, navigate]);
+
   const handleAdd = async (e) => {
     e.preventDefault();
     const img = await uploadFile(uploadImage);
@@ -66,6 +78,8 @@ const AddClubCombo = () => {
   };
   // style={{width:"1500px"}}
   return (
+    <>
+    {isLoggedIn ? (
     <div className="container vh-100 d-flex justify-content-center align-items-center">
       <div
         className="card p-4 shadow-lg"
@@ -246,6 +260,10 @@ const AddClubCombo = () => {
         </form>
       </div>
     </div>
+    ) : (
+      navigate("/login")
+    )}
+    </>
   );
 };
 

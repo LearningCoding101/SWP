@@ -30,7 +30,7 @@
 //       const response = await api.post("/feedback", payload);
 
 //       if (response.status === 200 || response.status === 201) {
-        
+
 //         message.success("Feedback submitted successfully!");
 //         form.resetFields();
 //         navigate("/bookingHistory")
@@ -96,12 +96,20 @@ import { Rate } from "antd"; // Import Rate component
 const { Content } = Layout; // Destructure Content from Layout
 
 const Feedback = () => {
+  const userRole = localStorage.getItem("userRole")
+  const isLoggedIn = localStorage.getItem("token")
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [feedbackContent, setFeedbackContent] = useState("");
   const [feedbackRating, setFeedbackRating] = useState(0); // Initialize with 0 for star selection
   const [bookingType, setBookingType] = useState("");
   const { bookingId } = useParams();
+
+  useEffect(() => {
+    if (userRole != "CUSTOMER") {
+      navigate('/error404');
+    }
+  }, [userRole, navigate]);
 
   const handleRatingChange = (value) => {
     setFeedbackRating(value);
@@ -131,39 +139,45 @@ const Feedback = () => {
   };
 
   return (
-    <Layout className="feedback-layout" style={{ backgroundColor: "white" }}>
-      <NavBar />
-      <Content className="feedback-content">
-        <Row justify="center">
-          <Col xs={24} sm={16} md={12} lg={8} xl={6}> {/* Responsive layout for form */}
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-              <Form.Item
-                name="feedbackContent"
-                label="Feedback"
-                rules={[{ required: true, message: "Please enter your feedback!" }]}
-              >
-                <Input.TextArea
-                  value={feedbackContent}
-                  onChange={(values) => setFeedbackContent(values.target.value)}
-                />
-              </Form.Item>
-              <Form.Item
-                label="Rating"
-                rules={[{ required: true, message: "Please rate!" }]}
-              >
-                <Rate allowHalf value={feedbackRating} onChange={handleRatingChange} />
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" htmlType="submit">
-                  Submit Feedback
-                </Button>
-              </Form.Item>
-            </Form>
-          </Col>
-        </Row>
-      </Content>
-      <Footer />
-    </Layout>
+    <>
+      {isLoggedIn ? (
+        <Layout className="feedback-layout" style={{ backgroundColor: "white" }}>
+          <NavBar />
+          <Content className="feedback-content">
+            <Row justify="center">
+              <Col xs={24} sm={16} md={12} lg={8} xl={6}> {/* Responsive layout for form */}
+                <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                  <Form.Item
+                    name="feedbackContent"
+                    label="Feedback"
+                    rules={[{ required: true, message: "Please enter your feedback!" }]}
+                  >
+                    <Input.TextArea
+                      value={feedbackContent}
+                      onChange={(values) => setFeedbackContent(values.target.value)}
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    label="Rating"
+                    rules={[{ required: true, message: "Please rate!" }]}
+                  >
+                    <Rate allowHalf value={feedbackRating} onChange={handleRatingChange} />
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                      Submit Feedback
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Col>
+            </Row>
+          </Content>
+          <Footer />
+        </Layout>
+      ) : (
+        navigate('/login')
+      )}
+    </>
   );
 };
 

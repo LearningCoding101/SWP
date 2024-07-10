@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BookingHistoryList from "./BookingHistoryList";
 import NavBar from "../layout/NavBar";
 import Footer from "../layout/Footer";
 import SearchNavBar from "../layout/SearchNavBar";
+import { useNavigate } from "react-router-dom";
 
 const BookingHistoryPage = () => {
+  const userRole  = localStorage.getItem("userRole")
+  const navigate =  useNavigate()
+
+  useEffect(() => {
+    if (userRole != "CUSTOMER") {
+      navigate('/error404');
+    }
+  }, [userRole, navigate]);
+
   return (
     <div>
       <SearchNavBar />

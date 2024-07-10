@@ -18,7 +18,7 @@ import {
   BarChartOutlined,
   PieChartOutlined,
   FundViewOutlined,
-  LeftOutlined, 
+  LeftOutlined,
   RightOutlined
 } from "@ant-design/icons";
 import MyResponsiveLine from "./LineGraph";
@@ -65,6 +65,11 @@ const Dashboard = () => {
 
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
+  useEffect(() => {
+    if (userRole != "ADMIN") {
+      navigate('/error404');
+    }
+  }, [userRole, navigate]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,7 +131,7 @@ const Dashboard = () => {
 
   return (
     <>
-      {isLoggedIn && userRole === "ADMIN" ? (
+      {isLoggedIn ? (
         <Layout style={{ minHeight: "100vh" }}>
           <Sider
             collapsible
@@ -151,12 +156,12 @@ const Dashboard = () => {
             >
               <Button
                 type="text"
-                icon={collapsed ? <RightOutlined /> : <LeftOutlined/>}
+                icon={collapsed ? <RightOutlined /> : <LeftOutlined />}
                 onClick={() => setCollapsed(!collapsed)}
-                style={{ marginRight: 8 , color: 'white', backgroundColor: 'transparent' }}
+                style={{ marginRight: 8, color: 'white', backgroundColor: 'transparent' }}
               />
               <Button
-              color="white"
+                color="white"
                 type="text"
                 icon={<LogoutOutlined />}
                 onClick={handleLogout}
@@ -175,7 +180,7 @@ const Dashboard = () => {
               }}
             >
               {selectedKey === "10" && (
-                <div style={{marginLeft: 16 }}>
+                <div style={{ marginLeft: 16 }}>
                   <Button type="primary" onClick={showModal}>
                     Update Booking Type
                   </Button>
@@ -240,7 +245,7 @@ const Dashboard = () => {
           </Modal>
         </Layout>
       ) : (
-        navigate("/")
+        navigate("/login")
       )}
     </>
   );

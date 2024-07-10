@@ -12,6 +12,7 @@ const { Header, Content, Sider } = Layout;
 const Logout = () => {
   const accessToken = localStorage.getItem("token");
   const isLoggedIn = !!accessToken;
+  const userRole = localStorage.getItem("userRole")
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
   const auth = useContext(AuthContext);
@@ -23,6 +24,11 @@ const Logout = () => {
     username: Yup.string().required('Full name is required'),
     phone: Yup.string().required('Phone is required'),
   });
+  useEffect(() => {
+    if (userRole === "ADMIN") {
+      navigate('/error404');
+    }
+  }, [userRole, navigate])
 
   useEffect(() => {
     const fetchAccountInfo = async () => {
