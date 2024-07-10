@@ -56,8 +56,12 @@ import java.util.List;
         }
         @GetMapping("/totalRevenueForClubOwner/{clubId}")
         public ResponseEntity<List<TotalAmountByPeriodDTO>> getTotalRevenueForClubOwner(@PathVariable Long clubId,@RequestParam String period, @RequestParam(required = false) Integer month, @RequestParam(required = false) Integer year) {
-            List<TotalAmountByPeriodDTO> totalRevenue = transactionService.getTotalRevenueForClubOwner( clubId,period, month, year);
-            return ResponseEntity.ok(totalRevenue);
+            try{
+                List<TotalAmountByPeriodDTO> totalRevenue = transactionService.getTotalRevenueForClubOwner( clubId,period, month, year);
+                return ResponseEntity.ok(totalRevenue);
+            }catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
         }
 
         // @PreAuthorize("hasAuthority('STAFF')")
@@ -85,18 +89,26 @@ import java.util.List;
 //        }
         @GetMapping("/{bookingId}")
         public ResponseEntity getTransactionByBookingId(@PathVariable Long bookingId) {
-            TransactionResponse transactionResponse =transactionService.getTransactionsByBookingId(bookingId);
-            return ResponseEntity.ok(transactionResponse);
+            try {
+                TransactionResponse transactionResponse = transactionService.getTransactionsByBookingId(bookingId);
+                return ResponseEntity.ok(transactionResponse);
+            }catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
         }
 
         @GetMapping("/predictedPrice/{clubId}/{bookingTypeId}/{numberOnList}")
         public ResponseEntity getPredictedPriceByGivenInfo(@PathVariable Long clubId, @PathVariable Long bookingTypeId, @PathVariable Integer numberOnList) {
-            Long amount =transactionService.getPredictedPriceByGivenInfo(clubId, bookingTypeId, numberOnList);
-            MoneyPredictResponse response = new MoneyPredictResponse();
-            response.setMoneyback(Double.valueOf(amount));
-            response.setFullMoney(clubRepository.findClubByClubId(clubId).getPrice()*numberOnList);
-            response.setSaleMoney(response.getFullMoney()-response.getMoneyback());
-            return ResponseEntity.ok(response);
+            try{
+                Long amount =transactionService.getPredictedPriceByGivenInfo(clubId, bookingTypeId, numberOnList);
+                MoneyPredictResponse response = new MoneyPredictResponse();
+                response.setMoneyback(Double.valueOf(amount));
+                response.setFullMoney(clubRepository.findClubByClubId(clubId).getPrice()*numberOnList);
+                response.setSaleMoney(response.getFullMoney()-response.getMoneyback());
+                return ResponseEntity.ok(response);
+            }catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
         }
 
         @PutMapping("/{id}")

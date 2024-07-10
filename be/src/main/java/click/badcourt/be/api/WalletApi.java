@@ -1,9 +1,11 @@
 package click.badcourt.be.api;
 
+import click.badcourt.be.entity.Booking;
 import click.badcourt.be.model.request.*;
 import click.badcourt.be.model.response.BookingComboResponse;
 import click.badcourt.be.model.response.BookingResponse;
 import click.badcourt.be.repository.BookingDetailRepository;
+import click.badcourt.be.repository.BookingRepository;
 import click.badcourt.be.service.BookingDetailService;
 import click.badcourt.be.service.BookingService;
 import click.badcourt.be.service.TransactionService;
@@ -38,6 +40,8 @@ public class WalletApi {
 
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @PostMapping()
     public ResponseEntity createUrl(@RequestBody RechargeRequestDTO rechargeRequestDTO) throws Exception {
@@ -49,6 +53,7 @@ public class WalletApi {
     public ResponseEntity createUrlCombo(@RequestBody RechargeRequestDTOCombo rechargeRequestDTOCombo) throws Exception {
 
         BookingResponse bkcr = bookingService.createBookingNew(rechargeRequestDTOCombo.getClub_id(), rechargeRequestDTOCombo.getBooking_type_id());
+        Booking booking = bookingRepository.findById(bkcr.getId()).orElseThrow(() -> new RuntimeException("Booking not found"));
         BookingComboResponse bookingComboResponse = new BookingComboResponse();
         bookingComboResponse.setBookingResponse(bkcr);
         List<BookingDetailRequestCombo> bkdtrspl = rechargeRequestDTOCombo.getBookingDetailRequestCombos();
@@ -75,7 +80,7 @@ public class WalletApi {
         bookingComboResponse.setBookingDetailRequestList(returnlist);
         RechargeRequestDTO requestDTO = new RechargeRequestDTO();
         requestDTO.setBookingId(bkcr.getId());
-        String ammountt = transactionService.getPredictedPriceByGivenInfoCombo(rechargeRequestDTOCombo.getClub_id(), bkcr.getBookingTypeId(), bookingDetailRepository.countBookingDetailsByBooking_BookingId(bkcr.getId())).toString();
+        String ammountt = transactionService.getPredictedPriceByGivenInfoCombo(rechargeRequestDTOCombo.getClub_id(), bkcr.getBookingTypeId(), bookingDetailRepository.countBookingDetailsByBooking(booking)).toString();
         requestDTO.setAmount(ammountt);
         String url = walletService.createUrl(requestDTO);
         return ResponseEntity.ok(url);

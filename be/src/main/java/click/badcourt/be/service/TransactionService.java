@@ -117,28 +117,21 @@ public class TransactionService {
             integerPart = totalPrice.longValue();
             totalPrice = integerPart.doubleValue();
         } else if (booking.getBookingType().getBookingTypeId() == 3 || booking.getBookingType().getBookingTypeId() == 2) {
-            if(bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId)<10) {
-                totalPrice = booking.getClub().getPrice() * (bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId));
+                totalPrice = booking.getClub().getPrice() * (1 - booking.getBookingType().getBookingDiscount()) * bookingDetailRepository.countBookingDetailsByBooking(booking);
                 integerPart = totalPrice.longValue();
                 totalPrice = integerPart.doubleValue();
             }
-            else {
-                totalPrice = booking.getClub().getPrice() * (1 - booking.getBookingType().getBookingDiscount()) * bookingDetailRepository.countBookingDetailsByBooking_BookingId(bookingId);
-                integerPart = totalPrice.longValue();
-                totalPrice = integerPart.doubleValue();
-            }
-        }
         return totalPrice;
     }
 
     public PreTransactionResponse TotalPriceCombo(Long bookingId){
         Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
-        int n = bookingDetailRepository.countBookingDetailsByBooking_BookingId(booking.getBookingId());
+        int n = bookingDetailRepository.countBookingDetailsByBooking(booking);
         Double totalPrice = booking.getClub().getPrice()*n;
         PreTransactionResponse preTransactionResponse= new PreTransactionResponse();
-            preTransactionResponse.setFullPrice(totalPrice);
-            preTransactionResponse.setTotalPriceNeedToPay(TotalPrice(booking.getBookingId()));
-            preTransactionResponse.setSalePrice(preTransactionResponse.getFullPrice()-preTransactionResponse.getTotalPriceNeedToPay());
+        preTransactionResponse.setFullPrice(totalPrice);
+        preTransactionResponse.setTotalPriceNeedToPay(TotalPrice(booking.getBookingId()));
+        preTransactionResponse.setSalePrice(preTransactionResponse.getFullPrice() - preTransactionResponse.getTotalPriceNeedToPay());
         return preTransactionResponse;
     }
 

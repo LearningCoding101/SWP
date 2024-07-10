@@ -324,4 +324,32 @@ public class BookingService {
 //        return Bookings;
 //
 //    }
+    public BookingComboResponse createBookingCombo(BookingComboRequest bookingComboRequest){
+        BookingResponse bookingCreateTemporary = createBookingNew(bookingComboRequest.getClub_id(),bookingComboRequest.getBooking_type_id());
+        BookingComboResponse bookingComboResponse = new BookingComboResponse();
+        bookingComboResponse.setBookingResponse(bookingCreateTemporary);
+        List<BookingDetailRequestCombo> bookingDetailResponseList = bookingComboRequest.getBookingDetailRequestCombos();
+        List<BookingDetailRequest> returnlist = new ArrayList<>();
+        BookingDetailRequest store;
+        Long id = bookingCreateTemporary.getId();
+        if(bookingCreateTemporary.getBookingTypeId() == 1){
+            for(BookingDetailRequestCombo bookingDetailRun : bookingDetailResponseList) {
+                store = bookingDetailService.create1stBookingDetailCombo(bookingDetailRun, id);
+                returnlist.add(store);
+            }
+        } else if (bookingCreateTemporary.getBookingTypeId() == 2) {
+            List<BookingDetailRequest> returnlistAdd = new ArrayList<>();
+            for(BookingDetailRequestCombo bookingDetailRun : bookingDetailResponseList) {
+                returnlistAdd = bookingDetailService.createFixedBookingDetailCombos(bookingDetailRun, id);
+                returnlist.addAll(returnlistAdd);
+            }
+        } else if (bookingCreateTemporary.getBookingTypeId() == 3) {
+            for(BookingDetailRequestCombo bookingDetailRun : bookingDetailResponseList) {
+                store = bookingDetailService.create3rdBookingDetailCombo(bookingDetailRun, id);
+                returnlist.add(store);
+            }
+        }
+        bookingComboResponse.setBookingDetailRequestList(returnlist);
+        return bookingComboResponse;
+    }
 }

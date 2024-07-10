@@ -1,5 +1,6 @@
 package click.badcourt.be.repository;
 
+import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.BookingDetail;
 import click.badcourt.be.entity.Court;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
@@ -20,7 +21,7 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail,Lon
     //    List<BookingDetail> findBookingDetailsByDateAndDeletedFalse(@Param("date") Date date);
     List<BookingDetail> findBookingDetailsByBooking_BookingId(Long bookingId);
     List<BookingDetail> findBookingDetailsByDeletedFalse();
-    int countBookingDetailsByBooking_BookingId(Long bookingId);
+    int countBookingDetailsByBooking(Booking booking);
     int countBookingDetailsByDetailStatus_AndBooking_BookingId(BookingDetailStatusEnum bookingDetailStatusEnum, Long bookingId);
     List<BookingDetail> findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(Long courtTSlotID);
     List<BookingDetail> findBookingDetailsByCourtTimeslot_CourtTSlotID(Long courtTSlotID);
