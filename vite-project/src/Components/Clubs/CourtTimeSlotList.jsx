@@ -4,18 +4,13 @@ import api from "../../config/axios";
 import "../css/CourtTimeSlotList.css";
 import { Modal, Button } from 'react-bootstrap';
 import AddCourtTimeSlot from './AddCourtTimeSlot';
+import '../css/AddCourtTimeSlots.css';
 
 const CourtTimeSlotList = () => {
     const { courtId } = useParams();
     const [courtTimeSlots, setCourtTimeSlots] = useState([]);
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
-
-    // useEffect(() => {
-    //     api.get(`/courtTimeSlot/${courtId}`)
-    //         .then(response => setCourtTimeSlots(response.data || []))
-    //         .catch(error => console.error('Error fetching court time slots:', error));
-    // }, [courtId]);
 
     const fecthCourtTimeSlot = async () => {
         try {
@@ -69,7 +64,7 @@ const CourtTimeSlotList = () => {
                     <Modal.Title>Add Court Time Slot</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AddCourtTimeSlot courtId={courtId} onClose={() => setShowModal(false)} onCourtTSAdded={fecthCourtTimeSlot} />
+                    <AddCourtTimeSlot courtTimeSlots={courtTimeSlots} courtId={courtId} onClose={() => setShowModal(false)} onCourtTSAdded={fecthCourtTimeSlot} />
                 </Modal.Body>
             </Modal>
         </div>

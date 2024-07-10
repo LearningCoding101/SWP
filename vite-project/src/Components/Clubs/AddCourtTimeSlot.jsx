@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from "../../config/axios";
-import { Button, Form } from 'react-bootstrap';
-import '../css/AddCourt.css';
+import { Button, Form, Card } from 'react-bootstrap';
+// import '../css/AddCourtTimeSlots.css';
 
-const AddCourtTimeSlot = ({ onCourtTSAdded, onClose, courtId }) => {
+const AddCourtTimeSlot = ({ onCourtTSAdded, onClose, courtId, courtTimeSlots }) => {
 
     const [timeSlots, setTimeSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
     useEffect(() => {
-        const fetchTimeSlot = async () =>{
-             if (!courtId) {
-            alert('No courtId provided');
-            return;
-        }
+        const fetchTimeSlot = async () => {
+            if (!courtId) {
+                alert('No courtId provided');
+                return;
+            }
 
-        console.log(timeSlots);
-        const response = await api.get('/timeslots')
-            .then(response => setTimeSlots(response.data))
-            .catch(error => console.error('Error fetching time slots:', error));
-        console.log(timeSlots);
+            console.log(timeSlots);
+            const response = await api.get('/timeslots')
+                .then(response => setTimeSlots(response.data))
+                .catch(error => console.error('Error fetching time slots:', error));
+            console.log(timeSlots);
         }
-       fetchTimeSlot();
+        fetchTimeSlot();
     }, [courtId]);
 
     const handleSubmit = async (event) => {
@@ -40,9 +40,15 @@ const AddCourtTimeSlot = ({ onCourtTSAdded, onClose, courtId }) => {
         }
     };
 
-    const handleTimeSlotClick = (timeSlotId) => {
-        setSelectedTimeSlot(timeSlotId);
+    const handleTimeSlotClick = (timeSlot) => {
+
+        if (courtTimeSlots.some(courtTimeSlot => courtTimeSlot.start_time === timeSlot.startTime && courtTimeSlot.end_time === timeSlot.endTime)) {
+            return;
+        }
+
+        setSelectedTimeSlot(timeSlot.timeslotId);
     };
+
 
     return (
         <div>
@@ -52,13 +58,19 @@ const AddCourtTimeSlot = ({ onCourtTSAdded, onClose, courtId }) => {
                     <Form.Label>Time Slots</Form.Label>
                     <div className="time-slot-tags">
                         {Array.isArray(timeSlots) && timeSlots.map(timeSlot => (
-                            <span
+                            <Card
                                 key={timeSlot.timeslotId}
-                                onClick={() => handleTimeSlotClick(timeSlot.timeslotId)}
-                                className={`time-slot-tag ${selectedTimeSlot === timeSlot.timeslotId ? 'selected' : ''}`}
+                                onClick={() => handleTimeSlotClick(timeSlot)}
+                                className={`time-slot-tag ${selectedTimeSlot === timeSlot.timeslotId ? 'selected' : ''} ${courtTimeSlots.some(courtTimeSlot => courtTimeSlot.start_time === timeSlot.startTime && courtTimeSlot.end_time === timeSlot.endTime) ? 'disabled' : ''}`}
+
                             >
-                                {`${timeSlot.startTime} - ${timeSlot.endTime}`}
-                            </span>
+                                <Card.Body>
+                                    <Card.Text className="text-center">
+                                        {`${timeSlot.startTime} - ${timeSlot.endTime}`}
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+
                         ))}
                     </div>
                 </Form.Group>
