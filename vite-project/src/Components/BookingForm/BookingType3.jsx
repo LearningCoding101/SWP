@@ -153,7 +153,7 @@ import React, { useState } from "react";
 import { Form, DatePicker, Button, List, message, Radio, Select } from "antd";
 import moment from "moment";
 import api from "../../config/axios";
-
+const { Option } = Select;
 const BookingType3 = (props) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [availableTimes, setAvailableTimes] = useState([]);
@@ -163,8 +163,15 @@ const BookingType3 = (props) => {
   const [error, setError] = useState(null);
   const [numberOfDays, setNumberOfDays] = useState();
 
-  let isDisabled = typeDetailList.length != numberOfDays ? false : true;
+  // let isDisabled = typeDetailList.length != numberOfDays ? false : true;
+  const isDisabled = typeDetailList.length !== numberOfDays;
 
+  // Validate date
+  const disabledDate = (current) => {
+    const today = moment().startOf("day");
+    const maxDate = moment().add(182, "days").endOf("day");
+    return current && (current < today || current > maxDate);
+  };
   const handleDateChange = async (date) => {
     setSelectedDate(date.format("YYYY-MM-DD"));
     await fetchCourtTimeSlots(date.format("YYYY-MM-DD"));
@@ -177,13 +184,23 @@ const BookingType3 = (props) => {
       const slotFilter = response.data;
       setCourtTimeSlots(response.data);
       console.log(response.data);
-      setAvailableTimes(
-        slotFilter.filter((item) => item.status == "AVAILABLE")
-      );
-      console.log(slotFilter.filter((item) => item.status == "AVAILABLE"));
-      // const data = response.data;
-      // const bookingId = data.id;
-      // localStorage.setItem("Id", bookingId);
+      const today = moment().format("YYYY-MM-DD");
+      const now = moment();
+      const twoHoursLater = now.clone().add(2, "hours");
+
+      const filteredSlots = slotFilter.filter((item) => {
+        if (date === today) {
+          const startTime = moment(item.start_time, "HH:mm");
+          return (
+            item.status === "AVAILABLE" &&
+            startTime.isBetween(now, twoHoursLater, null, "[]")
+          );
+        }
+        return item.status === "AVAILABLE";
+      });
+
+      setAvailableTimes(filteredSlots);
+      console.log(filteredSlots);
     } catch (error) {
       setError(error.message);
     }
@@ -212,6 +229,18 @@ const BookingType3 = (props) => {
         entry.courtTSId === bookingTypeDetail.courtTSId &&
         entry.bookingDate === bookingTypeDetail.bookingDate
     );
+
+    if (selectedSchedule.length > 0) {
+      const firstEntryMonth = moment(selectedSchedule[0].date).month();
+      const selectedMonth = moment(selectedDate).month();
+
+      if (firstEntryMonth !== selectedMonth) {
+        message.error(
+          "Selected date must be in the same month as the first selected date."
+        );
+        return;
+      }
+    }
 
     if (isDateDuplicate) {
       message.warning("This schedule is already added");
@@ -273,7 +302,11 @@ const BookingType3 = (props) => {
               },
             ]}
           >
-            <DatePicker onChange={handleDateChange} />
+           <DatePicker
+              format="YYYY-MM-DD"
+              onChange={handleDateChange}
+              disabledDate={disabledDate}
+            />
           </Form.Item>
         </div>
         <div className="col-md-6">
@@ -310,7 +343,7 @@ const BookingType3 = (props) => {
               <Radio.Button
                 key={index}
                 value={item.courtTimeSlotId}
-                disabled={isDisabled}
+                disabled={!isDisabled}
                 onClick={() =>
                   handleAddToSchedule(
                     item.courtTimeSlotId,
