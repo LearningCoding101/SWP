@@ -37,8 +37,8 @@ const AppFooter = () => {
         </Col>
         <Col xs={24} sm={12} md={6}>
           <Title level={4} style={{ color: '#fff' }}>Contact Us</Title>
-          <Text style={{ color: '#fff' }}>123 Sport Ave, Fitness City</Text><br />
-          <Text style={{ color: '#fff' }}>Email: support@badcourts.com</Text><br />
+          <Text style={{ color: '#fff' }}>FPT University Ho Chi Minh</Text><br />
+          <Text style={{ color: '#fff' }}>Email: badcourts.service@gmail.com</Text><br />
           <Text style={{ color: '#fff' }}>Phone: (123) 456-7890</Text>
         </Col>
         <Col xs={24} sm={12} md={6}>

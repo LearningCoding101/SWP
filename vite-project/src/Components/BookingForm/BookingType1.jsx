@@ -71,10 +71,10 @@ const BookingType1 = (props) => {
     // console.log(values);
     const bookingTypeDetail = [
       {
-        courtTSId: values.target.value, // Update with correct value if available
+        courtTSId: values.target.value, // Update with correct value 
         bookingDate: selectedDate,
-        durationInMonths: 0, // Update with correct value if available
-        dayOfWeek: null, // Update with correct value if available
+        durationInMonths: 0, 
+        dayOfWeek: null,
       },
     ];
 
