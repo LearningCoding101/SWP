@@ -1,6 +1,7 @@
 package click.badcourt.be.service;
 
 import click.badcourt.be.entity.EmailDetail;
+import click.badcourt.be.entity.RemindDetail;
 import click.badcourt.be.model.request.QRCodeData;
 import com.google.zxing.common.BitMatrix;
 import jakarta.mail.MessagingException;
@@ -111,6 +112,40 @@ public class EmailService {
     }
 
     public void sendEmailWithAttachment(EmailDetail emailDetail, QRCodeData data) {
+        try {
+            Context context = new Context();
+            context.setVariable("link", emailDetail.getLink());
+            context.setVariable("button", emailDetail.getButtonValue());
+            context.setVariable("name", emailDetail.getFullName());
+
+            String text = templateEngine.process("emailtemplate", context);
+
+            // Creating a simple mail message
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true); // Enable multipart mode
+
+            // Setting up necessary details
+            mimeMessageHelper.setFrom("admin@gmail.com");
+            mimeMessageHelper.setTo(emailDetail.getRecipient());
+            mimeMessageHelper.setText(text, true);
+            mimeMessageHelper.setSubject(emailDetail.getSubject());
+
+            BitMatrix bitMatrix = qrCodeService.generateQRCode(data);
+            if (bitMatrix != null) {
+                BufferedImage qrImage = QRCodeService.toBufferedImage(bitMatrix);
+                byte[] qrBytes = QRCodeService.toByteArray(qrImage);
+
+                mimeMessageHelper.addAttachment("qrCode.png", new ByteArrayDataSource(qrBytes, "image/png"));
+            } else {
+                System.out.println("QR code generation failed.");
+            }
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void sendEmailRemind(RemindDetail emailDetail, QRCodeData data) {
         try {
             Context context = new Context();
             context.setVariable("link", emailDetail.getLink());

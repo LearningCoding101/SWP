@@ -1,6 +1,7 @@
 package click.badcourt.be.repository;
 
 import click.badcourt.be.entity.Account;
+import click.badcourt.be.enums.RoleEnum;
 import com.google.api.services.storage.Storage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,4 +14,5 @@ public interface AuthenticationRepository extends JpaRepository<Account, Long> {
     Account findAccountByEmail( String email);
     List<Account> findAccountsByIsDeletedFalse();
     Account findAccountByAccountId(Long accountId);
+    List<Account> findAccountsByIsDeletedFalseAndRoleEnum(RoleEnum roleEnum);
 }

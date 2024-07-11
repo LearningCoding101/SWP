@@ -23,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -351,5 +353,63 @@ public class BookingService {
         }
         bookingComboResponse.setBookingDetailRequestList(returnlist);
         return bookingComboResponse;
+    }
+//    public void sendBookingConfirmation(QRCodeData data,String email) throws WriterException, IOException, MessagingException {
+//        System.out.println(email);
+//        EmailDetail emailDetail = new EmailDetail();
+//        emailDetail.setRecipient(email);
+//        emailDetail.setSubject("Booking successfully" );
+//        emailDetail.setMsgBody("");
+//        Runnable r = new Runnable() {
+//            @Override
+//            public void run() {
+//                emailService.sendEmailWithAttachment(emailDetail, data);
+//            }
+//        };
+//        new Thread(r).start();
+//    }
+    public void checkToRemind(BookingComboRequestForStaff bookingComboRequest) throws MessagingException, IOException, WriterException {
+        List<Account> account = authenticationRepository.findAccountsByIsDeletedFalseAndRoleEnum(RoleEnum.CUSTOMER);
+        for(Account a : account){
+            List<Booking> bookingList = bookingRepository.findAllByAccount_AccountId(a.getAccountId());
+            boolean TrueOrFalse = false;
+            Booking bookingTake = null;
+            List<BookingDetail> bkDetail = new ArrayList<>();
+            BookingDetail takeDetail = null;
+            for(Booking booking : bookingList){
+                List<BookingDetail> bookingDetailList = bookingDetailRepository.findBookingDetailsByBooking_BookingId(booking.getBookingId());
+                for(BookingDetail bookingDetail : bookingDetailList){
+                    LocalDate today = LocalDate.now();
+                    LocalDate tomorrow = today.plusDays(1);
+                    Date date = Date.from(tomorrow.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+                    if(date.getDate()==bookingDetail.getDate().getDate() && date.getMonth()==bookingDetail.getDate().getMonth() && date.getYear()==bookingDetail.getDate().getYear())
+                    {
+                        TrueOrFalse = true;
+                        bkDetail.add(bookingDetail);
+                    }
+                }
+                bookingTake = booking;
+
+            }
+            QRCodeData qrCodeData = new QRCodeData();
+            qrCodeData.setBookingId(bookingTake.getBookingId());
+            sendBookingConfirmation(qrCodeData, bookingComboRequest.getEmail());
+
+        }
+    }
+    public void sendBookingRemind(QRCodeData data, ,String email) throws WriterException, IOException, MessagingException {
+        System.out.println(email);
+        RemindDetail emailDetail = new RemindDetail();
+        emailDetail.setRecipient(email);
+        emailDetail.setSubject("Booking successfully" );
+        emailDetail.setMsgBody("");
+        emailDetail.setBookingDetail();
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                emailService.sendEmailRemind(emailDetail, data);
+            }
+        };
+        new Thread(r).start();
     }
 }
