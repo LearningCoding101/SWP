@@ -2,11 +2,9 @@ package click.badcourt.be.repository;
 
 import click.badcourt.be.entity.Booking;
 import click.badcourt.be.entity.BookingDetail;
-import click.badcourt.be.entity.Court;
 import click.badcourt.be.enums.BookingDetailStatusEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalTime;
@@ -26,7 +24,11 @@ public interface BookingDetailRepository extends JpaRepository<BookingDetail,Lon
     List<BookingDetail> findBookingDetailsByDeletedTrueAndCourtTimeslot_CourtTSlotID(Long courtTSlotID);
     List<BookingDetail> findBookingDetailsByCourtTimeslot_CourtTSlotID(Long courtTSlotID);
     @Query(value = "SELECT DAYOFWEEK(date) AS dayOfWeek, COUNT(*) FROM booking_detail WHERE deleted = false GROUP BY dayOfWeek", nativeQuery = true)
-
     List<Object[]> countBookingsByDayOfWeek();
     List<BookingDetail> findByDetailStatusAndDateBeforeAndCourtTimeslot_Timeslot_EndTimeBefore(BookingDetailStatusEnum status, Date date, LocalTime time);
+    @Query(value = "SELECT bd.* FROM booking_detail bd " +
+            "JOIN booking b ON bd.from_booking = b.booking_id " +
+            "WHERE DATE(bd.date) = DATE(:date) AND b.status != 'CANCELED'", nativeQuery = true)
+    List<BookingDetail> findBookingDetailsForTomorrow(Date date);
+
 }

@@ -151,7 +151,6 @@ public class TransactionService {
         }else{
             throw new IllegalArgumentException("Transaction not found");
         }
-
     }
 
     public Long getPredictedPriceByGivenInfo(Long clubId, Long bookingTypeId, Integer num) {

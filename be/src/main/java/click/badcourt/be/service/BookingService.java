@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -368,48 +369,41 @@ public class BookingService {
 //        };
 //        new Thread(r).start();
 //    }
-    public void checkToRemind(BookingComboRequestForStaff bookingComboRequest) throws MessagingException, IOException, WriterException {
-        List<Account> account = authenticationRepository.findAccountsByIsDeletedFalseAndRoleEnum(RoleEnum.CUSTOMER);
-        for(Account a : account){
-            List<Booking> bookingList = bookingRepository.findAllByAccount_AccountId(a.getAccountId());
-            boolean TrueOrFalse = false;
-            Booking bookingTake = null;
-            List<BookingDetail> bkDetail = new ArrayList<>();
-            BookingDetail takeDetail = null;
-            for(Booking booking : bookingList){
-                List<BookingDetail> bookingDetailList = bookingDetailRepository.findBookingDetailsByBooking_BookingId(booking.getBookingId());
-                for(BookingDetail bookingDetail : bookingDetailList){
-                    LocalDate today = LocalDate.now();
-                    LocalDate tomorrow = today.plusDays(1);
-                    Date date = Date.from(tomorrow.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-                    if(date.getDate()==bookingDetail.getDate().getDate() && date.getMonth()==bookingDetail.getDate().getMonth() && date.getYear()==bookingDetail.getDate().getYear())
-                    {
-                        TrueOrFalse = true;
-                        bkDetail.add(bookingDetail);
-                    }
-                }
-                bookingTake = booking;
+    @Transactional
+    @Scheduled(cron = "0 0 20 * * *") // Run every day at 7 PM
+    public void sendReminderEmails() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String startTime = dateFormat.format(new Date());
+        logger.info("Background job for sending reminder emails is running at {}.", startTime);
 
-            }
-            QRCodeData qrCodeData = new QRCodeData();
-            qrCodeData.setBookingId(bookingTake.getBookingId());
-            sendBookingConfirmation(qrCodeData, bookingComboRequest.getEmail());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        Date tomorrow = cal.getTime();
 
+        List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsForTomorrow(tomorrow);
+        logger.info("Found {} booking details for tomorrow", bookingDetails.size());
+
+        // Group booking details by booking
+        Map<Booking, List<BookingDetail>> bookingDetailsByBooking = new HashMap<>();
+        for (BookingDetail bookingDetail : bookingDetails) {
+            bookingDetailsByBooking.computeIfAbsent(bookingDetail.getBooking(), k -> new ArrayList<>()).add(bookingDetail);
         }
-    }
-    public void sendBookingRemind(QRCodeData data, ,String email) throws WriterException, IOException, MessagingException {
-        System.out.println(email);
-        RemindDetail emailDetail = new RemindDetail();
-        emailDetail.setRecipient(email);
-        emailDetail.setSubject("Booking successfully" );
-        emailDetail.setMsgBody("");
-        emailDetail.setBookingDetail();
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                emailService.sendEmailRemind(emailDetail, data);
+
+        for (Map.Entry<Booking, List<BookingDetail>> entry : bookingDetailsByBooking.entrySet()) {
+            Booking booking = entry.getKey();
+            if (booking.getAccount().getRole() == RoleEnum.CUSTOMER) {
+                List<BookingDetail> details = entry.getValue();
+                try {
+                    emailService.sendEmailReminder(booking, details);
+                } catch (MessagingException e) {
+                    logger.error("Failed to send email reminder for Booking ID: {}", booking.getBookingId(), e);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        };
-        new Thread(r).start();
+        }
+
+        logger.info("Background job for sending reminder emails has completed.");
+
     }
 }

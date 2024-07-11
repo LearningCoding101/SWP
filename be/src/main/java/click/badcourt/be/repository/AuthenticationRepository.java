@@ -14,5 +14,4 @@ public interface AuthenticationRepository extends JpaRepository<Account, Long> {
     Account findAccountByEmail( String email);
     List<Account> findAccountsByIsDeletedFalse();
     Account findAccountByAccountId(Long accountId);
-    List<Account> findAccountsByIsDeletedFalseAndRoleEnum(RoleEnum roleEnum);
 }
