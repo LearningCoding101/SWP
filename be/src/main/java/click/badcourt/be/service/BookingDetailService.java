@@ -427,7 +427,6 @@ public class BookingDetailService {
         Optional<CourtTimeslot> courtTimeslot=courtTimeSlotRepository.findById(requestCombo.getNewcourtTSId());
         ChangeSlotBookingDetailResponseCombo changeSlot = new ChangeSlotBookingDetailResponseCombo();
         if(bookingDetail.isPresent()) {
-            if(bookingDetail.get().getDetailStatus().equals(BookingDetailStatusEnum.NOTYET)){
             changeSlot.setBookingId(bookingOptional.getBookingId());
             changeSlot.setCourtName(bookingDetail.get().getCourtTimeslot().getCourt().getCourtname());
             changeSlot.setBookingDate(bookingDetail.get().getDate());
@@ -447,17 +446,13 @@ public class BookingDetailService {
                 changeSlot.setNewend_time(bookingDetail.get().getCourtTimeslot().getTimeslot().getEndTime());
                 changeSlot.setNewtimeslotId(bookingDetail.get().getCourtTimeslot().getTimeslot().getTimeslotId());
                 changeSlot.setNewcourtTSId(bookingDetail.get().getCourtTimeslot().getCourtTSlotID());
-                changeSlot.setBookingDate(bookingDetail.get().getDate());
+                changeSlot.setNewbookingDate(bookingDetail.get().getDate());
                 changeSlot.setStatus(bookingDetail.get().getDetailStatus());
                 return changeSlot;
             } else {
                 throw new IllegalArgumentException("Booking or Court_Timeslot not found");
             }
-        }else {
-                throw new IllegalArgumentException("This booking detail has changed once already!");
-            }
-        }
-        else{
+        } else{
             throw new IllegalArgumentException("BookingDetail Id not found");
         }
     }
