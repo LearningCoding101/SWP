@@ -6,7 +6,7 @@ Cách chạy project: <br/>
 3. Chạy file front-end
 
 
-Đơn giản hơn: tải vite-project về => vào terminal => nhập lần lượt từng dòng code
+Đơn giản hơn: tải vite-project về  => nhập lần lượt từng dòng code
  {
  npm i | 
  npm i axios bootstrap antd react-qr-scanner @nivo/line react-chartjs-2 qrcode.react styled-components formix yup react-respnosive
