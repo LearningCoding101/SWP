@@ -239,12 +239,8 @@ public class TransactionService {
     }
 
     public List<TotalAmountByPeriodDTO> getTotalRevenueForClubOwner(Long clubId,String period, Integer month, Integer year) {
-
         Club club = clubRepository.findClubByClubId(clubId);
-
         Map<String, Double> revenueByPeriod = new HashMap<>();
-
-        // Initialize revenueByPeriod with all periods and 0 revenue
         switch (period) {
             case "month":
                 if (month == null || year == null) {
@@ -267,49 +263,39 @@ public class TransactionService {
             default:
                 throw new IllegalArgumentException("Invalid period: " + period);
         }
-
-        // Get all bookings for this club
         List<Booking> bookings = bookingRepository.findBookingsByClub_ClubId(club.getClubId());
-
-        // Iterate over each booking
         for (Booking booking : bookings) {
-            // Get the transaction for this booking
             Transaction transaction = transactionRepository.findByBooking_BookingId(booking.getBookingId()).orElse(null);
-
-            // If a transaction exists and it's fully paid, add its total amount to the total revenue
             if (transaction != null && transaction.getStatus().equals(TransactionEnum.FULLY_PAID)) {
                 LocalDate transactionDate = transaction.getPaymentDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 String periodKey;
-
                 switch (period) {
                     case "month":
                         if (transactionDate.getMonthValue() == month &&
                                 transactionDate.getYear() == year) {
                             periodKey = transactionDate.getDayOfMonth() + "-" + transactionDate.getMonthValue() + "-" + transactionDate.getYear(); // "1-7-2024"
                         } else {
-                            continue; // Skip transactions that are not from the current month
+                            continue;
                         }
                         break;
                     case "year":
                     default:
-                        periodKey = transactionDate.getMonthValue() + "-" + transactionDate.getYear(); // "7-2024"
+                        if (transactionDate.getYear() == year) {
+                            periodKey = transactionDate.getMonthValue() + "-" + transactionDate.getYear();
+                        } else {
+                            continue;
+                        }
                         break;
                 }
-
                 double totalAmount = transaction.getTotalAmount();
                 revenueByPeriod.put(periodKey, revenueByPeriod.getOrDefault(periodKey, 0.0) + totalAmount);
             }
         }
-
-        // Convert the map to a list of DTOs
         List<TotalAmountByPeriodDTO> result = new ArrayList<>();
         for (Map.Entry<String, Double> entry : revenueByPeriod.entrySet()) {
             result.add(new TotalAmountByPeriodDTO(entry.getKey(), entry.getValue()));
         }
-
-        // Sort the result list based on the period
         result.sort(Comparator.comparing(TotalAmountByPeriodDTO::getPeriod));
-
         return result;
     }
 
