@@ -107,22 +107,29 @@ public class TransactionService {
         }
     }
 
-    public Double TotalPrice(Long bookingId){
-        Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
-        List<BookingDetail> bookingDetails= bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
-        Double totalPrice= 0.0;
-        if(booking.getBookingType().getBookingTypeId() == 1){
-                totalPrice += booking.getClub().getPrice();
-            totalPrice = totalPrice*(1-booking.getBookingType().getBookingDiscount());
-            integerPart = totalPrice.longValue();
-            totalPrice = integerPart.doubleValue();
-        } else if (booking.getBookingType().getBookingTypeId() == 3 || booking.getBookingType().getBookingTypeId() == 2) {
-                totalPrice = booking.getClub().getPrice() * (1 - booking.getBookingType().getBookingDiscount()) * bookingDetailRepository.countBookingDetailsByBooking(booking);
-                integerPart = totalPrice.longValue();
-                totalPrice = integerPart.doubleValue();
-            }
+    public Double TotalPrice(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+        List<BookingDetail> bookingDetails = bookingDetailRepository.findBookingDetailsByBooking_BookingId(bookingId);
+        Double totalPrice = 0.0;
+
+        if (booking.getBookingType().getBookingTypeId() == 1) {
+            totalPrice += booking.getClub().getPrice();
+            totalPrice = totalPrice * (1 - booking.getBookingType().getBookingDiscount());
+        } else if (booking.getBookingType().getBookingTypeId() == 2 || booking.getBookingType().getBookingTypeId() == 3) {
+            totalPrice = booking.getClub().getPrice() *
+                    (1 - booking.getBookingType().getBookingDiscount()) *
+                    bookingDetailRepository.countBookingDetailsByBooking(booking)+1;
+        }
+
+        // Truncate to the nearest thousand
+        long integerPart = (totalPrice).longValue();
+        long truncatedValue = (integerPart / 1000) * 1000;
+        totalPrice = (double) truncatedValue;
+
         return totalPrice;
     }
+
 
     public PreTransactionResponse TotalPriceCombo(Long bookingId){
         Booking booking= bookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking not found"));
